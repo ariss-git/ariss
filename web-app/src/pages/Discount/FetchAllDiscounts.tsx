@@ -36,7 +36,7 @@ import { toast } from '../../hooks/use-toast';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const apiURL = 'http://localhost:5000/api';
+const apiURL = '
 
 type Discount = {
     discount_id: string;

@@ -64,7 +64,7 @@ export const registerBackOffice = async (backOfficeData: BackOfficeRegistrationD
 };
 
 export const dealerProfile = async (token: string) => {
-  return axios.get('https://ariss-app-production.up.railway.app/api/dealer/profile', {
+  return axios.get('https://ariss-production.up.railway.app/api/dealer/profile', {
     headers: {
       Authorization: `Bearer ${token}`, // Send token in Authorization header
     },

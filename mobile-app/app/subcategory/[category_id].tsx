@@ -7,7 +7,7 @@ import Header from '~/components/Header';
 import ProductGrid from '~/components/ProductList';
 import SubcategoryList from '~/components/SubcategoryList';
 
-const API_URL = 'https://ariss-app-production.up.railway.app/api/products/category/sub/filter';
+const API_URL = 'https://ariss-production.up.railway.app/api/products/category/sub/filter';
 
 // ✅ Define the expected subcategory type
 interface Subcategory {
