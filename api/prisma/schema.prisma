@@ -1,0 +1,308 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Dealers {
+  dealer_id        String        @id @default(uuid())
+  phone            String        @unique
+  email            String        @unique
+  gstin            String        @unique
+  business_name    String?
+  first_name       String
+  last_name        String
+  shipping_address Json?
+  billing_address  Json?
+  profile_pic      String        @default("https://static.thenounproject.com/png/5034901-200.png")
+  isApproved       Boolean       @default(false)
+  usertype         UserType
+  isDistributor    Boolean       @default(false)
+  createdAt        DateTime      @default(now())
+  BackOffice       BackOffice[]
+  Discount         Discount[]
+  Ledger           Ledger[]
+  Orders           Order[]
+  Technicians      Technicians[]
+  Wishlist         Wishlist?
+}
+
+model Technicians {
+  tech_id     String   @id @default(uuid())
+  phone       String
+  email       String
+  first_name  String
+  last_name   String
+  isPassed    Boolean  @default(false)
+  profile_pic String?
+  usertype    UserType
+  isApproved  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  dealerid    String
+  dealer      Dealers  @relation(fields: [dealerid], references: [dealer_id], onDelete: Cascade)
+}
+
+model BackOffice {
+  backoffice_id String   @id @default(uuid())
+  phone         String
+  email         String
+  first_name    String
+  last_name     String
+  profile_pic   String?
+  usertype      UserType
+  isApproved    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  dealerid      String
+  dealer        Dealers  @relation(fields: [dealerid], references: [dealer_id], onDelete: Cascade)
+}
+
+model Product {
+  product_id          String     @id @default(uuid())
+  product_title       String     @unique
+  product_sku         String?
+  product_type        String
+  product_description String
+  product_image       String[]
+  product_warranty    Int
+  product_quantity    Int
+  product_label       String
+  product_visibility  String
+  product_usps        String?
+  product_keywords    String[]
+  createdAt           DateTime   @default(now())
+  brand_id            String?
+  subcategory_id      String?
+  category_id         String?
+  product_price       Float
+  Discount            Discount[]
+  Orders              Order[]
+
+  category    Category?    @relation(fields: [category_id], references: [category_id], onDelete: Cascade)
+  subcategory Subcategory? @relation(fields: [subcategory_id], references: [subcategory_id], onDelete: Cascade)
+  Wishlist    Wishlist?
+}
+
+model Category {
+  category_id    String        @id @default(uuid())
+  category_name  String        @unique
+  category_image String
+  createdAt      DateTime      @default(now())
+  products       Product[]
+  subcategories  Subcategory[]
+}
+
+model Subcategory {
+  subcategory_id    String    @id @default(uuid())
+  subcategory_name  String    @unique
+  subcategory_image String
+  category_id       String
+  createdAt         DateTime  @default(now())
+  products          Product[]
+  category          Category  @relation(fields: [category_id], references: [category_id], onDelete: Cascade)
+}
+
+model Discount {
+  discount_id   String       @id @default(uuid())
+  discount_type DiscountType
+  isActive      Boolean      @default(true)
+  expiry_date   DateTime
+  amount        Float?
+  assignedAt    DateTime     @default(now())
+  coupon_code   String
+  dealer_id     String
+  isUsed        Boolean      @default(false)
+  percentage    Float?
+  product_id    String
+  dealer        Dealers      @relation(fields: [dealer_id], references: [dealer_id], onDelete: Cascade)
+  Product       Product      @relation(fields: [product_id], references: [product_id], onDelete: Cascade)
+
+  @@unique([dealer_id, product_id])
+}
+
+model Order {
+  order_id     String      @id @default(uuid())
+  quantity     Int
+  total_amount Float
+  status       OrderStatus @default(PENDING)
+  payment_mode PaymentMode
+  createdAt    DateTime    @default(now())
+  dealer_id    String?
+  product_id   String?
+  Ledger       Ledger?
+  Dealers      Dealers?    @relation(fields: [dealer_id], references: [dealer_id])
+  Product      Product?    @relation(fields: [product_id], references: [product_id])
+  Payment      Payment?
+}
+
+model Payment {
+  payment_id     String        @id @default(uuid())
+  transaction_id String?
+  amount         Float
+  status         PaymentStatus @default(PENDING)
+  createdAt      DateTime      @default(now())
+  order_id       String        @unique
+  Order          Order         @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
+}
+
+model Ledger {
+  ledger_id   String   @id @default(uuid())
+  total_due   Float
+  amount_paid Float
+  balance_due Float
+  due_date    DateTime
+  createdAt   DateTime @default(now())
+  dealer_id   String
+  order_id    String   @unique
+  dealer      Dealers  @relation(fields: [dealer_id], references: [dealer_id], onDelete: Cascade)
+  order       Order    @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
+}
+
+model Wishlist {
+  wishlist_id String  @id @default(uuid())
+  isMarked    Boolean @default(false)
+  product_id  String  @unique
+  dealer_id   String  @unique
+
+  product Product @relation(fields: [product_id], references: [product_id], onDelete: Cascade)
+  dealer  Dealers @relation(fields: [dealer_id], references: [dealer_id], onDelete: Cascade)
+}
+
+model RMA {
+  rma_id String @id @default(uuid())
+
+  first_name    String
+  last_name     String
+  business_name String
+  gstin         String
+  user_type     String
+  email         String    @unique
+  phone         String    @unique
+  status        RMAStatus @default(PENDING)
+
+  product_name   String
+  product_serial String   @unique
+  product_issue  String
+  product_images String[]
+
+  createdAt DateTime @default(now())
+}
+
+model Course {
+  course_id   String   @id @default(uuid())
+  title       String
+  content     Json
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  questions   CourseQuestion[]
+  enrollments CourseEnrollment[]
+}
+
+model CourseQuestion {
+  question_id String   @id @default(uuid())
+  course_id   String
+  question    String
+  options     String[]
+  answer      Int
+
+  course       Course         @relation(fields: [course_id], references: [course_id], onDelete: Cascade)
+  courseAnswer CourseAnswer[]
+}
+
+model CourseEnrollment {
+  enrollment_id String    @id @default(uuid())
+  course_id     String
+  user_id       String
+  user_type     UserType
+  enrolledAt    DateTime  @default(now())
+  isPassed      Boolean   @default(false)
+  passedAt      DateTime?
+  grade         Float?
+
+  course  Course         @relation(fields: [course_id], references: [course_id], onDelete: Cascade)
+  answers CourseAnswer[]
+
+  @@unique([course_id, user_id])
+}
+
+model CourseAnswer {
+  answer_id     String @id @default(uuid())
+  enrollment_id String
+  question_id   String
+  selected      Int
+
+  enrollment CourseEnrollment @relation(fields: [enrollment_id], references: [enrollment_id], onDelete: Cascade)
+  question   CourseQuestion   @relation(fields: [question_id], references: [question_id], onDelete: Cascade)
+
+  @@unique([enrollment_id, question_id])
+}
+
+model Admin {
+  admin_id    String       @id @default(uuid())
+  fullname    String
+  email       String       @unique
+  phone       String       @unique
+  password    String
+  profile_pic String       @default("https://static.thenounproject.com/png/5034901-200.png")
+  usertype    EmployeeType @default(ADMIN)
+
+  createdAt DateTime @default(now())
+}
+
+model Employee {
+  emp_id      String       @id @default(uuid())
+  fullname    String
+  email       String       @unique
+  phone       String
+  password    String
+  profile_pic String       @default("https://static.thenounproject.com/png/5034901-200.png")
+  isApproved  Boolean      @default(false)
+  usertype    EmployeeType @default(EMPLOYEE)
+
+  createdAt DateTime @default(now())
+}
+
+enum EmployeeType {
+  ADMIN
+  EMPLOYEE
+}
+
+enum UserType {
+  DEALER
+  TECHNICIAN
+  BACKOFFICE
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  DISPATCHED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMode {
+  ONLINE
+  CREDIT
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum RMAStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  RESOLVED
+}

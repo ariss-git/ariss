@@ -1,0 +1,20 @@
+{
+    "name": "my-repo",
+    "private": true,
+    "scripts": {
+        "format": "prettier --write .",
+        "lint": "eslint ."
+    },
+    "devDependencies": {
+        "eslint": "^8.0.0",
+        "prettier": "^2.0.0"
+    },
+    "dependencies": {
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.0",
+        "@mui/icons-material": "^7.0.1",
+        "@mui/material": "^7.0.1",
+        "clsx": "^2.1.1",
+        "tailwind-variants": "^1.0.0"
+    }
+}

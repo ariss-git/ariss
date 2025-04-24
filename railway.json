@@ -1,0 +1,8 @@
+{
+    "services": [
+        {
+            "name": "api-service",
+            "rootDirectory": "api"
+        }
+    ]
+}
