@@ -1,5 +1,5 @@
 // src/pages/SubCategory/AddSubCategory.tsx
-import { Clipboard, Loader2 } from 'lucide-react';
+import { ArrowLeft, Clipboard, Loader2 } from 'lucide-react';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Button } from '../../components/ui/button';
@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useToast } from '../../hooks/use-toast';
 import { addSubcategory, getCategoryNames } from '../../api/subCategoryAPI';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
+import { Link } from 'react-router-dom';
 
 type Category = {
     category_id: string;
@@ -143,8 +144,11 @@ const AddSubcategory = () => {
 
     return (
         <div className="flex flex-col lg:gap-y-6 justify-start w-full h-full lg:p-12 bg-transparent lg:px-4 lg:py-8">
-            <h1 className="font-work text-left text-6xl font-semibold capitalize dark:text-stone-100 text-stone-800">
-                Add a Subcategory:
+            <h1 className="font-work text-left text-[16px] font-semibold capitalize dark:text-stone-100 text-[#495057] flex items-center">
+                <Link to="/subcategories">
+                    <ArrowLeft className="w-4 h-4 mr-2 " />
+                </Link>
+                Add Subategory:
             </h1>
 
             <form
@@ -184,7 +188,7 @@ const AddSubcategory = () => {
                         type="text"
                         value={subcategoryName}
                         onChange={(e) => setSubcategoryName(e.target.value)}
-                        placeholder="300N Router"
+                        placeholder="Enter Subcategory"
                         className="rounded lg:w-[250px]"
                     />
                 </div>

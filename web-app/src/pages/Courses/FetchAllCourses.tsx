@@ -177,7 +177,7 @@ export default function FetchAllCourses() {
                                 onClick={() => navigate(`/courses/${course.course_id}`)}
                                 className="flex justify-between cursor-pointer"
                             >
-                                <h6>View</h6>
+                                <h6>View and Edit</h6>
                                 <Eye className="ml-2 h-4 w-4" />
                             </DropdownMenuItem>
                             {/* <DropdownMenuItem className="flex justify-between cursor-pointer">

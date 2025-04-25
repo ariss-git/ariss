@@ -1,11 +1,11 @@
 // src/pages/AddProduct.tsx
-import { Clipboard, Loader2 } from 'lucide-react';
+import { ArrowLeft, Clipboard, Loader2 } from 'lucide-react';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Button } from '../../components/ui/button';
 import { useEffect, useState } from 'react';
 import { useToast } from '../../hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { addProduct, getAllSubcategoriesForProduct } from '../../api/productAPI';
 import { getCategoryNames } from '../../api/subCategoryAPI';
@@ -200,16 +200,19 @@ const AddProduct = () => {
     };
 
     return (
-        <div className="p-4 md:p-8 lg:p-12 space-y-6 w-full font-work">
-            <h1 className="font-work text-left text-6xl font-semibold capitalize dark:text-stone-100 text-stone-800">
-                Add a Product:
+        <div className="p-4 md:p-8 lg:p-10 space-y-6 w-full font-work">
+            <h1 className="font-work text-left text-[16px] font-semibold capitalize dark:text-stone-100 text-[#495057] flex items-center lg:mb-8">
+                <Link to="/products">
+                    <ArrowLeft className="w-4 h-4 mr-2 " />
+                </Link>
+                Add Product:
             </h1>
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="flex justify-start items-center w-full lg:gap-x-52">
                     <InputField
                         label="Product Name"
-                        placeholder="TP-Link 802.1f"
+                        placeholder="Enter Product"
                         value={productName}
                         onChange={setProductName}
                     />
@@ -246,7 +249,7 @@ const AddProduct = () => {
                         placeholder="Enter product SKU (Optional)"
                     />
                     <div className="flex flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
-                        <Label>Product Type</Label>
+                        <Label>Product Visibility</Label>
                         <Select
                             value={productVisibility}
                             onValueChange={(value) => setProductVisibility(value)}

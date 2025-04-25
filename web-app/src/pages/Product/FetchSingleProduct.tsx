@@ -104,7 +104,7 @@ const FetchSingleProduct = () => {
                         </div>
                     </div>
                     <div className="flex justify-start items-start w-full flex-col lg:gap-y-10">
-                        {data!.product_image?.length > 0 && (
+                        {data && data.product_image?.length > 0 && (
                             <div className="w-full max-w-xs mt-6">
                                 <Label>Product Images</Label>
                                 <Carousel>

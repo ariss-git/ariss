@@ -7,11 +7,13 @@ import QuillEditor from '../../_components/QuillEditor';
 import { Button } from '../../components/ui/button';
 import { Label } from '../../components/ui/label';
 import { Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const AddCourse = () => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async () => {
         if (!title || !content) {
@@ -32,6 +34,7 @@ const AddCourse = () => {
                 description: `${title} has been created successfully. Make sure to publish it.`,
                 className: 'rounded font-work border bg-green-500',
             });
+            navigate('/courses');
         } catch (error) {
             console.error(error);
             toast({
@@ -60,7 +63,11 @@ const AddCourse = () => {
                     <Label className="text-sm font-medium">Course Content</Label>
                     <QuillEditor value={content} onChange={setContent} />
                 </div>
-                <Button className="text-center" onClick={handleSubmit} disabled={loading}>
+                <Button
+                    className="text-center rounded shadow min-w-32"
+                    onClick={handleSubmit}
+                    disabled={loading}
+                >
                     {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Course'}
                 </Button>
             </div>

@@ -1,10 +1,11 @@
-import { Clipboard, Loader2 } from 'lucide-react';
+import { ArrowLeft, Clipboard, Loader2 } from 'lucide-react';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Button } from '../../components/ui/button';
 import { useState } from 'react';
 import { useToast } from '../../hooks/use-toast';
 import { addCategoryAPI } from '../../api/categoryAPI';
+import { Link } from 'react-router-dom';
 
 const AddCategory = () => {
     const [name, setName] = useState<string>('');
@@ -110,8 +111,11 @@ const AddCategory = () => {
 
     return (
         <div className="flex flex-col lg:gap-y-6 justify-start w-full h-full lg:p-12 bg-transparent lg:px-4 lg:py-8">
-            <h1 className="font-work text-left text-6xl font-semibold capitalize dark:text-stone-100 text-stone-800">
-                Add a Category:
+            <h1 className="font-work text-left text-[16px] font-semibold capitalize dark:text-stone-100 text-[#495057] flex items-center">
+                <Link to="/categories">
+                    <ArrowLeft className="w-4 h-4 mr-2 " />
+                </Link>
+                Add Category:
             </h1>
             <form
                 onSubmit={handleSubmit}
@@ -125,7 +129,7 @@ const AddCategory = () => {
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        placeholder="Routers"
+                        placeholder="Enter Category"
                         className="rounded lg:w-[250px]"
                     />
                 </div>
