@@ -131,8 +131,8 @@ const FetchDealersOnDashboard = () => {
     return (
         <div className="space-y-4 p-6 font-work rounded">
             {/* Scrollable table */}
-
-            <div className="lg:min-w-[830px] w-full border rounded shadow">
+            <h1 className="text-stone-500">Active Dealers</h1>
+            <div className="lg:min-w-[700px] lg:max-w-[700px] w-full border rounded shadow">
                 <Table className="text-sm w-full">
                     <TableHeader>
                         {table.getHeaderGroups().map((group) => (

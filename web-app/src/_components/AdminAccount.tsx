@@ -15,12 +15,33 @@ import {
     DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
 import { useNavigate } from 'react-router-dom';
-import { adminLogout } from '../api/authURL';
+import { adminLogout, getAdminProfile } from '../api/authURL';
 import { toast } from '../hooks/use-toast';
+import { useEffect, useState } from 'react';
+
+interface AdminPfp {
+    fullname: string;
+    profile_pic: string;
+}
 
 export default function AdminAccount() {
     const logoutAdmin = useAdminAuthStore((state) => state.logoutAdmin);
+    const [adminData, setAdminData] = useState<AdminPfp | null>(null);
     const navigate = useNavigate();
+
+    const getProfile = async () => {
+        try {
+            const response = await getAdminProfile();
+            console.log(response.data);
+            setAdminData(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        getProfile();
+    }, []);
 
     const handleLogout = async () => {
         try {
@@ -40,13 +61,13 @@ export default function AdminAccount() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Avatar className="cursor-pointer">
-                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                <Avatar className="cursor-pointer border border-stone-600 shadow p-1">
+                    <AvatarImage src="/Ariss_Black_Logo.png" alt="@shadcn" />
                     <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56 font-work rounded-xl">
-                <DropdownMenuLabel>Admin Account</DropdownMenuLabel>
+                <DropdownMenuLabel>{adminData?.fullname}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <DropdownMenuItem className="cursor-pointer">
@@ -54,16 +75,8 @@ export default function AdminAccount() {
                         <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer">
-                        Billing
-                        <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer">
                         Settings
                         <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer">
-                        Keyboard shortcuts
-                        <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
@@ -74,9 +87,7 @@ export default function AdminAccount() {
                         <DropdownMenuPortal>
                             <DropdownMenuSubContent>
                                 <DropdownMenuItem className="cursor-pointer">Email</DropdownMenuItem>
-                                <DropdownMenuItem className="cursor-pointer">Message</DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem className="cursor-pointer">More...</DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer">Whatsapp</DropdownMenuItem>
                             </DropdownMenuSubContent>
                         </DropdownMenuPortal>
                     </DropdownMenuSub>
