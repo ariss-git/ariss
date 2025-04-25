@@ -9,17 +9,9 @@ import {
     ColumnDef,
     flexRender,
 } from '@tanstack/react-table';
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from '../../components/ui/dropdown-menu';
-import { Button } from '../../components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
-import { Input } from '../../components/ui/input';
 import { Checkbox } from '../../components/ui/checkbox';
-import { ChevronDown, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { toast } from '../../hooks/use-toast';
 
 interface ApprovedDealer {
@@ -138,41 +130,6 @@ const FetchDealersOnDashboard = () => {
 
     return (
         <div className="space-y-4 p-6 font-work rounded">
-            <div className="flex items-center justify-between">
-                <div className="flex justify-start items-start flex-col gap-y-4">
-                    <Input
-                        placeholder="Search dealers..."
-                        value={globalFilter}
-                        onChange={(e) => setGlobalFilter(e.target.value)}
-                        className="w-[250px] rounded"
-                    />
-                </div>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="rounded flex items-center gap-2">
-                            Filter <ChevronDown size={16} />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-[200px] rounded font-work">
-                        {table
-                            .getAllColumns()
-                            .filter((column) => column.getCanHide())
-                            .map((column) => (
-                                <DropdownMenuCheckboxItem
-                                    key={column.id}
-                                    className="capitalize"
-                                    checked={column.getIsVisible()}
-                                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                                >
-                                    {typeof column.columnDef.header === 'string'
-                                        ? column.columnDef.header
-                                        : column.id.replace(/_/g, ' ')}
-                                </DropdownMenuCheckboxItem>
-                            ))}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            </div>
-
             {/* Scrollable table */}
 
             <div className="lg:min-w-[830px] w-full border rounded shadow">
@@ -217,28 +174,6 @@ const FetchDealersOnDashboard = () => {
                         )}
                     </TableBody>
                 </Table>
-            </div>
-
-            {/* Pagination */}
-            <div className="flex justify-end space-x-2">
-                <Button
-                    variant="outline"
-                    className="shadow rounded"
-                    size="sm"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                >
-                    Previous
-                </Button>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className="shadow rounded"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                >
-                    Next
-                </Button>
             </div>
         </div>
     );

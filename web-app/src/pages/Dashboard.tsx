@@ -40,9 +40,9 @@ export default function Dashboard() {
                     <BarChartComponent />
                 </div>
             </div>
-            <Card className="flex justify-center items-center lg:p-10 overflow-x-hidden">
+            <div className="flex justify-center items-center lg:p-10 overflow-x-hidden">
                 <FetchDealersOnDashboard />
-            </Card>
+            </div>
             <div className="flex justify-center items-center w-full">
                 <h6 className="mt-10 text-sm text-stone-500 text-center cursor-none">
                     Powered by n<strong className="text-lg text-violet-500">X</strong>tribe &copy; 2025
