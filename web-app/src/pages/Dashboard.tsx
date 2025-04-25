@@ -30,13 +30,13 @@ export default function Dashboard() {
     return (
         <div className="flex justify-start items-start w-full lg:p-10 font-work flex-col lg:gap-y-10">
             <div className="flex justify-start items-center lg:gap-x-10">
-                <div className="max-w-[450px] max-h-[450px]">
+                <div className="max-w-[450px] max-h-[450px] min-w-[300px] min-h-[300px] duration-300 transition">
                     <GradientChartComponent />
                 </div>
-                <div className="max-w-[450px] max-h-[450px]">
+                <div className="max-w-[450px] max-h-[450px] min-w-[300px] min-h-[300px]">
                     <PiechartComponent />
                 </div>
-                <div className="max-w-[450px] max-h-[450px]">
+                <div className="max-w-[450px] max-h-[450px] min-w-[300px] min-h-[300px]">
                     <BarChartComponent />
                 </div>
             </div>
