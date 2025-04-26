@@ -37,7 +37,7 @@ export interface BackOfficeRegistrationData {
   dealerId: string;
 }
 
-const API_URL = 'https://ariss-app-production.up.railway.app/api';
+const API_URL = 'https://ariss-production.up.railway.app/api';
 
 export const sendOTP = async (phone: string, email: string) => {
   return axios.post(`${API_URL}/otp`, { phone, email });
