@@ -444,22 +444,20 @@ const FetchAllNotApprovedDealers = () => {
                     </div>
                 </div>
                 <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <div className="flex justify-center items-center gap-x-4">
-                            <Button
-                                variant="default"
-                                className="rounded"
-                                onClick={() => navigate('/customers/dealers/add')}
-                            >
-                                Add Customer <PlusCircle className="ml-2 h-4 w-4" />
+                    <div className="flex justify-center items-center gap-x-4">
+                        <Button
+                            variant="default"
+                            className="rounded"
+                            onClick={() => navigate('/customers/dealers/add')}
+                        >
+                            Add Customer <PlusCircle className="ml-2 h-4 w-4" />
+                        </Button>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" className="rounded flex items-center gap-2">
+                                Filter <ChevronDown size={16} />
                             </Button>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="outline" className="rounded flex items-center gap-2">
-                                    Filter <ChevronDown size={16} />
-                                </Button>
-                            </DropdownMenuTrigger>
-                        </div>
-                    </DropdownMenuTrigger>
+                        </DropdownMenuTrigger>
+                    </div>
                     <DropdownMenuContent align="end" className="w-[200px] rounded font-work">
                         {table
                             .getAllColumns()

@@ -32,6 +32,7 @@ import Login from './pages/Admin/Login';
 import Wishlists from './pages/Wishlist/Index';
 import AddBackOffice from './pages/Back-Office/AddBackOffice';
 import AddTechnician from './pages/Technician/AddTechnician';
+import AddDealer from './pages/Customer/ApprovedDealers/AddDealer';
 
 function App() {
     return (
@@ -66,6 +67,7 @@ function App() {
                         <Route path="customers/dealers/not-approved" element={<NotApprovedDealers />} />
                         <Route path="customers/dealers/view-edit/:dealer_id" element={<SingleDealer />} />
                         <Route path="customers/dealer/pfp/:dealer_id" element={<ProfilePic />} />
+                        <Route path="customers/dealers/add" element={<AddDealer />} />
 
                         <Route path="customers/technicians" element={<Technicians />} />
                         <Route path="customers/technicians/add" element={<AddTechnician />} />
