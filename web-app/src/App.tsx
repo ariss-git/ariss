@@ -33,6 +33,8 @@ import Wishlists from './pages/Wishlist/Index';
 import AddBackOffice from './pages/Back-Office/AddBackOffice';
 import AddTechnician from './pages/Technician/AddTechnician';
 import AddDealer from './pages/Customer/ApprovedDealers/AddDealer';
+import Orders from './pages/Order/Index';
+import Invoices from './pages/Invoice/Index';
 
 function App() {
     return (
@@ -86,6 +88,10 @@ function App() {
                         <Route path="courses" element={<Courses />} />
                         <Route path="courses/add" element={<AddCourse />} />
                         <Route path="courses/:course_id" element={<FetchSingleCourse />} />
+
+                        <Route path="orders" element={<Orders />} />
+
+                        <Route path="invoices" element={<Invoices />} />
 
                         <Route path="wishlists" element={<Wishlists />} />
                     </Route>
