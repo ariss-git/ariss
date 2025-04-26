@@ -31,6 +31,7 @@ import ProtectRoutes from './middleware/ProtectRoutes';
 import Login from './pages/Admin/Login';
 import Wishlists from './pages/Wishlist/Index';
 import AddBackOffice from './pages/Back-Office/AddBackOffice';
+import AddTechnician from './pages/Technician/AddTechnician';
 
 function App() {
     return (
@@ -67,6 +68,7 @@ function App() {
                         <Route path="customers/dealer/pfp/:dealer_id" element={<ProfilePic />} />
 
                         <Route path="customers/technicians" element={<Technicians />} />
+                        <Route path="customers/technicians/add" element={<AddTechnician />} />
 
                         <Route path="customers/backoffices" element={<BackOffices />} />
                         <Route path="customers/backoffices/add" element={<AddBackOffice />} />

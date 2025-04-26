@@ -409,7 +409,7 @@ const FetchAllTechnicians = () => {
                         <Button
                             variant="default"
                             className="rounded"
-                            onClick={() => navigate('/products/add')}
+                            onClick={() => navigate('/customers/technicians/add')}
                         >
                             Add Customer <PlusCircle className="ml-2 h-4 w-4" />
                         </Button>

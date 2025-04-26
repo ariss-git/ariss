@@ -1,13 +1,13 @@
 import { Label } from '../../components/ui/label';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
-import { addBackOffice, sendOTP } from '../../api/authURL';
+import { addTechnician, sendOTP } from '../../api/authURL';
 import { useState } from 'react';
 import { toast } from '../../hooks/use-toast';
 import { Loader2, ClipboardPaste } from 'lucide-react'; // Imported ClipboardPaste icon
 import { useNavigate } from 'react-router-dom';
 
-const AddBackOffice = () => {
+const AddTechnician = () => {
     const [loading, setLoading] = useState(false);
     const [dealerID, setDealerID] = useState('');
     const [mobile, setMobile] = useState('');
@@ -15,7 +15,7 @@ const AddBackOffice = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [otp, setOtp] = useState('');
-    const [usertype] = useState('BACKOFFICE');
+    const [usertype] = useState('TECHNICIAN');
     const [otpSent, setOtpSent] = useState(false);
     const navigate = useNavigate();
 
@@ -71,10 +71,10 @@ const AddBackOffice = () => {
 
         setLoading(true);
         try {
-            await addBackOffice(data);
+            await addTechnician(data);
             toast({
                 title: 'Registration Successful',
-                description: 'Back Office account created successfully',
+                description: 'Technician account created successfully',
                 className: 'border rounded shadow font-work bg-green-500',
             });
             setDealerID('');
@@ -84,7 +84,7 @@ const AddBackOffice = () => {
             setLastName('');
             setOtp('');
             setOtpSent(false);
-            navigate('/customers/backoffices');
+            navigate('/customers/techicians');
         } catch (error) {
             console.error(error);
             toast({
@@ -200,7 +200,7 @@ const AddBackOffice = () => {
                     <Label>Usertype</Label>
                     <Input
                         value={usertype}
-                        placeholder="BACKOFFICE"
+                        placeholder="Technician"
                         disabled
                         className="shadow rounded max-w-[280px] border"
                     />
@@ -243,4 +243,4 @@ const AddBackOffice = () => {
     );
 };
 
-export default AddBackOffice;
+export default AddTechnician;
