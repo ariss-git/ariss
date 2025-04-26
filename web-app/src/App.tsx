@@ -30,6 +30,7 @@ import FetchSingleCourse from './pages/Courses/FetchSingleCourse';
 import ProtectRoutes from './middleware/ProtectRoutes';
 import Login from './pages/Admin/Login';
 import Wishlists from './pages/Wishlist/Index';
+import AddBackOffice from './pages/Back-Office/AddBackOffice';
 
 function App() {
     return (
@@ -68,6 +69,7 @@ function App() {
                         <Route path="customers/technicians" element={<Technicians />} />
 
                         <Route path="customers/backoffices" element={<BackOffices />} />
+                        <Route path="customers/backoffices/add" element={<AddBackOffice />} />
 
                         <Route path="customers/distributors" element={<Distributors />} />
 
