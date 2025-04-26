@@ -9,7 +9,10 @@
       "output": "static",
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-router", "expo-font"],
+    "plugins": [
+      "expo-router",
+      "expo-font"
+    ],
     "experiments": {
       "typedRoutes": true,
       "tsconfigPaths": true
@@ -22,7 +25,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
@@ -39,6 +44,15 @@
       "statusBar": {
         "backgroundColor": "#000000",
         "barStyle": "light-content"
+      },
+      "package": "com.mujahid_patel.mobileapp"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "ca2edbfb-a45e-4ff9-8625-561ab25dee42"
       }
     }
   }

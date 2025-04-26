@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const API_URL = 'https://ariss-app-production.up.railway.app/api';
+export const API_URL = 'https://ariss-production.up.railway.app/api';
 
 // Get all categories
 export const fetchAllCategories = async () => {

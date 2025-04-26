@@ -13,6 +13,7 @@ import {
 
 import { getSingleProduct } from '~/api/productServices';
 import Header from '~/components/Header';
+import { useCartStore } from '~/store/cartStore'; // Import the Zustand store
 
 const Product = () => {
   const { product_id } = useLocalSearchParams();
@@ -21,6 +22,8 @@ const Product = () => {
   const screenWidth = Dimensions.get('window').width;
   const scrollViewRef = useRef<ScrollView>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  const addToCart = useCartStore((state) => state.addToCart); // Get addToCart from Zustand store
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -67,6 +70,18 @@ const Product = () => {
 
   console.log('Product Images:', product.product_image);
   console.log('Type of product_image:', typeof product.product_image);
+
+  // Handle adding product to the cart
+  const handleAddToCart = () => {
+    addToCart({
+      id: product.product_id,
+      name: product.product_title,
+      price: product.product_price,
+      quantity: 1,
+    });
+    // Optionally, navigate to the Cart screen
+    router.push('/cart');
+  };
 
   return (
     <View className="flex-1 bg-white">
@@ -164,7 +179,10 @@ const Product = () => {
         </View>
 
         {/* Add to Cart Button */}
-        <TouchableOpacity className="mx-4 my-6 flex flex-row items-center justify-center gap-x-4 rounded-lg bg-black py-4">
+        <TouchableOpacity
+          className="mx-4 my-6 flex flex-row items-center justify-center gap-x-4 rounded-lg bg-black py-4"
+          onPress={handleAddToCart} // Add the onPress handler
+        >
           <Text className="text-center text-xl font-bold uppercase text-white">Add to Cart</Text>
           <Feather name="shopping-cart" size={20} color="white" />
         </TouchableOpacity>
