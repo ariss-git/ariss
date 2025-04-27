@@ -10,6 +10,19 @@ import { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 
 import Header from '~/components/Header';
+import { ChevronDownIcon } from '~/components/ui/icon';
+import {
+  Select,
+  SelectBackdrop,
+  SelectContent,
+  SelectDragIndicator,
+  SelectDragIndicatorWrapper,
+  SelectIcon,
+  SelectInput,
+  SelectItem,
+  SelectPortal,
+  SelectTrigger,
+} from '~/components/ui/select';
 import { useAuthStore } from '~/store/auth';
 
 const AccountSettings = () => {
@@ -77,14 +90,41 @@ const AccountSettings = () => {
                 <Text className="font-worksans text-xl text-stone-800">Wishlist</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => router.push('/approvals')}
-              className="flex w-[50%] flex-row items-center justify-center rounded-lg border bg-transparent px-4 py-2">
-              <View className="flex flex-row items-center justify-center gap-x-2">
-                <AntDesign name="checkcircleo" size={20} color="gray" />
-                <Text className="font-worksans text-xl text-stone-800">Approvals</Text>
-              </View>
-            </TouchableOpacity>
+
+            <Select>
+              <SelectTrigger className="rounded-xl bg-transparent px-4 py-3">
+                <SelectInput
+                  placeholder="Approvals"
+                  className="h-[100px] w-[160px] rounded-sm px-4 py-2 text-center text-xl placeholder:text-black"
+                />
+                {/* <TouchableOpacity className="flex w-[50%] flex-row items-center justify-center rounded-lg border bg-transparent px-4 py-2">
+                  <View className="flex flex-row items-center justify-center gap-x-2">
+                    <AntDesign name="checkcircleo" size={20} color="gray" />
+                    <Text className="font-worksans text-xl text-stone-800">Approvals</Text>
+                  </View>
+                </TouchableOpacity> */}
+                <SelectIcon className="absolute right-2 text-white" as={ChevronDownIcon} />
+              </SelectTrigger>
+
+              <SelectPortal>
+                <SelectBackdrop />
+                <SelectContent className="z-50 border border-gray-600 bg-black">
+                  <SelectDragIndicatorWrapper>
+                    <SelectDragIndicator />
+                  </SelectDragIndicatorWrapper>
+                  <SelectItem
+                    label="Technician"
+                    onPress={() => router.push('/approvals/technicians')}
+                    value="T"
+                  />
+                  <SelectItem
+                    label="Back Office"
+                    onPress={() => router.push('/approvals/backoffices')}
+                    value="B"
+                  />
+                </SelectContent>
+              </SelectPortal>
+            </Select>
           </View>
 
           <TouchableOpacity
