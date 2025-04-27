@@ -8,6 +8,7 @@ import {
     getAllApprovedBackOfficesService,
     getAllDisapprovedBackOfficesService,
     disapproveBackOfficeService,
+    getAllBackofficesForDealer,
 } from '../services/back-office.service.js';
 import { Request, Response } from 'express';
 
@@ -121,5 +122,21 @@ export const disapproveBackOfficeController = async (req: Request, res: Response
         return res.status(200).json({ success: true, data: backOffice });
     } catch (error: any) {
         res.status(500).json({ success: false, message: error.message }); // Throw error with message
+    }
+};
+
+// Controller to get all backoffices for a dealer
+export const getAllBackofficesForDealerController = async (req: Request, res: Response) => {
+    try {
+        const { dealer_id } = req.params;
+
+        if (!dealer_id) {
+            res.status(404).json({ success: false, message: 'Dealer ID invalid' }); // Throw error with message
+        }
+
+        const backoffices = await getAllBackofficesForDealer(dealer_id);
+        return res.status(200).json({ success: true, total: backoffices.length, data: backoffices });
+    } catch (error: any) {
+        return res.status(400).json({ success: false, message: error.message }); // Throw error with message
     }
 };

@@ -8,6 +8,7 @@ import {
     getAllApprovedTechniciansService,
     getAllDisapprovedTechniciansService,
     disapproveTechnicianService,
+    getAllTechniciansForDealer,
 } from '../services/technician.service.js';
 import { Request, Response } from 'express';
 
@@ -121,5 +122,21 @@ export const disapproveTechnicianController = async (req: Request, res: Response
         return res.status(200).json({ success: true, data: technician });
     } catch (error: any) {
         res.status(500).json({ success: false, message: error.message }); // Throw error with message
+    }
+};
+
+// Controller to get all technicians for a dealer
+export const getAllTechniciansForDealerController = async (req: Request, res: Response) => {
+    try {
+        const { dealer_id } = req.params;
+
+        if (!dealer_id) {
+            res.status(404).json({ success: false, message: 'Dealer ID invalid' }); // Throw error with message
+        }
+
+        const technicians = await getAllTechniciansForDealer(dealer_id);
+        return res.status(200).json({ success: true, total: technicians.length, data: technicians });
+    } catch (error: any) {
+        return res.status(400).json({ success: false, message: error.message }); // Throw error with message
     }
 };

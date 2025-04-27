@@ -8,6 +8,7 @@ import {
     getAllApprovedBackOfficesController,
     getAllDisapprovedBackOfficesController,
     disapproveBackOfficeController,
+    getAllBackofficesForDealerController,
 } from '../controllers/back-office.controller.js';
 import { Router } from 'express';
 
@@ -19,5 +20,6 @@ backOfficeRoutes.put('/approve/:dealer_id/:backoffice_id', approveBackOfficeCont
 backOfficeRoutes.get('/approved/:dealer_id', getAllApprovedBackOfficesController);
 backOfficeRoutes.get('/disapproved/:dealer_id', getAllDisapprovedBackOfficesController);
 backOfficeRoutes.put('/disapprove/:dealer_id/:backoffice_id', disapproveBackOfficeController);
+backOfficeRoutes.get('/approvals/:dealer_id', getAllBackofficesForDealerController);
 
 export default backOfficeRoutes;

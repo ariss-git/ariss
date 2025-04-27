@@ -138,3 +138,12 @@ export const disapproveBackOfficeService = async (dealer_id: string, backoffice_
         },
     });
 };
+
+// Service to fetch all backoffices for a dealer
+export const getAllBackofficesForDealer = async (dealer_id: string) => {
+    return await prisma.backOffice.findMany({
+        where: {
+            dealerid: dealer_id,
+        },
+    });
+};
