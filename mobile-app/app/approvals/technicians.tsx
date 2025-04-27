@@ -1,11 +1,11 @@
 import { View, Text } from 'react-native';
 
-const ApprovalTechs = () => {
+const ApprovalTechnicians = () => {
   return (
     <View>
-      <Text>ApprovalTechs</Text>
+      <Text>ApprovalTechnicians</Text>
     </View>
   );
 };
 
-export default ApprovalTechs;
+export default ApprovalTechnicians;
