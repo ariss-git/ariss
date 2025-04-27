@@ -1,4 +1,4 @@
-import { TrendingUp } from 'lucide-react';
+import { PlusCircle, TrendingUp } from 'lucide-react';
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
@@ -6,6 +6,9 @@ import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '
 import PiechartComponent from '../_components/Dashboard/Piechart';
 import { BarChartComponent } from '../_components/Dashboard/Barchart';
 import FetchDealersOnDashboard from '../_components/Dashboard/DealerDashboard';
+import CurvyLinear from '../_components/Dashboard/CurvyLinear';
+import { Button } from '../components/ui/button';
+import { Link } from 'react-router-dom';
 const chartData = [
     { month: 'January', desktop: 186, mobile: 80 },
     { month: 'February', desktop: 305, mobile: 200 },
@@ -29,6 +32,14 @@ const chartConfig = {
 export default function Dashboard() {
     return (
         <div className="flex justify-start items-start w-full lg:p-10 font-work flex-col lg:gap-y-10">
+            <div className="flex justify-between items-center capitalize lg:text-lg w-full">
+                <h4>Welcome back, Mujahid Patel</h4>
+                <Link to="/products/add">
+                    <Button variant="default" className="rounded">
+                        Add Product <PlusCircle className="ml-2 h-4 w-4" />
+                    </Button>
+                </Link>
+            </div>
             <div className="flex justify-start items-center lg:gap-x-10">
                 <div className="max-w-[450px] max-h-[450px] min-w-[300px] min-h-[300px] duration-300 transition">
                     <GradientChartComponent />
@@ -40,8 +51,13 @@ export default function Dashboard() {
                     <BarChartComponent />
                 </div>
             </div>
-            <div className="flex justify-center items-center lg:p-10 overflow-x-hidden">
-                <FetchDealersOnDashboard />
+            <div className="flex justify-start items-center lg:gap-x-4">
+                <div className="max-w-[450px] max-h-[450px] min-w-[300px] min-h-[300px]">
+                    <CurvyLinear />
+                </div>
+                <div className="flex justify-center items-center overflow-x-hidden">
+                    <FetchDealersOnDashboard />
+                </div>
             </div>
             <div className="flex justify-center items-center w-full">
                 <h6 className="mt-10 text-sm text-stone-500 text-center cursor-none">

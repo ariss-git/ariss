@@ -1,10 +1,11 @@
-import { Loader2 } from 'lucide-react';
+import { ClipboardPaste, Loader2 } from 'lucide-react';
 import { fetchSingleDealer, updateDealer } from '../../api/customerAPI';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Label } from '../../components/ui/label';
 import { Input } from '../../components/ui/input';
 import { toast } from '../../hooks/use-toast';
+import { Button } from '../../components/ui/button';
 
 interface Address {
     adr: string;
@@ -116,7 +117,28 @@ const SingleDealer = () => {
 
                 <div className="flex flex-col gap-y-2">
                     <Label>Dealer ID</Label>
-                    <Input value={data.dealer_id} disabled className="rounded shadow lg:w-[320px]" />
+                    <div className="flex items-center gap-2">
+                        <Input value={data.dealer_id} disabled className="rounded shadow lg:w-[320px]" />
+                        <Button
+                            type="button"
+                            size="icon"
+                            variant="outline"
+                            className="shadow rounded"
+                            onClick={async () => {
+                                try {
+                                    await navigator.clipboard.writeText(data.dealer_id);
+                                    toast({
+                                        description: 'Dealer ID copied to clipboard',
+                                        className: 'font-work border rounded shadow',
+                                    });
+                                } catch (error) {
+                                    console.error('Failed to copy: ', error);
+                                }
+                            }}
+                        >
+                            <ClipboardPaste className="w-4 h-4 text-stone-600" />
+                        </Button>
+                    </div>
                 </div>
 
                 <div className="flex flex-col gap-y-2">

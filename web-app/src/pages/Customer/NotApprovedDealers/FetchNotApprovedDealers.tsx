@@ -26,7 +26,16 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Input } from '../../../components/ui/input';
 import { Checkbox } from '../../../components/ui/checkbox';
 import { Badge } from '../../../components/ui/badge';
-import { ChevronDown, Eye, Trash, MoreHorizontal, ShieldPlus, Loader2, UserRoundCheck } from 'lucide-react';
+import {
+    ChevronDown,
+    Eye,
+    Trash,
+    MoreHorizontal,
+    ShieldPlus,
+    Loader2,
+    UserRoundCheck,
+    PlusCircle,
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '../../../hooks/use-toast';
 import {
@@ -435,11 +444,20 @@ const FetchAllNotApprovedDealers = () => {
                     </div>
                 </div>
                 <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="rounded flex items-center gap-2">
-                            Filter <ChevronDown size={16} />
+                    <div className="flex justify-center items-center gap-x-4">
+                        <Button
+                            variant="default"
+                            className="rounded"
+                            onClick={() => navigate('/customers/dealers/add')}
+                        >
+                            Add Customer <PlusCircle className="ml-2 h-4 w-4" />
                         </Button>
-                    </DropdownMenuTrigger>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" className="rounded flex items-center gap-2">
+                                Filter <ChevronDown size={16} />
+                            </Button>
+                        </DropdownMenuTrigger>
+                    </div>
                     <DropdownMenuContent align="end" className="w-[200px] rounded font-work">
                         {table
                             .getAllColumns()

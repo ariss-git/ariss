@@ -30,6 +30,11 @@ import FetchSingleCourse from './pages/Courses/FetchSingleCourse';
 import ProtectRoutes from './middleware/ProtectRoutes';
 import Login from './pages/Admin/Login';
 import Wishlists from './pages/Wishlist/Index';
+import AddBackOffice from './pages/Back-Office/AddBackOffice';
+import AddTechnician from './pages/Technician/AddTechnician';
+import AddDealer from './pages/Customer/ApprovedDealers/AddDealer';
+import Orders from './pages/Order/Index';
+import Invoices from './pages/Invoice/Index';
 
 function App() {
     return (
@@ -64,10 +69,13 @@ function App() {
                         <Route path="customers/dealers/not-approved" element={<NotApprovedDealers />} />
                         <Route path="customers/dealers/view-edit/:dealer_id" element={<SingleDealer />} />
                         <Route path="customers/dealer/pfp/:dealer_id" element={<ProfilePic />} />
+                        <Route path="customers/dealers/add" element={<AddDealer />} />
 
                         <Route path="customers/technicians" element={<Technicians />} />
+                        <Route path="customers/technicians/add" element={<AddTechnician />} />
 
                         <Route path="customers/backoffices" element={<BackOffices />} />
+                        <Route path="customers/backoffices/add" element={<AddBackOffice />} />
 
                         <Route path="customers/distributors" element={<Distributors />} />
 
@@ -80,6 +88,10 @@ function App() {
                         <Route path="courses" element={<Courses />} />
                         <Route path="courses/add" element={<AddCourse />} />
                         <Route path="courses/:course_id" element={<FetchSingleCourse />} />
+
+                        <Route path="orders" element={<Orders />} />
+
+                        <Route path="invoices" element={<Invoices />} />
 
                         <Route path="wishlists" element={<Wishlists />} />
                     </Route>

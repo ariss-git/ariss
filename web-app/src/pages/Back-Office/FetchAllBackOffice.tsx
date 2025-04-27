@@ -418,7 +418,7 @@ const FetchAllBackOffices = () => {
                         <Button
                             variant="default"
                             className="rounded"
-                            onClick={() => navigate('/products/add')}
+                            onClick={() => navigate('/customers/backoffices/add')}
                         >
                             Add Customer <PlusCircle className="ml-2 h-4 w-4" />
                         </Button>

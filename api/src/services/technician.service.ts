@@ -138,3 +138,12 @@ export const disapproveTechnicianService = async (dealer_id: string, tech_id: st
         },
     });
 };
+
+// Service to fetch all technicians for a dealer
+export const getAllTechniciansForDealer = async (dealer_id: string) => {
+    return await prisma.technicians.findMany({
+        where: {
+            dealerid: dealer_id,
+        },
+    });
+};
