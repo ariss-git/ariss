@@ -35,7 +35,7 @@ const SubcategoryList: React.FC<SubcategoryListProps> = ({
             ]}>
             <Image
               source={{ uri: item.subcategory_image }}
-              resizeMode="cover"
+              resizeMode="contain"
               style={styles.image}
             />
             <Text style={styles.subcategoryName}>{item.subcategory_name}</Text>

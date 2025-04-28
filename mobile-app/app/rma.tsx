@@ -188,9 +188,6 @@ const RMA = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View className="w-full flex-1 bg-white">
-        <View className="w-full">
-          <Header />
-        </View>
         <ScrollView>
           <View className="flex w-full flex-row items-center justify-start">
             <TouchableOpacity className="px-4 py-10" onPress={() => router.back()}>

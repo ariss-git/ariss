@@ -68,10 +68,6 @@ const Discount = () => {
 
   return (
     <View className="flex-1 bg-gray-100">
-      <View className="w-full">
-        <Header />
-      </View>
-
       {loading ? (
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="black" />

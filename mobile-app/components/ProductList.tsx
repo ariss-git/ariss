@@ -89,19 +89,24 @@ const ProductGrid: React.FC<ProductGridProps> = ({ subcategory_id }) => {
             <View
               className="mb-6 rounded-lg border border-stone-200 bg-white p-4 shadow-sm"
               style={styles.shadowContainer}>
-              <Image
-                source={{ uri: item.product_image[0] }}
-                resizeMode="contain"
-                style={{ width: '100%', height: 300, borderRadius: 10 }}
-              />
-
-              <Text className="mt-2 text-start font-worksans text-xl font-semibold text-black">
-                {item.product_title}
-              </Text>
-
-              <Text className="mt-1 text-start font-worksans text-lg font-medium text-gray-700">
-                ₹ {item.product_price}
-              </Text>
+              <View className="flex w-full flex-row items-center justify-start gap-x-4">
+                <Image
+                  source={{ uri: item.product_image[0] }}
+                  resizeMode="contain"
+                  style={{ width: 90, height: 90, borderRadius: 10 }}
+                />
+                <View className="flex w-full flex-col gap-y-0">
+                  <Text className="text-start font-worksans text-xl font-semibold text-black">
+                    {item.product_title}
+                  </Text>
+                  <Text className="text-start font-worksans text-lg font-medium text-gray-700">
+                    ₹ {item.product_price}
+                  </Text>
+                  <Text className="text-start text-sm text-gray-500">
+                    Min. Order Quantity: {item.product_quantity}
+                  </Text>
+                </View>
+              </View>
 
               {/* Keywords Section */}
               <View className="mt-2 flex-row flex-wrap gap-2">
@@ -114,10 +119,6 @@ const ProductGrid: React.FC<ProductGridProps> = ({ subcategory_id }) => {
                   </View>
                 ))}
               </View>
-
-              <Text className="mt-6 text-start text-sm text-gray-500">
-                Min. Order Quantity: {item.product_quantity}
-              </Text>
             </View>
           </TouchableOpacity>
         )}
