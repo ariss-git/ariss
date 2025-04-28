@@ -18,7 +18,6 @@ import Toast from 'react-native-toast-message';
 
 import { dealerProfile } from '~/api/authServices';
 import { fileRMA } from '~/api/rmaServices';
-import Header from '~/components/Header';
 import { ChevronDownIcon } from '~/components/ui/icon';
 import {
   Select,
@@ -188,16 +187,16 @@ const RMA = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View className="w-full flex-1 bg-white">
+        <View className="flex w-full flex-row items-center justify-start bg-white">
+          <TouchableOpacity className="px-4 py-10" onPress={() => router.back()}>
+            <AntDesign name="arrowleft" size={24} color="black" />
+          </TouchableOpacity>
+          <Text className="my-6 font-worksans text-2xl font-bold uppercase text-black">
+            RMA Request Form
+          </Text>
+        </View>
         <ScrollView>
-          <View className="flex w-full flex-row items-center justify-start">
-            <TouchableOpacity className="px-4 py-10" onPress={() => router.back()}>
-              <AntDesign name="arrowleft" size={24} color="black" />
-            </TouchableOpacity>
-            <Text className="my-6 font-worksans text-2xl font-bold uppercase text-black">
-              RMA Request Form
-            </Text>
-          </View>
-          <View className="flex w-full flex-col items-start justify-start gap-y-8 px-6 py-4">
+          <View className="flex w-full flex-col items-start justify-start gap-y-8 bg-stone-100 px-6 py-4">
             <View className="my-4 w-full rounded-xl p-2">
               <Select
                 onValueChange={(val: string) => setUserType(val as UserType)}

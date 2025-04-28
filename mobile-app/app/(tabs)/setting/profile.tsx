@@ -9,20 +9,6 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 
-import Header from '~/components/Header';
-import { ChevronDownIcon } from '~/components/ui/icon';
-import {
-  Select,
-  SelectBackdrop,
-  SelectContent,
-  SelectDragIndicator,
-  SelectDragIndicatorWrapper,
-  SelectIcon,
-  SelectInput,
-  SelectItem,
-  SelectPortal,
-  SelectTrigger,
-} from '~/components/ui/select';
 import { useAuthStore } from '~/store/auth';
 
 const AccountSettings = () => {
@@ -47,109 +33,130 @@ const AccountSettings = () => {
 
   return (
     <View className="w-full flex-1 bg-white">
-      <View className="w-full">
-        <Header />
+      <View className="mt-2 flex w-full flex-row items-center justify-start">
+        <TouchableOpacity className="px-4 py-4" onPress={() => router.push('/')}>
+          <AntDesign name="arrowleft" size={24} color="black" />
+        </TouchableOpacity>
+        <Text className="my-6 font-worksans text-2xl font-bold uppercase text-black">
+          Account Manager
+        </Text>
       </View>
       <ScrollView>
-        <View className="flex flex-col items-start justify-start gap-y-6 bg-transparent px-4 py-8">
+        <View className="flex flex-col items-start justify-start gap-y-6 bg-stone-100 px-4 py-8">
           <TouchableOpacity
             onPress={() => router.push('/account/details')}
             className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
             <View className="flex flex-row items-center justify-center gap-x-6">
-              <FontAwesome name="user-o" size={24} color="lightgray" />
-              <Text className="font-worksans text-2xl text-gray-200">Your Details</Text>
+              <FontAwesome name="user-o" size={20} color="gray" />
+              <View className="flex flex-col">
+                <Text className="font-worksans text-xl text-gray-200">Your Details</Text>
+                <Text className="font-worksans text-xs text-stone-500">
+                  Tap to check your account details.
+                </Text>
+              </View>
             </View>
             <Entypo name="chevron-small-right" size={24} color="gray" />
           </TouchableOpacity>
-
-          <View className="flex w-full flex-row items-center justify-center gap-x-4 px-2">
-            <TouchableOpacity
-              onPress={() => router.push('/discount')}
-              className="flex w-[50%] flex-row items-center justify-center rounded-lg border bg-transparent px-4 py-2">
-              <View className="flex flex-row items-center justify-center gap-x-2">
-                <MaterialIcons name="discount" size={20} color="gray" />
-                <Text className="font-worksans text-xl text-stone-800">Discounts</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => router.push('/rma')}
-              className="flex w-[50%] flex-row items-center justify-center rounded-lg border bg-transparent px-4 py-2">
-              <View className="flex flex-row items-center justify-center gap-x-2">
-                <Fontisto name="arrow-swap" size={20} color="gray" />
-                <Text className="font-worksans text-xl text-stone-800">RMA</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          <View className="flex w-full flex-row items-center justify-center gap-x-4 px-2">
-            <TouchableOpacity
-              onPress={() => router.push('/wishlist')}
-              className="flex w-[50%] flex-row items-center justify-center rounded-lg border bg-transparent px-4 py-2">
-              <View className="flex flex-row items-center justify-center gap-x-2">
-                <AntDesign name="hearto" size={20} color="gray" />
-                <Text className="font-worksans text-xl text-stone-800">Wishlist</Text>
-              </View>
-            </TouchableOpacity>
-
-            <Select>
-              <SelectTrigger className="rounded-xl bg-transparent px-4 py-3">
-                <SelectInput
-                  placeholder="Approvals"
-                  className="h-[100px] w-[160px] rounded-sm px-4 py-2 text-center text-xl placeholder:text-black"
-                />
-                {/* <TouchableOpacity className="flex w-[50%] flex-row items-center justify-center rounded-lg border bg-transparent px-4 py-2">
-                  <View className="flex flex-row items-center justify-center gap-x-2">
-                    <AntDesign name="checkcircleo" size={20} color="gray" />
-                    <Text className="font-worksans text-xl text-stone-800">Approvals</Text>
-                  </View>
-                </TouchableOpacity> */}
-                <SelectIcon className="absolute right-2 text-white" as={ChevronDownIcon} />
-              </SelectTrigger>
-
-              <SelectPortal>
-                <SelectBackdrop />
-                <SelectContent className="z-50 border border-gray-600 bg-black">
-                  <SelectDragIndicatorWrapper>
-                    <SelectDragIndicator />
-                  </SelectDragIndicatorWrapper>
-                  <SelectItem
-                    label="Technician"
-                    onPress={() => router.push('/approvals/technicians')}
-                    value="T"
-                  />
-                  <SelectItem
-                    label="Back Office"
-                    onPress={() => router.push('/approvals/backoffices')}
-                    value="B"
-                  />
-                </SelectContent>
-              </SelectPortal>
-            </Select>
-          </View>
 
           <TouchableOpacity
-            onPress={() => router.push('/(tabs)/order')}
+            onPress={() => router.push('/discount')}
             className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
             <View className="flex flex-row items-center justify-center gap-x-6">
-              <FontAwesome5 name="box" size={24} color="lightgray" />
-              <Text className="font-worksans text-2xl text-gray-200">Your Orders</Text>
-            </View>
-            <Entypo name="chevron-small-right" size={24} color="gray" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => router.push('/(tabs)/learn')}
-            className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
-            <View className="flex flex-row items-center justify-center gap-x-6">
-              <AntDesign name="book" size={24} color="lightgray" />
-              <Text className="font-worksans text-2xl text-gray-200">E-Learning</Text>
+              <MaterialIcons name="discount" size={20} color="gray" />
+              <View className="flex flex-col">
+                <Text className="font-worksans text-xl text-gray-200">Discounts</Text>
+                <Text className="font-worksans text-xs text-stone-500">
+                  Tap to check your discount details.
+                </Text>
+              </View>
             </View>
             <Entypo name="chevron-small-right" size={24} color="gray" />
           </TouchableOpacity>
 
-          <TouchableOpacity className="flex w-full flex-row items-center justify-between rounded-lg bg-red-500/85 px-8 py-6">
+          <TouchableOpacity
+            onPress={() => router.push('/order')}
+            className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
+            <View className="flex flex-row items-center justify-center gap-x-6">
+              <FontAwesome5 name="box" size={20} color="gray" />
+              <View className="flex flex-col">
+                <Text className="font-worksans text-xl text-gray-200">Orders</Text>
+                <Text className="font-worksans text-xs text-stone-500">
+                  Tap to check your order details.
+                </Text>
+              </View>
+            </View>
+            <Entypo name="chevron-small-right" size={24} color="gray" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => router.push('/rma')}
+            className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
+            <View className="flex flex-row items-center justify-center gap-x-6">
+              <Fontisto name="arrow-swap" size={20} color="gray" />
+              <View className="flex flex-col">
+                <Text className="font-worksans text-xl text-gray-200">RMA</Text>
+                <Text className="font-worksans text-xs text-stone-500">
+                  Tap to return or repair an order.
+                </Text>
+              </View>
+            </View>
+            <Entypo name="chevron-small-right" size={24} color="gray" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => router.push('/approvals')}
+            className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
+            <View className="flex flex-row items-center justify-center gap-x-6">
+              <AntDesign name="checkcircleo" size={20} color="gray" />
+              <View className="flex flex-col">
+                <Text className="font-worksans text-xl text-gray-200">Approvals</Text>
+                <Text className="font-worksans text-xs text-stone-500">
+                  Tap to approve your back-office and technicians.
+                </Text>
+              </View>
+            </View>
+            <Entypo name="chevron-small-right" size={24} color="gray" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => router.push('/learn')}
+            className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
+            <View className="flex flex-row items-center justify-center gap-x-6">
+              <AntDesign name="book" size={20} color="gray" />
+              <View className="flex flex-col">
+                <Text className="font-worksans text-xl text-gray-200">E-Learning</Text>
+                <Text className="font-worksans text-xs text-stone-500">
+                  Tap to enroll and access a course.
+                </Text>
+              </View>
+            </View>
+            <Entypo name="chevron-small-right" size={24} color="gray" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => router.push('/wishlist')}
+            className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
+            <View className="flex flex-row items-center justify-center gap-x-6">
+              <AntDesign name="hearto" size={20} color="gray" />
+              <View className="flex flex-col">
+                <Text className="font-worksans text-xl text-gray-200">Wishlists</Text>
+                <Text className="font-worksans text-xs text-stone-500">
+                  Tap to check all wishlisted products.
+                </Text>
+              </View>
+            </View>
+            <Entypo name="chevron-small-right" size={24} color="gray" />
+          </TouchableOpacity>
+
+          <TouchableOpacity className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
             <View className="flex flex-row items-center justify-center gap-x-6">
               <Feather name="user-x" size={24} color="darkred" />
-              <Text className="font-worksans text-2xl text-red-800">Delete Account</Text>
+              <View className="flex flex-col">
+                <Text className="font-worksans text-xl text-red-700">Delete Account</Text>
+                <Text className="font-worksans text-xs text-stone-500">
+                  Tap to delete your account.
+                </Text>
+              </View>
             </View>
             <Entypo name="chevron-small-right" size={24} color="darkred" />
           </TouchableOpacity>
@@ -159,12 +166,12 @@ const AccountSettings = () => {
           <TouchableOpacity
             onPress={handleLogout}
             disabled={loading}
-            className="mt-2 flex w-full flex-row items-center justify-center rounded-lg bg-black/85 px-8 py-6">
+            className="mt-2 flex w-full flex-row items-center justify-center rounded-lg border bg-stone-800 px-8 py-6">
             <View className="flex flex-row items-center justify-center gap-x-6">
               {loading ? (
-                <ActivityIndicator size="small" color="white" />
+                <ActivityIndicator size="small" color="black" />
               ) : (
-                <Text className="text-2xl uppercase text-white">Logout</Text>
+                <Text className="text-xl font-extrabold uppercase text-stone-200">Logout</Text>
               )}
             </View>
           </TouchableOpacity>
