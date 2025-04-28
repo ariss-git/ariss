@@ -6,7 +6,7 @@ import { View, Text } from 'react-native';
 const Header = () => {
   const router = useRouter();
   return (
-    <View className="flex w-full flex-row items-center justify-between bg-black px-6 pb-4 pt-11">
+    <View className="flex w-full flex-row items-center justify-between bg-black px-6 pb-4 pt-6">
       <View className="flex flex-row items-center justify-center gap-x-4">
         <AntDesign
           name="user"
