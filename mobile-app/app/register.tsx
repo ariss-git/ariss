@@ -5,13 +5,13 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
+  ActivityIndicator,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-import { sendOTP } from '~/api/authServices';
+// import { sendOTP } from '~/api/authServices';
 import { useAuthStore } from '~/store/auth';
 
 const RegisterSendOTP = () => {
@@ -43,33 +43,47 @@ const RegisterSendOTP = () => {
         text1: 'Invalid Email Address',
         text2: 'Please enter a valid email.',
       });
-      return;
     }
 
+    setLoading(true);
     try {
-      setLoading(true);
-      const formattedPhone = `+91${phone}`;
-      const { data } = await sendOTP(formattedPhone, email);
-
-      if (data.success) {
-        router.push('/register/verify-otp');
-      } else {
-        Toast.show({
-          type: 'error',
-          text1: 'OTP Error',
-          text2: data.message || 'Failed to send OTP. Try again.',
-        });
-      }
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      router.push('/register/name');
     } catch (error) {
+      console.error(error);
       Toast.show({
         type: 'error',
         text1: 'Error Sending OTP',
         text2: 'Please try again later.',
       });
-      console.error(error);
     } finally {
       setLoading(false);
     }
+
+    // try {
+    //   setLoading(true);
+    //   const formattedPhone = `+91${phone}`;
+    //   const { data } = await sendOTP(formattedPhone, email);
+
+    //   if (data.success) {
+    //     router.push('/register/verify-otp');
+    //   } else {
+    //     Toast.show({
+    //       type: 'error',
+    //       text1: 'OTP Error',
+    //       text2: data.message || 'Failed to send OTP. Try again.',
+    //     });
+    //   }
+    // } catch (error) {
+    //   Toast.show({
+    //     type: 'error',
+    //     text1: 'Error Sending OTP',
+    //     text2: 'Please try again later.',
+    //   });
+    //   console.error(error);
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (
@@ -116,21 +130,12 @@ const RegisterSendOTP = () => {
         </View>
 
         <View>
-          <TouchableOpacity
-            className="rounded-xl bg-white p-4 shadow-md"
-            onPress={handleSendOTP}
-            disabled={loading}>
-            <Text className="text-center text-lg font-semibold text-black">
-              {loading ? (
-                <ActivityIndicator
-                  size="small"
-                  className="flex w-full items-center justify-center text-center"
-                  color="black"
-                />
-              ) : (
-                'Send OTP'
-              )}
-            </Text>
+          <TouchableOpacity className="rounded-xl bg-white p-4 shadow-md" onPress={handleSendOTP}>
+            {loading ? (
+              <ActivityIndicator size="small" color="black" />
+            ) : (
+              <Text className="text-center text-lg font-semibold text-black">Next</Text>
+            )}
           </TouchableOpacity>
 
           <Text className="mt-4 text-center font-worksans text-neutral-500">

@@ -13,13 +13,14 @@ import {
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 
+import { sendOTP } from '~/api/authServices';
 import { isValidGSTIN } from '~/api/gstService';
 import { Checkbox, CheckboxIcon, CheckboxIndicator } from '~/components/ui/checkbox';
 import { CheckIcon } from '~/components/ui/icon';
 import { useAuthStore } from '~/store/auth';
 
 export default function RegisterDealerShipping() {
-  const { gstin, setGstin, shippingAddress, setShippingAddress } = useAuthStore();
+  const { gstin, setGstin, shippingAddress, setShippingAddress, phone, email } = useAuthStore();
   const [localAddress, setLocalAddress] = useState(
     shippingAddress || { pncd: '', stcd: '', dst: '', loc: '', adr: '' }
   );
@@ -50,7 +51,7 @@ export default function RegisterDealerShipping() {
     setLoading(false);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!isValidGSTIN(gstin)) {
       Toast.show({
         type: 'error',
@@ -80,7 +81,48 @@ export default function RegisterDealerShipping() {
 
     setGstValidated(true);
     setShippingAddress(localAddress);
-    router.push('/register/finalize');
+
+    if (!phone || phone.length !== 10) {
+      Toast.show({
+        type: 'error',
+        text1: 'Phone Number required',
+        text2: 'Please enter a valid 10-digit phone number.',
+      });
+      return;
+    }
+
+    if (!email.trim()) {
+      Toast.show({
+        type: 'error',
+        text1: 'Invalid Email Address',
+        text2: 'Please enter a valid email.',
+      });
+    }
+
+    try {
+      setLoading(true);
+      const formattedPhone = `+91${phone}`;
+      const { data } = await sendOTP(formattedPhone, email);
+
+      if (data.success) {
+        router.push('/register/verify-otp');
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'OTP Error',
+          text2: data.message || 'Failed to send OTP. Try again.',
+        });
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error Sending OTP',
+        text2: 'Please try again later.',
+      });
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -182,7 +224,7 @@ export default function RegisterDealerShipping() {
         <TouchableOpacity
           onPress={handleNext}
           className="absolute bottom-10 left-6 right-6 rounded-lg bg-white p-4">
-          <Text className="text-center text-lg font-semibold uppercase text-black">Next</Text>
+          <Text className="text-center text-lg font-semibold uppercase text-black">Submit</Text>
         </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>

@@ -48,7 +48,7 @@ export default function VerifyOTP() {
       setEmail(email);
       setRegisterOtp(localOtp); // Store OTP in Zustand before proceeding
 
-      router.push('/register/name');
+      router.push('/register/finalize');
     } catch (error) {
       Toast.show({
         type: 'error',
