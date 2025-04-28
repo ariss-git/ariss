@@ -63,9 +63,7 @@ const Products = () => {
 
   return (
     <View className="w-full flex-1 bg-white">
-      <Header />
-
-      <ScrollView>
+      <ScrollView className="mt-8">
         <View className="w-full px-6">
           <View className="my-4 flex-row items-center rounded-xl border border-gray-500 p-4">
             <View className="mr-2 w-[30px]">

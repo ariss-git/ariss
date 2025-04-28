@@ -22,7 +22,7 @@ const Header = () => {
         ARISS
       </Text>
       <View className="flex flex-row items-center justify-center gap-x-4">
-        <Feather name="search" size={22} color="white" onPress={() => router.push('/search')} />
+        <Feather name="search" size={22} color="white" onPress={() => router.push('/products')} />
         <Feather name="heart" size={22} color="white" onPress={() => router.push('/wishlist')} />
       </View>
     </View>

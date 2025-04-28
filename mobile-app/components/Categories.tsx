@@ -63,12 +63,27 @@ const Categories = () => {
                   params: { category_id: item.category_id },
                 })
               }>
-              <View className="h-28 w-32 justify-center overflow-hidden rounded-lg border border-black/40 bg-white p-1 shadow">
-                <Image
-                  source={{ uri: item.category_image }}
-                  resizeMode="contain"
-                  className="h-full w-full"
-                />
+              {/* Shadow Container */}
+              <View
+                style={{
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 3.84,
+                  elevation: 5,
+                  borderRadius: 12, // same as inner View if you want
+                  backgroundColor: 'white', // background needs to be white
+                  marginBottom: 8,
+                }}
+                className="h-28 w-32 justify-center">
+                {/* Image Container */}
+                <View className="h-full w-full overflow-hidden rounded-lg border border-stone-300 bg-white p-1">
+                  <Image
+                    source={{ uri: item.category_image }}
+                    resizeMode="contain"
+                    className="h-full w-full"
+                  />
+                </View>
               </View>
 
               <Text className="mt-3 w-32 text-left font-worksans font-medium text-black/80">

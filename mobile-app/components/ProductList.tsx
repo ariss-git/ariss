@@ -1,7 +1,15 @@
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { View, Text, Image, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 
 import { getProductBySubcategory } from '~/api/productServices';
 
@@ -71,30 +79,37 @@ const ProductGrid: React.FC<ProductGridProps> = ({ subcategory_id }) => {
         keyExtractor={(item) => item.product_id}
         renderItem={({ item }) => (
           <TouchableOpacity
+            activeOpacity={0.8}
             onPress={() =>
               router.push({
                 pathname: '/products/[product_id]',
                 params: { product_id: item.product_id },
               })
             }>
-            <View className="mb-6 rounded-lg bg-gray-200 p-4">
+            <View
+              className="mb-6 rounded-lg border border-stone-200 bg-white p-4 shadow-sm"
+              style={styles.shadowContainer}>
               <Image
                 source={{ uri: item.product_image[0] }}
-                className="rounded-t-lg"
                 resizeMode="contain"
-                style={{ width: '100%', height: 300 }}
+                style={{ width: '100%', height: 300, borderRadius: 10 }}
               />
-              <Text className="mt-2 text-start font-worksans text-xl font-semibold">
+
+              <Text className="mt-2 text-start font-worksans text-xl font-semibold text-black">
                 {item.product_title}
               </Text>
-              <Text className="mt-1 text-start font-worksans text-lg font-medium">
+
+              <Text className="mt-1 text-start font-worksans text-lg font-medium text-gray-700">
                 ₹ {item.product_price}
               </Text>
 
               {/* Keywords Section */}
               <View className="mt-2 flex-row flex-wrap gap-2">
                 {item.product_keywords.map((keyword, index) => (
-                  <View key={index} className="rounded-md bg-orange-500 px-3 py-1 shadow-sm">
+                  <View
+                    key={index}
+                    className="rounded-md bg-orange-500 px-3 py-1"
+                    style={styles.tagShadow}>
                     <Text className="text-sm text-black">{keyword}</Text>
                   </View>
                 ))}
@@ -110,5 +125,22 @@ const ProductGrid: React.FC<ProductGridProps> = ({ subcategory_id }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  shadowContainer: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5, // Android shadow
+  },
+  tagShadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2, // slight shadow for tags
+  },
+});
 
 export default ProductGrid;

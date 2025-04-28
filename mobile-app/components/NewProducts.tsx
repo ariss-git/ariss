@@ -95,7 +95,14 @@ const styles = StyleSheet.create({
     width: '48%', // Ensures 2 columns
     marginBottom: 16,
     padding: 10,
-    alignItems: 'flex-start', // Align text to the start
+    alignItems: 'flex-start',
+    backgroundColor: 'white', // important for shadow to look nice
+    borderRadius: 12, // rounded corners
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5, // For Android shadow
   },
   productImage: {
     width: '100%',

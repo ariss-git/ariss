@@ -39,16 +39,6 @@ export default function Home() {
   }
 
   return (
-    // <View>
-    //   {/* Header */}
-    //   <Header />
-
-    //   {/* Body */}
-    //   <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }}>
-    //     <Carousel />
-    //     <Categories />
-    //   </ScrollView>
-    // </View>
     <View className="flex-1 bg-white">
       <Header />
       <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }}>

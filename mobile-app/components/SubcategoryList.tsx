@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, FlatList, Image } from 'react-native';
+import { Text, TouchableOpacity, FlatList, Image, View, StyleSheet } from 'react-native';
 
 interface Subcategory {
   subcategory_id: string;
@@ -21,25 +21,56 @@ const SubcategoryList: React.FC<SubcategoryListProps> = ({
     <FlatList
       data={subcategories}
       keyExtractor={(item) => item.subcategory_id}
+      contentContainerStyle={{ padding: 8 }}
       renderItem={({ item }) => (
         <TouchableOpacity
-          className={`border-b p-4 ${
-            item.subcategory_id === selectedSubcategory ? 'bg-gray-200' : ''
-          }`}
-          onPress={() => onSelect(item.subcategory_id)}>
-          <Image
-            source={{ uri: item.subcategory_image }}
-            className="rounded-t-lg"
-            resizeMode="cover"
-            style={{ width: 80, height: 80 }}
-          />
-          <Text className="mt-2 text-center font-worksans font-medium text-black">
-            {item.subcategory_name}
-          </Text>
+          activeOpacity={0.8}
+          onPress={() => onSelect(item.subcategory_id)}
+          style={{ marginBottom: 16 }}>
+          {/* Shadow Container */}
+          <View
+            style={[
+              styles.shadowContainer,
+              item.subcategory_id === selectedSubcategory && { backgroundColor: '#e5e7eb' }, // light gray for selected
+            ]}>
+            <Image
+              source={{ uri: item.subcategory_image }}
+              resizeMode="cover"
+              style={styles.image}
+            />
+            <Text style={styles.subcategoryName}>{item.subcategory_name}</Text>
+          </View>
         </TouchableOpacity>
       )}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  shadowContainer: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 8,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5, // for Android
+  },
+  image: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+  },
+  subcategoryName: {
+    marginTop: 8,
+    fontFamily: 'WorkSans',
+    fontSize: 14,
+    fontWeight: '500',
+    color: 'black',
+    textAlign: 'center',
+  },
+});
 
 export default SubcategoryList;

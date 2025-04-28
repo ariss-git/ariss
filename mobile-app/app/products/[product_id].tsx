@@ -2,6 +2,7 @@ import { AntDesign, Feather, FontAwesome5 } from '@expo/vector-icons';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import {
+  Share,
   View,
   Text,
   ActivityIndicator,
@@ -12,7 +13,6 @@ import {
 } from 'react-native';
 
 import { getSingleProduct } from '~/api/productServices';
-import Header from '~/components/Header';
 import { useCartStore } from '~/store/cartStore'; // Import the Zustand store
 
 const Product = () => {
@@ -45,6 +45,28 @@ const Product = () => {
 
     fetchProduct();
   }, [product_id]);
+
+  const handleShare = async () => {
+    try {
+      const result = await Share.share({
+        message: `Check out this product: ${product.product_title}\n\nPrice: ₹${product.product_price}\n\n`,
+        url: product.product_image[0], // Optional if you want to share the image URL
+        title: product.product_title,
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log('Shared with activity type:', result.activityType);
+        } else {
+          console.log('Shared');
+        }
+      } else if (result.action === Share.dismissedAction) {
+        console.log('Share dismissed');
+      }
+    } catch (error: any) {
+      console.error('Error sharing:', error.message);
+    }
+  };
 
   if (loading) {
     return (
@@ -85,11 +107,6 @@ const Product = () => {
 
   return (
     <View className="flex-1 bg-white">
-      {/* Header */}
-      <View className="w-full">
-        <Header />
-      </View>
-
       {/* Top Bar (Back Button + Title) */}
       <View className="flex-row items-center justify-between bg-black px-4 py-3">
         <TouchableOpacity onPress={() => router.back()}>
@@ -152,7 +169,7 @@ const Product = () => {
             </Text>
           </View>
           <View className="flex-row items-center gap-x-4">
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleShare}>
               <Feather name="share-2" size={24} color="black" />
             </TouchableOpacity>
             <TouchableOpacity>

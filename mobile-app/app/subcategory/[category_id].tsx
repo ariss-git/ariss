@@ -3,7 +3,6 @@ import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 
-import Header from '~/components/Header';
 import ProductGrid from '~/components/ProductList';
 import SubcategoryList from '~/components/SubcategoryList';
 
@@ -65,13 +64,9 @@ const SubcategoryScreen = () => {
 
   return (
     <View className="w-full flex-1 bg-white">
-      <View className="w-full">
-        <Header />
-      </View>
-
-      <View className="flex-1 flex-row bg-white">
+      <View className="my-6 flex-1 flex-row bg-white">
         {/* Left Panel - Subcategories */}
-        <View className="w-[25%] border-r border-black">
+        <View className="w-[25%] border-r border-stone-300">
           <SubcategoryList
             subcategories={subcategories}
             selectedSubcategory={selectedSubcategory}
