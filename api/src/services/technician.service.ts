@@ -67,6 +67,7 @@ export const isTechnicianSignedIn = async (tech_id: string) => {
             profile_pic: true,
             dealerid: true,
             createdAt: true,
+            usertype: true,
         },
     });
 };

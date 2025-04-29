@@ -67,6 +67,7 @@ export const isBackOfficeSignedIn = async (backoffice_id: string) => {
             profile_pic: true,
             dealerid: true,
             createdAt: true,
+            usertype: true,
         },
     });
 };

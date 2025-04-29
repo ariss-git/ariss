@@ -102,6 +102,7 @@ export const isDealerSignedIn = async (dealer_id: string) => {
             billing_address: true,
             shipping_address: true,
             createdAt: true,
+            usertype: true,
         },
     });
 };
