@@ -42,7 +42,7 @@ export default function TechnicianSubmit() {
         });
         router.replace('/login');
       } else {
-        Toast.show({ type: 'error', text1: 'Registration failed.' });
+        Toast.show({ type: 'error', text1: 'Registration failed, account already exists.' });
       }
     } catch (error) {
       Toast.show({ type: 'error', text1: 'Registration failed.' });
