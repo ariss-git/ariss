@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 import { getAllProducts } from '~/api/productServices';
-import Header from '~/components/Header';
+import { useAuthStore } from '~/store/auth';
 
 interface Product {
   product_id: string;
@@ -30,6 +30,7 @@ const Products = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>('');
   const router = useRouter();
+  const { userType } = useAuthStore();
 
   useEffect(() => {
     const fetchAllProducts = async () => {
@@ -82,7 +83,9 @@ const Products = () => {
         </View>
         <View className="flex flex-row flex-wrap justify-between gap-y-6 px-4 py-6">
           {filteredData.map((product) => (
-            <View key={product.product_id} className="w-[48%] rounded-lg bg-white p-3">
+            <View
+              key={product.product_id}
+              className="w-[48%] rounded-2xl border border-stone-200 bg-white p-3 shadow-md shadow-black/10">
               <Image
                 source={{ uri: product.product_image[0] }}
                 resizeMode="contain"
@@ -92,9 +95,16 @@ const Products = () => {
               <Text className="mt-1 font-worksans text-[15px] font-medium uppercase">
                 {product.product_title}
               </Text>
-              <Text className="mt-2 font-worksans text-[15px] font-semibold">
-                ₹ {product.product_price}
-              </Text>
+              {userType === 'DEALER' && (
+                <Text className="mt-2 font-worksans text-[15px] font-semibold">
+                  ₹ {product.product_price}
+                </Text>
+              )}
+              {userType === 'BACKOFFICE' && (
+                <Text className="mt-2 font-worksans text-[15px] font-semibold">
+                  ₹ {product.product_price}
+                </Text>
+              )}
 
               {/* <View className="mb-2 mt-2">
                 <Text className="font-worksans text-[12px] text-gray-500">

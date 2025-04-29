@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 import { getSingleProduct } from '~/api/productServices';
+import { useAuthStore } from '~/store/auth';
 import { useCartStore } from '~/store/cartStore'; // Import the Zustand store
 
 const Product = () => {
@@ -22,6 +23,7 @@ const Product = () => {
   const screenWidth = Dimensions.get('window').width;
   const scrollViewRef = useRef<ScrollView>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const { userType } = useAuthStore();
 
   const addToCart = useCartStore((state) => state.addToCart); // Get addToCart from Zustand store
 
@@ -164,9 +166,16 @@ const Product = () => {
             <Text className="mt-2 font-worksans text-gray-600">
               Available in stock: {String(product.product_quantity)}
             </Text>
-            <Text className="mt-2 font-worksans text-lg font-semibold text-black">
-              ₹ {String(product.product_price)}
-            </Text>
+            {userType === 'DEALER' && (
+              <Text className="mt-2 font-worksans text-lg font-semibold text-black">
+                ₹ {String(product.product_price)}
+              </Text>
+            )}
+            {userType === 'BACKOFFICE' && (
+              <Text className="mt-2 font-worksans text-lg font-semibold text-black">
+                ₹ {String(product.product_price)}
+              </Text>
+            )}
           </View>
           <View className="flex-row items-center gap-x-4">
             <TouchableOpacity onPress={handleShare}>
@@ -196,13 +205,24 @@ const Product = () => {
         </View>
 
         {/* Add to Cart Button */}
-        <TouchableOpacity
-          className="mx-4 my-6 flex flex-row items-center justify-center gap-x-4 rounded-lg bg-black py-4"
-          onPress={handleAddToCart} // Add the onPress handler
-        >
-          <Text className="text-center text-xl font-bold uppercase text-white">Add to Cart</Text>
-          <Feather name="shopping-cart" size={20} color="white" />
-        </TouchableOpacity>
+        {userType === 'DEALER' && (
+          <TouchableOpacity
+            className="mx-4 my-6 flex flex-row items-center justify-center gap-x-4 rounded-lg bg-black py-4"
+            onPress={handleAddToCart} // Add the onPress handler
+          >
+            <Text className="text-center text-xl font-bold uppercase text-white">Add to Cart</Text>
+            <Feather name="shopping-cart" size={20} color="white" />
+          </TouchableOpacity>
+        )}
+        {userType === 'BACKOFFICE' && (
+          <TouchableOpacity
+            className="mx-4 my-6 flex flex-row items-center justify-center gap-x-4 rounded-lg bg-black py-4"
+            onPress={handleAddToCart} // Add the onPress handler
+          >
+            <Text className="text-center text-xl font-bold uppercase text-white">Add to Cart</Text>
+            <Feather name="shopping-cart" size={20} color="white" />
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </View>
   );

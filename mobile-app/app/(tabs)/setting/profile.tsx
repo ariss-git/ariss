@@ -13,7 +13,7 @@ import { useAuthStore } from '~/store/auth';
 
 const AccountSettings = () => {
   const [loading, setLoading] = useState(false);
-  const { logout } = useAuthStore();
+  const { logout, userType } = useAuthStore();
 
   const handleLogout = async () => {
     setLoading(true);
@@ -38,7 +38,7 @@ const AccountSettings = () => {
           <AntDesign name="arrowleft" size={24} color="black" />
         </TouchableOpacity>
         <Text className="my-6 font-worksans text-2xl font-bold uppercase text-black">
-          Account Manager
+          Account Settings
         </Text>
       </View>
       <ScrollView>
@@ -58,35 +58,56 @@ const AccountSettings = () => {
             <Entypo name="chevron-small-right" size={24} color="gray" />
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => router.push('/discount')}
-            className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
-            <View className="flex flex-row items-center justify-center gap-x-6">
-              <MaterialIcons name="discount" size={20} color="gray" />
-              <View className="flex flex-col">
-                <Text className="font-worksans text-xl text-gray-200">Discounts</Text>
-                <Text className="font-worksans text-xs text-stone-500">
-                  Tap to check your discount details.
-                </Text>
+          {userType === 'DEALER' && (
+            <TouchableOpacity
+              onPress={() => router.push('/discount')}
+              className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
+              <View className="flex flex-row items-center justify-center gap-x-6">
+                <MaterialIcons name="discount" size={20} color="gray" />
+                <View className="flex flex-col">
+                  <Text className="font-worksans text-xl text-gray-200">Discounts</Text>
+                  <Text className="font-worksans text-xs text-stone-500">
+                    Tap to check your discount details.
+                  </Text>
+                </View>
               </View>
-            </View>
-            <Entypo name="chevron-small-right" size={24} color="gray" />
-          </TouchableOpacity>
+              <Entypo name="chevron-small-right" size={24} color="gray" />
+            </TouchableOpacity>
+          )}
 
-          <TouchableOpacity
-            onPress={() => router.push('/order')}
-            className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
-            <View className="flex flex-row items-center justify-center gap-x-6">
-              <FontAwesome5 name="box" size={20} color="gray" />
-              <View className="flex flex-col">
-                <Text className="font-worksans text-xl text-gray-200">Orders</Text>
-                <Text className="font-worksans text-xs text-stone-500">
-                  Tap to check your order details.
-                </Text>
+          {userType === 'BACKOFFICE' && (
+            <TouchableOpacity
+              onPress={() => router.push('/order')}
+              className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
+              <View className="flex flex-row items-center justify-center gap-x-6">
+                <FontAwesome5 name="box" size={20} color="gray" />
+                <View className="flex flex-col">
+                  <Text className="font-worksans text-xl text-gray-200">Orders</Text>
+                  <Text className="font-worksans text-xs text-stone-500">
+                    Tap to check your order details.
+                  </Text>
+                </View>
               </View>
-            </View>
-            <Entypo name="chevron-small-right" size={24} color="gray" />
-          </TouchableOpacity>
+              <Entypo name="chevron-small-right" size={24} color="gray" />
+            </TouchableOpacity>
+          )}
+
+          {userType === 'DEALER' && (
+            <TouchableOpacity
+              onPress={() => router.push('/order')}
+              className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
+              <View className="flex flex-row items-center justify-center gap-x-6">
+                <FontAwesome5 name="box" size={20} color="gray" />
+                <View className="flex flex-col">
+                  <Text className="font-worksans text-xl text-gray-200">Orders</Text>
+                  <Text className="font-worksans text-xs text-stone-500">
+                    Tap to check your order details.
+                  </Text>
+                </View>
+              </View>
+              <Entypo name="chevron-small-right" size={24} color="gray" />
+            </TouchableOpacity>
+          )}
 
           <TouchableOpacity
             onPress={() => router.push('/rma')}
@@ -103,20 +124,22 @@ const AccountSettings = () => {
             <Entypo name="chevron-small-right" size={24} color="gray" />
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => router.push('/approvals')}
-            className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
-            <View className="flex flex-row items-center justify-center gap-x-6">
-              <AntDesign name="checkcircleo" size={20} color="gray" />
-              <View className="flex flex-col">
-                <Text className="font-worksans text-xl text-gray-200">Approvals</Text>
-                <Text className="font-worksans text-xs text-stone-500">
-                  Tap to approve your back-office and technicians.
-                </Text>
+          {userType === 'DEALER' && (
+            <TouchableOpacity
+              onPress={() => router.push('/approvals')}
+              className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
+              <View className="flex flex-row items-center justify-center gap-x-6">
+                <AntDesign name="checkcircleo" size={20} color="gray" />
+                <View className="flex flex-col">
+                  <Text className="font-worksans text-xl text-gray-200">Approvals</Text>
+                  <Text className="font-worksans text-xs text-stone-500">
+                    Tap to approve your back-office and technicians.
+                  </Text>
+                </View>
               </View>
-            </View>
-            <Entypo name="chevron-small-right" size={24} color="gray" />
-          </TouchableOpacity>
+              <Entypo name="chevron-small-right" size={24} color="gray" />
+            </TouchableOpacity>
+          )}
 
           <TouchableOpacity
             onPress={() => router.push('/learn')}
@@ -133,20 +156,39 @@ const AccountSettings = () => {
             <Entypo name="chevron-small-right" size={24} color="gray" />
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => router.push('/wishlist')}
-            className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
-            <View className="flex flex-row items-center justify-center gap-x-6">
-              <AntDesign name="hearto" size={20} color="gray" />
-              <View className="flex flex-col">
-                <Text className="font-worksans text-xl text-gray-200">Wishlists</Text>
-                <Text className="font-worksans text-xs text-stone-500">
-                  Tap to check all wishlisted products.
-                </Text>
+          {userType === 'DEALER' && (
+            <TouchableOpacity
+              onPress={() => router.push('/wishlist')}
+              className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
+              <View className="flex flex-row items-center justify-center gap-x-6">
+                <AntDesign name="hearto" size={20} color="gray" />
+                <View className="flex flex-col">
+                  <Text className="font-worksans text-xl text-gray-200">Wishlists</Text>
+                  <Text className="font-worksans text-xs text-stone-500">
+                    Tap to check all wishlisted products.
+                  </Text>
+                </View>
               </View>
-            </View>
-            <Entypo name="chevron-small-right" size={24} color="gray" />
-          </TouchableOpacity>
+              <Entypo name="chevron-small-right" size={24} color="gray" />
+            </TouchableOpacity>
+          )}
+
+          {userType === 'BACKOFFICE' && (
+            <TouchableOpacity
+              onPress={() => router.push('/wishlist')}
+              className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
+              <View className="flex flex-row items-center justify-center gap-x-6">
+                <AntDesign name="hearto" size={20} color="gray" />
+                <View className="flex flex-col">
+                  <Text className="font-worksans text-xl text-gray-200">Wishlists</Text>
+                  <Text className="font-worksans text-xs text-stone-500">
+                    Tap to check all wishlisted products.
+                  </Text>
+                </View>
+              </View>
+              <Entypo name="chevron-small-right" size={24} color="gray" />
+            </TouchableOpacity>
+          )}
 
           <TouchableOpacity className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
             <View className="flex flex-row items-center justify-center gap-x-6">

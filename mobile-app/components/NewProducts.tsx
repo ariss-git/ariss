@@ -6,6 +6,7 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import { Button, ButtonText } from './ui/button';
 
 import { getAllProducts } from '~/api/productServices';
+import { useAuthStore } from '~/store/auth';
 
 type Product = {
   product_id: string;
@@ -18,6 +19,7 @@ type Product = {
 
 const NewProducts = () => {
   const [data, setData] = useState<Product[]>([]);
+  const { userType } = useAuthStore();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -61,7 +63,12 @@ const NewProducts = () => {
             />
             {/* Align text to start */}
             <Text style={styles.productTitle}>{prod.product_title}</Text>
-            <Text style={styles.productPrice}>₹ {prod.product_price}</Text>
+            {userType === 'DEALER' && (
+              <Text style={styles.productPrice}>₹ {prod.product_price}</Text>
+            )}
+            {userType === 'BACKOFFICE' && (
+              <Text style={styles.productPrice}>₹ {prod.product_price}</Text>
+            )}
             {/* <Text style={styles.productKeywords}>
               {prod.product_keywords[0]} {prod.product_keywords[1]}
             </Text> */}

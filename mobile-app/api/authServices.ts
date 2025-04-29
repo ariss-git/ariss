@@ -71,3 +71,21 @@ export const dealerProfile = async (token: string) => {
     withCredentials: true, // Allow credentials
   });
 };
+
+export const backOfficeProfile = async (token: string) => {
+  return axios.get('https://ariss-production.up.railway.app/api/back-office/check', {
+    headers: {
+      Authorization: `Bearer ${token}`, // Send token in Authorization header
+    },
+    withCredentials: true, // Allow credentials
+  });
+};
+
+export const technicianProfile = async (token: string) => {
+  return axios.get('https://ariss-production.up.railway.app/api/technician/check', {
+    headers: {
+      Authorization: `Bearer ${token}`, // Send token in Authorization header
+    },
+    withCredentials: true, // Allow credentials
+  });
+};

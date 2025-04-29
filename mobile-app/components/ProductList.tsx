@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import { getProductBySubcategory } from '~/api/productServices';
+import { useAuthStore } from '~/store/auth';
 
 // Define Product Interface
 interface Product {
@@ -31,6 +32,7 @@ interface ProductGridProps {
 const ProductGrid: React.FC<ProductGridProps> = ({ subcategory_id }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const { userType } = useAuthStore();
 
   useEffect(() => {
     if (!subcategory_id) return;
@@ -99,9 +101,16 @@ const ProductGrid: React.FC<ProductGridProps> = ({ subcategory_id }) => {
                   <Text className="text-start font-worksans text-xl font-semibold text-black">
                     {item.product_title}
                   </Text>
-                  <Text className="text-start font-worksans text-lg font-medium text-gray-700">
-                    ₹ {item.product_price}
-                  </Text>
+                  {userType === 'DEALER' && (
+                    <Text className="text-start font-worksans text-lg font-medium text-gray-700">
+                      ₹ {item.product_price}
+                    </Text>
+                  )}
+                  {userType === 'BACKOFFICE' && (
+                    <Text className="text-start font-worksans text-lg font-medium text-gray-700">
+                      ₹ {item.product_price}
+                    </Text>
+                  )}
                   <Text className="text-start text-sm text-gray-500">
                     Min. Order Quantity: {item.product_quantity}
                   </Text>

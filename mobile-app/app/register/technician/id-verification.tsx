@@ -5,10 +5,11 @@ import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Toast from 'react-native-toast-message';
 
+import { sendOTP } from '~/api/authServices';
 import { useAuthStore } from '~/store/auth';
 
 export default function DealerIdVerification() {
-  const { dealerId, setDealerId, userType } = useAuthStore();
+  const { dealerId, setDealerId, phone, email } = useAuthStore();
   const [loading, setLoading] = useState(false);
 
   const handleNext = async () => {
@@ -22,12 +23,30 @@ export default function DealerIdVerification() {
     }
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate API call delay
 
-      if (userType === 'TECHNICIAN') {
-        router.push('/register/technician/finalize');
-      } else {
-        router.push('/+not-found');
+      try {
+        setLoading(true);
+        const formattedPhone = `+91${phone}`;
+        const { data } = await sendOTP(formattedPhone, email);
+
+        if (data.success) {
+          router.push('/register/technician/verify-otp');
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'OTP Error',
+            text2: data.message || 'Failed to send OTP. Try again.',
+          });
+        }
+      } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Error Sending OTP',
+          text2: 'Please try again later.',
+        });
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
     } catch (error) {
       Toast.show({

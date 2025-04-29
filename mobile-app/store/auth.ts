@@ -43,6 +43,7 @@ interface AuthState {
   setBusinessName: (name: string) => void;
   setBillingAddress: (address: BillingAddress | null) => void;
   setDealerId: (dealerId: string) => void;
+  setProfileData: (profile: any) => void; // Add profile data setter
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -105,4 +106,18 @@ export const useAuthStore = create<AuthState>((set) => ({
   setBusinessName: (businessName) => set({ businessName }),
   setBillingAddress: (billingAddress) => set({ billingAddress }),
   setDealerId: (dealerId) => set({ dealerId }),
+
+  setProfileData: (profile) => {
+    set({
+      firstName: profile.first_name,
+      lastName: profile.last_name,
+      email: profile.email,
+      phone: profile.phone,
+      gstin: profile.gstin || '',
+      shippingAddress: profile.shipping_address || null,
+      businessName: profile.business_name || '',
+      billingAddress: profile.billing_address || null,
+      dealerId: profile.dealer_id || '',
+    });
+  },
 }));
