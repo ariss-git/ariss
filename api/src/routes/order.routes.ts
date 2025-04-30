@@ -27,11 +27,11 @@ orderRoutes.post('/', createOrderController);
 orderRoutes.post('/verify', verifyPaymentController);
 
 /**
- * @route PATCH /order/:order_id/status
+ * @route PUT /order/:order_id/status
  * @description Updates the status of an existing order (Pending → Processing → Dispatched → Delivered).
  * @access Public
  */
-orderRoutes.patch('/:order_id/status', updateOrderStatusController);
+orderRoutes.put('/:order_id/status', updateOrderStatusController);
 
 /**
  * @route DELETE /order/:order_id

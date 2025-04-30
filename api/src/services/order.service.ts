@@ -47,6 +47,8 @@ export const createOrderService = async (orderData: CreateOrderInput) => {
             payment_capture: true,
         });
 
+        console.log('Created Razorpay Order:', razorpayOrder);
+
         return { orders, razorpayOrder }; // Return orders and Razorpay order details
     } else {
         // If Credit Payment, create a ledger entry for tracking due payments
