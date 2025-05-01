@@ -70,6 +70,7 @@ export const isTechnicianSignedIn = async (tech_id: string) => {
             usertype: true,
             dealer: {
                 select: {
+                    business_name: true,
                     shipping_address: true,
                 },
             },

@@ -70,6 +70,7 @@ export const isBackOfficeSignedIn = async (backoffice_id: string) => {
             usertype: true,
             dealer: {
                 select: {
+                    business_name: true,
                     shipping_address: true,
                 },
             },

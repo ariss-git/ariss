@@ -305,6 +305,47 @@ const UserProfile = () => {
               </Text>
             </View>
           </View>
+          <View className="mt-4">
+            <Text className="font-worksans text-lg font-semibold text-black">Shipping Address</Text>
+          </View>
+          {userData.dealer.shipping_address ? (
+            <View className="space-y-4">
+              <View className="flex-row space-x-2">
+                <View className="m-1 flex-1 rounded-lg border border-gray-200 px-6 py-4">
+                  <Text className="text-gray-500">Pincode</Text>
+                  <Text className="font-worksans text-black">
+                    {userData.dealer.shipping_address.pncd || 'N/A'}
+                  </Text>
+                </View>
+                <View className="m-1 flex-1 rounded-lg border border-gray-200 px-6 py-4">
+                  <Text className="text-gray-500">State</Text>
+                  <Text className="font-worksans text-black">
+                    {userData.dealer.shipping_address.stcd || 'N/A'}
+                  </Text>
+                </View>
+              </View>
+              <View className="m-1 rounded-lg border border-gray-200 px-6 py-4">
+                <Text className="text-gray-500">City</Text>
+                <Text className="font-worksans text-black">
+                  {userData.dealer.shipping_address.dst || 'N/A'}
+                </Text>
+              </View>
+              <View className="m-1 rounded-lg border border-gray-200 px-6 py-4">
+                <Text className="text-gray-500">Local Area</Text>
+                <Text className="font-worksans text-black">
+                  {userData.dealer.shipping_address.loc || 'N/A'}
+                </Text>
+              </View>
+              <View className="m-1 rounded-lg border border-gray-200 px-6 py-4">
+                <Text className="text-gray-500">Full Address</Text>
+                <Text className="font-worksans text-black">
+                  {userData.dealer.shipping_address.adr || 'N/A'}
+                </Text>
+              </View>
+            </View>
+          ) : (
+            <Text className="text-gray-500">No shipping address available</Text>
+          )}
           <TouchableOpacity
             className="mt-8 w-full rounded-lg bg-black px-6 py-4"
             disabled={loading}
@@ -370,6 +411,47 @@ const UserProfile = () => {
               </Text>
             </View>
           </View>
+          <View className="mt-4">
+            <Text className="font-worksans text-lg font-semibold text-black">Shipping Address</Text>
+          </View>
+          {userData.dealer.shipping_address ? (
+            <View className="space-y-4">
+              <View className="flex-row space-x-2">
+                <View className="m-1 flex-1 rounded-lg border border-gray-200 px-6 py-4">
+                  <Text className="text-gray-500">Pincode</Text>
+                  <Text className="font-worksans text-black">
+                    {userData.dealer.shipping_address.pncd || 'N/A'}
+                  </Text>
+                </View>
+                <View className="m-1 flex-1 rounded-lg border border-gray-200 px-6 py-4">
+                  <Text className="text-gray-500">State</Text>
+                  <Text className="font-worksans text-black">
+                    {userData.dealer.shipping_address.stcd || 'N/A'}
+                  </Text>
+                </View>
+              </View>
+              <View className="m-1 rounded-lg border border-gray-200 px-6 py-4">
+                <Text className="text-gray-500">City</Text>
+                <Text className="font-worksans text-black">
+                  {userData.dealer.shipping_address.dst || 'N/A'}
+                </Text>
+              </View>
+              <View className="m-1 rounded-lg border border-gray-200 px-6 py-4">
+                <Text className="text-gray-500">Local Area</Text>
+                <Text className="font-worksans text-black">
+                  {userData.dealer.shipping_address.loc || 'N/A'}
+                </Text>
+              </View>
+              <View className="m-1 rounded-lg border border-gray-200 px-6 py-4">
+                <Text className="text-gray-500">Full Address</Text>
+                <Text className="font-worksans text-black">
+                  {userData.dealer.shipping_address.adr || 'N/A'}
+                </Text>
+              </View>
+            </View>
+          ) : (
+            <Text className="text-gray-500">No shipping address available</Text>
+          )}
           <TouchableOpacity
             className="mt-8 w-full rounded-lg bg-black px-6 py-4"
             disabled={loading}
