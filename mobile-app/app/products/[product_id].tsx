@@ -101,6 +101,7 @@ const Product = () => {
       id: product.product_id,
       name: product.product_title,
       price: product.product_price,
+      image: product.product_image,
       quantity: 1,
     });
     // Optionally, navigate to the Cart screen

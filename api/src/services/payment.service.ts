@@ -39,11 +39,11 @@ export const verifyPaymentService = async (paymentDetails: {
                 },
             });
 
-            // Update order status to "PAID" (ensure PAID is a valid value in your enum)
+            // Update order status to "PROCESSING" (ensure PROCESSING is a valid value in your enum)
             await prisma.order.update({
                 where: { order_id: razorpay_order_id }, // Assuming order_id is the unique identifier
                 data: {
-                    status: 'PROCESSING', // Ensure 'PAID' is a valid enum value for your order status
+                    status: 'PROCESSING', // Ensure 'PROCESSING' is a valid enum value for your order status
                 },
             });
 

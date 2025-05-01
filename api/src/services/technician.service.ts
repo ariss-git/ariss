@@ -68,6 +68,11 @@ export const isTechnicianSignedIn = async (tech_id: string) => {
             dealerid: true,
             createdAt: true,
             usertype: true,
+            dealer: {
+                select: {
+                    shipping_address: true,
+                },
+            },
         },
     });
 };

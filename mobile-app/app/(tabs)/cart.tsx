@@ -1,164 +1,107 @@
-// import { router } from 'expo-router';
-// import { useEffect, useState } from 'react';
-// import { View, Text, FlatList, Alert, TouchableOpacity } from 'react-native';
-// import RazorpayCheckout from 'react-native-razorpay';
+import { AntDesign, Feather } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { View, Text, TouchableOpacity, FlatList, Image } from 'react-native';
 
-// import { dealerProfile } from '~/api/authServices';
-// import { useAuthStore } from '~/store/auth';
-// import { useCartStore } from '~/store/cartStore';
-
-// export default function CartScreen() {
-//   const cartItems = useCartStore((state) => state.cartItems);
-//   const clearCart = useCartStore((state) => state.clearCart);
-//   const { firstName, lastName, email, phone } = useAuthStore();
-//   const [userData, setUserData] = useState<any>(null);
-//   const [total, setTotal] = useState(0);
-
-//   const fetchUserProfile = async () => {
-//     try {
-//       const { token } = useAuthStore.getState();
-
-//       if (!token) {
-//         throw new Error('No token found, please log in again.');
-//       }
-
-//       const response = await dealerProfile(token);
-//       console.log('Dealer ID: ', response?.data?.dealer_id);
-//       setUserData(response?.data);
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-
-//   useEffect(() => {
-//     fetchUserProfile();
-//   }, []);
-
-//   useEffect(() => {
-//     const sum = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-//     setTotal(sum);
-//   }, [cartItems]);
-
-//   const handlePayOnline = async () => {
-//     try {
-//       // Step 1: Create order API call to backend
-//       const payload = {
-//         dealer_id: userData?.dealer_id, // Ensure dealerId is passed correctly
-//         cart: cartItems.map((item) => ({ product_id: item.id, quantity: item.quantity })), // Check cart mapping
-//         payment_mode: 'ONLINE', // Ensure payment_mode is correctly set
-//         total_amount: total, // Check total amount
-//       };
-
-//       // Log the payload to check if all fields are correct
-//       console.log('Payload being sent to backend:', payload);
-
-//       const orderResponse = await fetch('https://ariss-production.up.railway.app/api/order', {
-//         method: 'POST',
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify(payload),
-//       });
-//       const data = await orderResponse.json();
-
-//       if (!data.success) {
-//         Alert.alert('Order Error', data.message || 'Failed to create order');
-//         return;
-//       }
-
-//       // Step 2: Open Razorpay checkout
-//       const { razorpayOrder } = data.order;
-
-//       const options = {
-//         description: 'Product purchase',
-//         currency: 'INR',
-//         key: 'rzp_test_KZdY3OFJg6ZWgg', // replace with your Razorpay key ID
-//         amount: data.order.total_amount * 100, // in paise
-//         name: `${firstName} ${lastName}`,
-//         order_id: razorpayOrder.id,
-//         prefill: { email, contact: phone, name: `${firstName} ${lastName}` },
-//         theme: { color: '#F37254' },
-//       };
-
-//       RazorpayCheckout.open(options)
-//         .then(async (paymentData) => {
-//           console.log('Payment success:', paymentData);
-
-//           // Step 3: Verify payment on backend after success
-//           const verifyPayload = {
-//             razorpay_order_id: paymentData.razorpay_order_id,
-//             razorpay_payment_id: paymentData.razorpay_payment_id,
-//             razorpay_signature: paymentData.razorpay_signature,
-//           };
-
-//           const verifyResponse = await fetch(
-//             'https://ariss-production.up.railway.app/api/order/verify',
-//             {
-//               method: 'POST',
-//               headers: { 'Content-Type': 'application/json' },
-//               body: JSON.stringify(verifyPayload),
-//             }
-//           );
-//           const verifyData = await verifyResponse.json();
-
-//           if (verifyData.success) {
-//             Alert.alert('Payment Successful');
-//             clearCart();
-//             router.push('/'); // Navigate after successful payment
-//           } else {
-//             Alert.alert('Payment Verification Failed');
-//           }
-//         })
-//         .catch((err) => {
-//           console.error('Payment failed:', err);
-//           Alert.alert('Payment Cancelled or Failed');
-//         });
-//     } catch (error) {
-//       console.error('Payment Error:', error);
-//       Alert.alert('Something went wrong');
-//     }
-//   };
-
-//   return (
-//     <View className="flex-1 bg-white p-4">
-//       <Text className="mb-4 text-2xl font-bold">Cart</Text>
-//       {cartItems.length === 0 ? (
-//         <Text>Your cart is empty.</Text>
-//       ) : (
-//         <>
-//           <FlatList
-//             data={cartItems}
-//             keyExtractor={(item) => item.id.toString()}
-//             renderItem={({ item }) => (
-//               <View className="mb-2 flex-row justify-between">
-//                 <Text>{item.name}</Text>
-//                 <Text>
-//                   ₹{item.price} x {item.quantity}
-//                 </Text>
-//               </View>
-//             )}
-//           />
-//           <Text className="mt-4 text-lg font-bold">Total: ₹{total}</Text>
-
-//           <TouchableOpacity className="mt-6 rounded-lg bg-black p-4" onPress={handlePayOnline}>
-//             <Text className="text-center font-bold text-white">Pay Online</Text>
-//           </TouchableOpacity>
-
-//           <TouchableOpacity
-//             className="mt-4 rounded-lg bg-gray-400 p-4"
-//             onPress={() => Alert.alert('Coming Soon')}>
-//             <Text className="text-center font-bold text-white">Pay with Ledger</Text>
-//           </TouchableOpacity>
-//         </>
-//       )}
-//     </View>
-//   );
-// }
-
-import { View, Text } from 'react-native';
+import { useCartStore } from '~/store/cartStore';
 
 const Cart = () => {
+  const cartItems = useCartStore((state) => state.cart);
+  const addToCart = useCartStore((state) => state.addToCart);
+  const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const router = useRouter();
+
+  const handleIncrease = (item: any) => {
+    addToCart({ ...item, quantity: 1 }); // will just push another same item
+  };
+
+  const handleDecrease = (item: any) => {
+    if (item.quantity > 1) {
+      const updatedCart = cartItems.map((cartItem) =>
+        cartItem.id === item.id ? { ...cartItem, quantity: cartItem.quantity - 1 } : cartItem
+      );
+      useCartStore.setState({ cart: updatedCart });
+    } else {
+      removeFromCart(item.id);
+    }
+  };
+
+  const handleCheckout = () => {
+    console.log('Checkout with Razorpay');
+  };
+
+  const handleCredit = () => {
+    console.log('Checkout with Credit');
+  };
+
+  const renderItem = ({ item }: { item: any }) => (
+    <View className="flex-row items-center justify-between border-b border-gray-200 px-4 py-3">
+      <Image
+        source={{ uri: item.image?.[0] ?? '' }} // safely get first image
+        className="h-20 w-20 rounded-lg bg-gray-200"
+        resizeMode="cover"
+      />
+
+      <View className="ml-4 flex-1">
+        <Text className="font-worksans text-lg font-bold text-black">{item.name}</Text>
+        <Text className="text-gray-600">₹ {item.price}</Text>
+        <View className="mt-2 flex-row items-center gap-x-4">
+          <TouchableOpacity onPress={() => handleDecrease(item)}>
+            <AntDesign name="minuscircleo" size={20} color="black" />
+          </TouchableOpacity>
+          <Text className="font-worksans text-black">{item.quantity}</Text>
+          <TouchableOpacity onPress={() => handleIncrease(item)}>
+            <AntDesign name="pluscircleo" size={20} color="black" />
+          </TouchableOpacity>
+        </View>
+      </View>
+      <TouchableOpacity onPress={() => removeFromCart(item.id)}>
+        <AntDesign name="delete" size={24} color="black" />
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
-    <View>
-      <Text>Cart</Text>
+    <View className="flex-1 bg-white">
+      {/* Top Bar */}
+      <View className="flex-row items-center justify-between bg-black px-4 py-3">
+        <TouchableOpacity onPress={() => router.push('/')}>
+          <AntDesign name="arrowleft" size={24} color="white" />
+        </TouchableOpacity>
+        <Text className="font-posterama text-lg font-semibold uppercase text-white">Your Cart</Text>
+        <View className="w-6" />
+      </View>
+
+      {/* Cart Items List */}
+      <FlatList
+        data={cartItems}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={{ paddingBottom: 100 }}
+      />
+
+      {/* Cart Summary */}
+      <View className="bg-gray-100 px-4 py-2">
+        <Text className="font-worksans text-lg font-bold text-black">
+          Total: ₹ {cartItems.reduce((total, item) => total + item.price * item.quantity, 0)}
+        </Text>
+      </View>
+
+      {/* Buttons */}
+      <View className="flex-row gap-x-4 px-4 py-4">
+        <TouchableOpacity
+          onPress={handleCheckout}
+          className="flex-1 items-center justify-center rounded-lg bg-black py-4">
+          <Text className="text-xl font-bold text-white">Checkout</Text>
+          <Feather name="credit-card" size={20} color="white" />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={handleCredit}
+          className="flex-1 items-center justify-center rounded-lg bg-gray-300 py-4">
+          <Text className="text-xl font-bold text-black">Credit</Text>
+          <Feather name="credit-card" size={20} color="black" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
