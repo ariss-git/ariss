@@ -24,8 +24,6 @@ model Dealers {
   createdAt        DateTime      @default(now())
   BackOffice       BackOffice[]
   Discount         Discount[]
-  Ledger           Ledger[]
-  Orders           Order[]
   Technicians      Technicians[]
   Wishlist         Wishlist?
 }
@@ -123,18 +121,37 @@ model Discount {
 }
 
 model Order {
-  order_id     String      @id @default(uuid())
-  quantity     Int
-  total_amount Float
-  status       OrderStatus @default(PENDING)
-  payment_mode PaymentMode
-  createdAt    DateTime    @default(now())
-  dealer_id    String?
-  product_id   String?
-  Ledger       Ledger?
-  Dealers      Dealers?    @relation(fields: [dealer_id], references: [dealer_id])
-  Product      Product?    @relation(fields: [product_id], references: [product_id])
-  Payment      Payment?
+  order_id         String      @id @default(uuid())
+  business_name    String
+  shipping_address String // Store address as string (can be JSON formatted in frontend)
+  username         String
+  usertype         String
+  product_id       String?
+  total_amount     Float
+  quantity         Int
+  coupon_code      String?
+  delivery_date    DateTime
+  createdAt        DateTime    @default(now())
+  status           OrderStatus @default(PENDING)
+  payment_mode     PaymentMode
+  product          Product?    @relation(fields: [product_id], references: [product_id])
+  Payment          Payment?
+  Ledger           Ledger?
+}
+
+model Ledger {
+  ledger_id        String   @id @default(uuid())
+  total_due        Float
+  amount_paid      Float
+  balance_due      Float
+  due_date         DateTime
+  createdAt        DateTime @default(now())
+  order_id         String   @unique
+  username         String // New field
+  usertype         String
+  business_name    String // New field
+  shipping_address String // Store address as string (can be JSON formatted in frontend)
+  order            Order    @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
 }
 
 model Payment {
@@ -145,19 +162,6 @@ model Payment {
   createdAt      DateTime      @default(now())
   order_id       String        @unique
   Order          Order         @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
-}
-
-model Ledger {
-  ledger_id   String   @id @default(uuid())
-  total_due   Float
-  amount_paid Float
-  balance_due Float
-  due_date    DateTime
-  createdAt   DateTime @default(now())
-  dealer_id   String
-  order_id    String   @unique
-  dealer      Dealers  @relation(fields: [dealer_id], references: [dealer_id], onDelete: Cascade)
-  order       Order    @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
 }
 
 model Wishlist {

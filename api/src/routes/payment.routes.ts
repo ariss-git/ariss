@@ -1,15 +1,9 @@
-// src/routes/payment.routes.ts
+import { Router } from 'express';
+import { verifyPaymentController } from '../controllers/payment.controller.js';
 
-import express from 'express';
-import { handleRazorpayWebhookController } from '../controllers/payment.controller.js';
+const paymentRoutes = Router();
 
-const paymentRoutes = express.Router();
-
-/**
- * @route POST /payment/webhook
- * @description Handles Razorpay webhook events to update payment and order status.
- * @access Public
- */
-paymentRoutes.post('/webhook', handleRazorpayWebhookController);
+// Route for verifying Razorpay payment
+paymentRoutes.post('/verify', verifyPaymentController);
 
 export default paymentRoutes;

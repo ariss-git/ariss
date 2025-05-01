@@ -1,54 +1,57 @@
-// src/services/payment.service.ts
+import Razorpay from 'razorpay';
+import { prisma } from '../db/prismaSingleton.js'; // Assuming prismaClient is your Prisma instance
+import { config } from '../config/index.js';
 
-import { prisma } from '../db/prismaSingleton.js';
-import { PaymentStatus, OrderStatus } from '@prisma/client';
+// Razorpay instance initialization
+const razorpay = new Razorpay({
+    key_id: config.razorpayKey, // Store your Razorpay Key ID in .env file
+    key_secret: config.razorpaySecret, // Store your Razorpay Key Secret in .env file
+});
 
-/**
- * Handles Razorpay webhook events to update payment and order status.
- *
- * @param {any} paymentData - The webhook payload received from Razorpay.
- * @returns {Promise<Object>} - Confirmation message after processing the webhook.
- */
-export const handleRazorpayWebhookService = async (paymentData: any) => {
-    console.log('Processing Razorpay Webhook:', paymentData);
+// Service to verify payment
+export const verifyPaymentService = async (paymentDetails: {
+    razorpay_order_id: string;
+    razorpay_payment_id: string;
+    razorpay_signature: string;
+}) => {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = paymentDetails;
 
-    // Extract payment details from the webhook payload
-    const { order_id, payment_id, status } = paymentData.payload.payment.entity;
+    // Step 1: Verify the payment signature
+    const body = razorpay_order_id + '|' + razorpay_payment_id;
+    const crypto = require('crypto');
+    const expectedSignature = crypto.createHmac('sha256', config.razorpaySecret).update(body).digest('hex');
 
-    if (!order_id || !payment_id || !status) {
-        throw new Error('Invalid payment data received');
+    if (expectedSignature !== razorpay_signature) {
+        throw new Error('Payment verification failed: Invalid signature');
     }
 
-    // Map Razorpay payment status to internal PaymentStatus enum
-    const paymentStatusMap: Record<string, PaymentStatus> = {
-        captured: PaymentStatus.COMPLETED,
-        failed: PaymentStatus.FAILED,
-    };
+    // Step 2: Fetch the payment details from Razorpay
+    try {
+        const payment = await razorpay.payments.fetch(razorpay_payment_id);
 
-    const paymentStatus = paymentStatusMap[status] || PaymentStatus.PENDING;
+        // Step 3: Update payment status in the database
+        if (payment.status === 'captured') {
+            // Update the payment status to COMPLETED in the database
+            await prisma.payment.update({
+                where: { payment_id: payment.id }, // Using payment_id or another unique identifier
+                data: {
+                    status: 'COMPLETED',
+                },
+            });
 
-    // Update the payment record in the database
-    await prisma.payment.update({
-        where: { order_id },
-        data: { transaction_id: payment_id, status: paymentStatus },
-    });
+            // Update order status to "PAID" (ensure PAID is a valid value in your enum)
+            await prisma.order.update({
+                where: { order_id: razorpay_order_id }, // Assuming order_id is the unique identifier
+                data: {
+                    status: 'PROCESSING', // Ensure 'PAID' is a valid enum value for your order status
+                },
+            });
 
-    // If the payment is successful, update the order status to PROCESSING
-    if (paymentStatus === PaymentStatus.COMPLETED) {
-        await prisma.order.update({
-            where: { order_id },
-            data: { status: OrderStatus.PROCESSING },
-        });
+            return { success: true, message: 'Payment verified successfully' };
+        } else {
+            throw new Error('Payment failed');
+        }
+    } catch (error: any) {
+        throw new Error(`Payment verification failed: ${error.message}`);
     }
-
-    // If payment fails, mark the order as CANCELLED
-    if (paymentStatus === PaymentStatus.FAILED) {
-        await prisma.order.update({
-            where: { order_id },
-            data: { status: OrderStatus.CANCELLED },
-        });
-    }
-
-    console.log('Payment and Order Status Updated Successfully');
-    return { success: true, message: 'Payment processed' };
 };
