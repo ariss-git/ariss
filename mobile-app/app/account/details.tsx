@@ -305,6 +305,16 @@ const UserProfile = () => {
               </Text>
             </View>
           </View>
+
+          <View className="mt-4">
+            <Text className="mt-2 font-worksans text-lg font-semibold text-black">Business</Text>
+            <View className="mt-2 w-full rounded-lg border border-gray-200 px-6 py-4">
+              <Text disabled className="font-worksans text-black">
+                {userData.dealer.business_name}
+              </Text>
+            </View>
+          </View>
+
           <View className="mt-4">
             <Text className="font-worksans text-lg font-semibold text-black">Shipping Address</Text>
           </View>
@@ -411,6 +421,16 @@ const UserProfile = () => {
               </Text>
             </View>
           </View>
+
+          <View className="mt-4">
+            <Text className="mt-2 font-worksans text-lg font-semibold text-black">Business</Text>
+            <View className="mt-2 w-full rounded-lg border border-gray-200 px-6 py-4">
+              <Text disabled className="font-worksans text-black">
+                {userData.dealer.business_name}
+              </Text>
+            </View>
+          </View>
+
           <View className="mt-4">
             <Text className="font-worksans text-lg font-semibold text-black">Shipping Address</Text>
           </View>
