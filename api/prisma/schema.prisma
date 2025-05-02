@@ -81,6 +81,7 @@ model Product {
   category    Category?    @relation(fields: [category_id], references: [category_id], onDelete: Cascade)
   subcategory Subcategory? @relation(fields: [subcategory_id], references: [subcategory_id], onDelete: Cascade)
   Wishlist    Wishlist?
+  Ledger      Ledger?
 }
 
 model Category {
@@ -136,21 +137,25 @@ model Order {
   payment_mode     PaymentMode
   product          Product?    @relation(fields: [product_id], references: [product_id])
   Payment          Payment?
-  Ledger           Ledger?
 }
 
 model Ledger {
-  ledger_id    String      @id @default(uuid())
-  total        Float
-  amount_paid  Float       @default(0)
-  balance_due  Float
-  due_date     DateTime?
-  payment_mode PaymentMode @default(CREDIT)
+  ledger_id        String      @id @default(uuid())
+  total            Float
+  amount_paid      Float       @default(0)
+  balance_due      Float
+  due_date         DateTime?
+  payment_mode     PaymentMode @default(CREDIT)
+  product          Product?    @relation(fields: [product_id], references: [product_id])
+  quantity         Int
+  business_name    String
+  shipping_address String // Store address as string (can be JSON formatted in frontend)
+  username         String
+  usertype         String
+
+  product_id String @unique
 
   createdAt DateTime @default(now())
-
-  order_id String @unique
-  order    Order  @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
 }
 
 model Payment {

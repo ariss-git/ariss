@@ -1,65 +1,160 @@
-// // src/controllers/ledger.controller.ts
+// src/controllers/ledger.controller.ts
 
-// import { Request, Response } from 'express';
-// import {
-//     createLedgerEntryService,
-//     updateLedgerPaymentService,
-//     getDealerLedgerService,
-// } from '../services/ledger.service.js';
+import * as ledgerServices from '../services/ledger.service.js';
+import { Request, Response } from 'express';
 
-// /**
-//  * Creates a ledger entry for a credit-based order.
-//  *
-//  * @param {Request} req - The HTTP request containing ledger entry details.
-//  * @param {Response} res - The HTTP response object.
-//  */
-// export const createLedgerEntryController = async (req: Request, res: Response) => {
-//     try {
-//         const { dealer_id, order_id, total_due } = req.body;
-//         if (!dealer_id || !order_id || !total_due) {
-//             return res.status(400).json({ success: false, message: 'Missing required fields' });
-//         }
+// Controller to create a ledger order
+export const createLedgerController = async (req: Request, res: Response) => {
+    const {
+        product_id,
+        total,
+        balance_due,
+        amount_paid,
+        quantity,
+        username,
+        usertype,
+        business_name,
+        shipping_address,
+    } = req.body;
 
-//         const ledger = await createLedgerEntryService({ dealer_id, order_id, total_due });
-//         return res.status(201).json({ success: true, ledger });
-//     } catch (error: any) {
-//         return res.status(500).json({ success: false, message: error.message });
-//     }
-// };
+    if (
+        !product_id ||
+        total ||
+        balance_due ||
+        amount_paid ||
+        quantity ||
+        username ||
+        usertype ||
+        business_name ||
+        shipping_address
+    ) {
+        return res.status(404).json({ success: false, message: 'Missing required fields' });
+    }
 
-// /**
-//  * Updates the ledger when a dealer makes a payment.
-//  *
-//  * @param {Request} req - The HTTP request containing dealer ID and payment amount.
-//  * @param {Response} res - The HTTP response object.
-//  */
-// export const updateLedgerPaymentController = async (req: Request, res: Response) => {
-//     try {
-//         const { dealer_id, amountPaid } = req.body;
+    try {
+        const ledger = await ledgerServices.createLedgerService(
+            product_id,
+            total,
+            balance_due,
+            amount_paid,
+            quantity,
+            username,
+            usertype,
+            business_name,
+            shipping_address
+        );
+        res.status(201).json({ success: true, data: ledger });
+    } catch (error: any) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
 
-//         if (!dealer_id || !amountPaid) {
-//             return res.status(400).json({ success: false, message: 'Missing required fields' });
-//         }
+// Controller to fetch all ledger orders
+export const fetchAllLedgerController = async (req: Request, res: Response) => {
+    try {
+        const ledger = await ledgerServices.fetchAllLedgerService();
+        return res.status(200).json({ success: true, data: ledger });
+    } catch (error: any) {
+        return res.status(400).json({ success: false, message: error.message });
+    }
+};
 
-//         const result = await updateLedgerPaymentService(dealer_id, amountPaid);
-//         return res.status(200).json(result);
-//     } catch (error: any) {
-//         return res.status(500).json({ success: false, message: error.message });
-//     }
-// };
+// Controller to fetch single ledger orders
+export const fetchSingleLedgerController = async (req: Request, res: Response) => {
+    const { ledger_id } = req.params;
 
-// /**
-//  * Retrieves ledger details for a specific dealer.
-//  *
-//  * @param {Request} req - The HTTP request containing the dealer ID.
-//  * @param {Response} res - The HTTP response object.
-//  */
-// export const getDealerLedgerController = async (req: Request, res: Response) => {
-//     try {
-//         const { dealer_id } = req.params;
-//         const result = await getDealerLedgerService(dealer_id);
-//         return res.status(200).json(result);
-//     } catch (error: any) {
-//         return res.status(500).json({ success: false, message: error.message });
-//     }
-// };
+    if (!ledger_id) {
+        return res
+            .status(404)
+            .json({ success: false, message: 'Ledger ID not found in params or is invalid' });
+    }
+
+    try {
+        const ledger = await ledgerServices.fetchSingleLedgerService(ledger_id);
+        return res.status(200).json({ success: true, data: ledger });
+    } catch (error: any) {
+        return res.status(400).json({ success: false, message: error.message });
+    }
+};
+
+// Controller to fetch single ledger orders for a user
+export const fetchUserLedgerController = async (req: Request, res: Response) => {
+    const { business_name } = req.params;
+
+    if (!business_name) {
+        return res
+            .status(404)
+            .json({ success: false, message: 'Ledger ID not found in params or is invalid' });
+    }
+
+    try {
+        const ledger = await ledgerServices.fetchUsersLedgerService(business_name);
+        return res.status(200).json({ success: true, data: ledger });
+    } catch (error: any) {
+        return res.status(400).json({ success: false, message: error.message });
+    }
+};
+
+// Controller to set due date of ledger orders
+export const setDueDateController = async (req: Request, res: Response) => {
+    const { ledger_id } = req.params;
+    const { due_date } = req.body;
+
+    if (!ledger_id) {
+        return res
+            .status(404)
+            .json({ success: false, message: 'Ledger ID not found in params or is invalid' });
+    }
+
+    if (!due_date) {
+        return res.status(404).json({ success: false, message: 'Due Date is not found or set' });
+    }
+
+    try {
+        const ledger = await ledgerServices.setDueDateService(ledger_id, due_date);
+        return res.status(200).json({ success: true, data: ledger });
+    } catch (error: any) {
+        return res.status(400).json({ success: false, message: error.message });
+    }
+};
+
+// Controller to update amount
+export const updateAmountsController = async (req: Request, res: Response) => {
+    const { ledger_id } = req.params;
+    const { amount_paid } = req.body;
+
+    if (!ledger_id) {
+        return res
+            .status(404)
+            .json({ success: false, message: 'Ledger ID not found in params or is invalid' });
+    }
+
+    if (!amount_paid) {
+        return res.status(404).json({ success: false, message: 'Missing required fields' });
+    }
+
+    try {
+        const ledger = await ledgerServices.updateAmountsService(ledger_id, amount_paid);
+        return res.status(200).json({ success: true, data: ledger });
+    } catch (error: any) {
+        return res.status(400).json({ success: false, message: error.message });
+    }
+};
+
+// Controller to cancel ledger order
+export const cancelLedgerOrderController = async (req: Request, res: Response) => {
+    const { ledger_id } = req.params;
+
+    if (!ledger_id) {
+        return res
+            .status(404)
+            .json({ success: false, message: 'Ledger ID not found in params or is invalid' });
+    }
+
+    try {
+        const ledger = await ledgerServices.cancelLedgerOrderService(ledger_id);
+        return res.status(200).json({ success: true, data: ledger, message: 'Order cancel' });
+    } catch (error: any) {
+        return res.status(400).json({ success: false, message: error.message });
+    }
+};

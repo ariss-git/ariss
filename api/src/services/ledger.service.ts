@@ -1,79 +1,214 @@
-// // src/services/ledger.service.ts
+import { prisma } from '../db/prismaSingleton.js';
 
-// import { prisma } from '../db/prismaSingleton.js';
+/**
+ * Creates a new ledger entry with credit payment details.
+ */
+export const createLedgerService = async (
+    product_id: string,
+    total: number,
+    balance_due: number,
+    amount_paid: number,
+    quantity: number,
+    username: string,
+    usertype: string,
+    business_name: string,
+    shipping_address: string
+) => {
+    return await prisma.ledger.create({
+        data: {
+            product_id,
+            total,
+            balance_due,
+            amount_paid,
+            quantity,
+            username,
+            usertype,
+            business_name,
+            shipping_address,
+        },
+    });
+};
 
-// interface LedgerEntryInput {
-//     dealer_id: string;
-//     order_id: string;
-//     total_due: number;
-// }
+/**
+ * Retrieves all ledger entries, including product details.
+ */
+export const fetchAllLedgerService = async () => {
+    return await prisma.ledger.findMany({
+        select: {
+            ledger_id: true,
+            total: true,
+            balance_due: true,
+            amount_paid: true,
+            quantity: true,
+            product_id: true,
+            username: true,
+            usertype: true,
+            business_name: true,
+            shipping_address: true,
+            due_date: true,
+            createdAt: true,
+            payment_mode: true,
+            product: {
+                select: {
+                    product_title: true,
+                    product_image: true,
+                },
+            },
+        },
+    });
+};
 
-// /**
-//  * Creates a ledger entry when a credit order is placed.
-//  *
-//  * @param {LedgerEntryInput} ledgerData - The credit order details including dealer ID, order ID, and due amount.
-//  * @returns {Promise<Object>} - The created ledger entry.
-//  */
-// export const createLedgerEntryService = async ({ dealer_id, order_id, total_due }: LedgerEntryInput) => {
-//     console.log('Creating Ledger Entry');
+/**
+ * Retrieves a single ledger entry by its ID, including product details.
+ */
+export const fetchSingleLedgerService = async (ledger_id: string) => {
+    const existingLedger = await prisma.ledger.findUnique({
+        where: {
+            ledger_id,
+        },
+    });
 
-//     return prisma.ledger.create({
-//         data: {
-//             dealer_id,
-//             order_id,
-//             total_due,
-//             amount_paid: 0,
-//             balance_due: total_due,
-//             due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // Due in 30 days
-//         },
-//     });
-// };
+    if (!existingLedger) {
+        throw new Error('Ledger does not exists');
+    }
 
-// /**
-//  * Updates a ledger entry when a dealer makes a payment.
-//  *
-//  * @param {string} dealer_id - The ID of the dealer making the payment.
-//  * @param {number} amountPaid - The amount being paid by the dealer.
-//  * @returns {Promise<Object>} - The updated ledger entry.
-//  */
-// export const updateLedgerPaymentService = async (dealer_id: string, amountPaid: number) => {
-//     console.log(`Updating Ledger for Dealer: ${dealer_id}`);
+    return await prisma.ledger.findUnique({
+        where: {
+            ledger_id,
+        },
+        select: {
+            ledger_id: true,
+            total: true,
+            balance_due: true,
+            amount_paid: true,
+            quantity: true,
+            product_id: true,
+            username: true,
+            usertype: true,
+            business_name: true,
+            shipping_address: true,
+            due_date: true,
+            createdAt: true,
+            payment_mode: true,
+            product: {
+                select: {
+                    product_title: true,
+                    product_image: true,
+                },
+            },
+        },
+    });
+};
 
-//     // Fetch existing ledger entry
-//     const ledger = await prisma.ledger.findFirst({ where: { dealer_id } });
+/**
+ * Retrieves the first ledger entry for a specific business name.
+ */
+export const fetchUsersLedgerService = async (business_name: string) => {
+    const existingLedger = await prisma.ledger.findFirst({
+        where: {
+            business_name,
+        },
+    });
 
-//     if (!ledger) {
-//         throw new Error('Ledger entry not found');
-//     }
+    if (!existingLedger) {
+        throw new Error('Ledger does not exists');
+    }
 
-//     const newAmountPaid = ledger.amount_paid + amountPaid;
-//     const newBalanceDue = ledger.total_due - newAmountPaid;
+    return await prisma.ledger.findFirst({
+        where: {
+            business_name,
+        },
+        select: {
+            ledger_id: true,
+            total: true,
+            balance_due: true,
+            amount_paid: true,
+            quantity: true,
+            product_id: true,
+            due_date: true,
+            createdAt: true,
+            payment_mode: true,
+            product: {
+                select: {
+                    product_title: true,
+                    product_image: true,
+                },
+            },
+        },
+    });
+};
 
-//     return prisma.ledger.update({
-//         where: { ledger_id: ledger.ledger_id },
-//         data: {
-//             amount_paid: newAmountPaid,
-//             balance_due: newBalanceDue,
-//         },
-//     });
-// };
+/**
+ * Updates the due date for a specific ledger entry.
+ */
+export const setDueDateService = async (ledger_id: string, due_date: string) => {
+    const existingLedger = await prisma.ledger.findUnique({
+        where: {
+            ledger_id,
+        },
+    });
 
-// /**
-//  * Retrieves the ledger details for a specific dealer.
-//  *
-//  * @param {string} dealer_id - The ID of the dealer whose ledger details are requested.
-//  * @returns {Promise<Object[]>} - List of ledger entries associated with the dealer.
-//  */
-// export const getDealerLedgerService = async (dealer_id: string) => {
-//     console.log(`Fetching Ledger for Dealer: ${dealer_id}`);
+    if (!existingLedger) {
+        throw new Error('Ledger does not exists');
+    }
 
-//     const ledger = await prisma.ledger.findMany({
-//         where: { dealer_id },
-//     });
+    return await prisma.ledger.update({
+        where: {
+            ledger_id,
+        },
+        data: {
+            due_date,
+        },
+    });
+};
 
-//     if (!ledger.length) {
-//         throw new Error('No ledger found for this dealer');
-//     }
+/**
+ * Updates the amount paid and recalculates balance due for a ledger entry.
+ */
+export const updateAmountsService = async (ledger_id: string, amount_paid: number) => {
+    const totalAmount = await prisma.ledger.findUnique({
+        where: {
+            ledger_id,
+        },
+        select: {
+            total: true,
+        },
+    });
 
-//     return ledger;
-// };
+    if (!totalAmount) {
+        throw new Error('Ledger does not exists');
+    }
+
+    const balanceDue = totalAmount.total - amount_paid;
+
+    return await prisma.ledger.update({
+        where: {
+            ledger_id,
+        },
+        data: {
+            amount_paid,
+            balance_due: balanceDue,
+        },
+    });
+};
+
+/**
+ * Cancels (deletes) a specific ledger entry.
+ */
+export const cancelLedgerOrderService = async (ledger_id: string) => {
+    const existingLedger = await prisma.ledger.findUnique({
+        where: {
+            ledger_id,
+        },
+    });
+
+    if (!existingLedger) {
+        throw new Error('Ledger does not exists');
+    }
+
+    return await prisma.ledger.delete({
+        where: {
+            ledger_id,
+        },
+    });
+};

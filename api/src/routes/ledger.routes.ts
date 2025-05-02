@@ -1,37 +1,34 @@
-// // src/routes/ledger.routes.ts
-
-import express, { Request, Response } from 'express';
-// import {
-//     createLedgerEntryController,
-//     updateLedgerPaymentController,
-//     getDealerLedgerController,
-// } from '../controllers/ledger.controller.js';
+import * as ledgerController from '../controllers/ledger.controller.js';
+import express from 'express';
 
 const ledgerRoutes = express.Router();
 
-// /**
-//  * @route POST /ledger
-//  * @description Creates a ledger entry for a credit-based order.
-//  * @access Public
-//  */
-// ledgerRoutes.post('/', createLedgerEntryController);
+// Route to create a new ledger order
+// Endpoint: POST /ledger/create
+ledgerRoutes.post('/create', ledgerController.createLedgerController);
 
-// /**
-//  * @route PATCH /ledger/payment
-//  * @description Updates a ledger entry when a dealer makes a payment.
-//  * @access Public
-//  */
-// ledgerRoutes.patch('/payment', updateLedgerPaymentController);
+// Route to fetch all ledger orders
+// Endpoint: GET /ledger/
+ledgerRoutes.get('/', ledgerController.fetchAllLedgerController);
 
-// /**
-//  * @route GET /ledger/:dealer_id
-//  * @description Retrieves ledger details for a specific dealer.
-//  * @access Public
-//  */
-// ledgerRoutes.get('/:dealer_id', getDealerLedgerController);
+// Route to fetch a single ledger order by ledger ID
+// Endpoint: GET /ledger/:ledger_id
+ledgerRoutes.get('/:ledger_id', ledgerController.fetchSingleLedgerController);
 
-ledgerRoutes.get('/', (_req: Request, res: Response) => {
-    res.send('Hi Ledger');
-});
+// Route to fetch a user's ledger order(s) by business name
+// Endpoint: GET /ledger/user/:business_name
+ledgerRoutes.get('/user/:business_name', ledgerController.fetchUserLedgerController);
+
+// Route to update the due date of a ledger order
+// Endpoint: PUT /ledger/date/:ledger_id
+ledgerRoutes.put('/date/:ledger_id', ledgerController.setDueDateController);
+
+// Route to update the amount paid and balance due
+// Endpoint: PUT /ledger/amount/:ledger_id
+ledgerRoutes.put('/amount/:ledger_id', ledgerController.updateAmountsController);
+
+// Route to cancel (delete) a ledger order by ID
+// Endpoint: DELETE /ledger/:ledger_id
+ledgerRoutes.delete('/:ledger_id', ledgerController.cancelLedgerOrderController);
 
 export default ledgerRoutes;
