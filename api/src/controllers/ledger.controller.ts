@@ -19,16 +19,16 @@ export const createLedgerController = async (req: Request, res: Response) => {
 
     if (
         !product_id ||
-        total ||
-        balance_due ||
-        quantity ||
-        user_id ||
-        username ||
-        usertype ||
-        business_name ||
-        shipping_address
+        total === undefined ||
+        balance_due === undefined ||
+        quantity === undefined ||
+        !user_id ||
+        !username ||
+        !usertype ||
+        !business_name ||
+        !shipping_address
     ) {
-        return res.status(404).json({ success: false, message: 'Missing required fields' });
+        return res.status(400).json({ success: false, message: 'Missing required fields' });
     }
 
     try {
