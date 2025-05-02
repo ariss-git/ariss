@@ -5,23 +5,13 @@ import { Request, Response } from 'express';
 
 // Controller to create a ledger order
 export const createLedgerController = async (req: Request, res: Response) => {
-    const {
-        product_id,
-        total,
-        balance_due,
-        amount_paid,
-        quantity,
-        username,
-        usertype,
-        business_name,
-        shipping_address,
-    } = req.body;
+    const { product_id, total, balance_due, quantity, username, usertype, business_name, shipping_address } =
+        req.body;
 
     if (
         !product_id ||
         total ||
         balance_due ||
-        amount_paid ||
         quantity ||
         username ||
         usertype ||
@@ -36,7 +26,6 @@ export const createLedgerController = async (req: Request, res: Response) => {
             product_id,
             total,
             balance_due,
-            amount_paid,
             quantity,
             username,
             usertype,
