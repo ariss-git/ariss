@@ -15,9 +15,9 @@ ledgerRoutes.get('/', ledgerController.fetchAllLedgerController);
 // Endpoint: GET /ledger/:ledger_id
 ledgerRoutes.get('/:ledger_id', ledgerController.fetchSingleLedgerController);
 
-// Route to fetch a user's ledger order(s) by business name
+// Route to fetch a user's ledger order(s) by user id
 // Endpoint: GET /ledger/user/:business_name
-ledgerRoutes.get('/user/:business_name', ledgerController.fetchUserLedgerController);
+ledgerRoutes.get('/user/:user_id', ledgerController.fetchUserLedgerController);
 
 // Route to update the due date of a ledger order
 // Endpoint: PUT /ledger/date/:ledger_id

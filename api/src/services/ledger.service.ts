@@ -8,6 +8,7 @@ export const createLedgerService = async (
     total: number,
     balance_due: number,
     quantity: number,
+    user_id: string,
     username: string,
     usertype: string,
     business_name: string,
@@ -19,6 +20,7 @@ export const createLedgerService = async (
             total,
             balance_due,
             quantity,
+            user_id,
             username,
             usertype,
             business_name,
@@ -39,6 +41,7 @@ export const fetchAllLedgerService = async () => {
             amount_paid: true,
             quantity: true,
             product_id: true,
+            user_id: true,
             username: true,
             usertype: true,
             business_name: true,
@@ -81,6 +84,7 @@ export const fetchSingleLedgerService = async (ledger_id: string) => {
             amount_paid: true,
             quantity: true,
             product_id: true,
+            user_id: true,
             username: true,
             usertype: true,
             business_name: true,
@@ -101,10 +105,10 @@ export const fetchSingleLedgerService = async (ledger_id: string) => {
 /**
  * Retrieves the first ledger entry for a specific business name.
  */
-export const fetchUsersLedgerService = async (business_name: string) => {
+export const fetchUsersLedgerService = async (user_id: string) => {
     const existingLedger = await prisma.ledger.findFirst({
         where: {
-            business_name,
+            user_id,
         },
     });
 
@@ -114,7 +118,7 @@ export const fetchUsersLedgerService = async (business_name: string) => {
 
     return await prisma.ledger.findFirst({
         where: {
-            business_name,
+            user_id,
         },
         select: {
             ledger_id: true,

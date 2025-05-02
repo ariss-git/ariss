@@ -5,14 +5,24 @@ import { Request, Response } from 'express';
 
 // Controller to create a ledger order
 export const createLedgerController = async (req: Request, res: Response) => {
-    const { product_id, total, balance_due, quantity, username, usertype, business_name, shipping_address } =
-        req.body;
+    const {
+        product_id,
+        total,
+        balance_due,
+        quantity,
+        user_id,
+        username,
+        usertype,
+        business_name,
+        shipping_address,
+    } = req.body;
 
     if (
         !product_id ||
         total ||
         balance_due ||
         quantity ||
+        user_id ||
         username ||
         usertype ||
         business_name ||
@@ -27,6 +37,7 @@ export const createLedgerController = async (req: Request, res: Response) => {
             total,
             balance_due,
             quantity,
+            user_id,
             username,
             usertype,
             business_name,
@@ -68,16 +79,16 @@ export const fetchSingleLedgerController = async (req: Request, res: Response) =
 
 // Controller to fetch single ledger orders for a user
 export const fetchUserLedgerController = async (req: Request, res: Response) => {
-    const { business_name } = req.params;
+    const { user_id } = req.params;
 
-    if (!business_name) {
+    if (!user_id) {
         return res
             .status(404)
             .json({ success: false, message: 'Ledger ID not found in params or is invalid' });
     }
 
     try {
-        const ledger = await ledgerServices.fetchUsersLedgerService(business_name);
+        const ledger = await ledgerServices.fetchUsersLedgerService(user_id);
         return res.status(200).json({ success: true, data: ledger });
     } catch (error: any) {
         return res.status(400).json({ success: false, message: error.message });

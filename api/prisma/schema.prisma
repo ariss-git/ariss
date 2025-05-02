@@ -148,6 +148,7 @@ model Ledger {
   payment_mode     PaymentMode @default(CREDIT)
   product          Product?    @relation(fields: [product_id], references: [product_id])
   quantity         Int
+  user_id          String
   business_name    String
   shipping_address String // Store address as string (can be JSON formatted in frontend)
   username         String
