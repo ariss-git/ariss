@@ -140,18 +140,17 @@ model Order {
 }
 
 model Ledger {
-  ledger_id        String   @id @default(uuid())
-  total_due        Float
-  amount_paid      Float
-  balance_due      Float
-  due_date         DateTime
-  createdAt        DateTime @default(now())
-  order_id         String   @unique
-  username         String // New field
-  usertype         String
-  business_name    String // New field
-  shipping_address String // Store address as string (can be JSON formatted in frontend)
-  order            Order    @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
+  ledger_id    String      @id @default(uuid())
+  total        Float
+  amount_paid  Float       @default(0)
+  balance_due  Float
+  due_date     DateTime?
+  payment_mode PaymentMode @default(CREDIT)
+
+  createdAt DateTime @default(now())
+
+  order_id String @unique
+  order    Order  @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
 }
 
 model Payment {
