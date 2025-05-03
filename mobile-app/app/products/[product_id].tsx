@@ -183,7 +183,7 @@ const Product = () => {
               <Feather name="share-2" size={24} color="black" />
             </TouchableOpacity>
             <TouchableOpacity>
-              <FontAwesome5 name="heart" size={24} color="black" />
+              <FontAwesome5 name="heart" size={24} color="white" />
             </TouchableOpacity>
           </View>
         </View>
@@ -212,7 +212,6 @@ const Product = () => {
             onPress={handleAddToCart} // Add the onPress handler
           >
             <Text className="text-center text-xl font-bold uppercase text-white">Add to Cart</Text>
-            <Feather name="shopping-cart" size={20} color="white" />
           </TouchableOpacity>
         )}
         {userType === 'BACKOFFICE' && (
@@ -221,7 +220,6 @@ const Product = () => {
             onPress={handleAddToCart} // Add the onPress handler
           >
             <Text className="text-center text-xl font-bold uppercase text-white">Add to Cart</Text>
-            <Feather name="shopping-cart" size={20} color="white" />
           </TouchableOpacity>
         )}
       </ScrollView>

@@ -1,4 +1,3 @@
-import { AntDesign } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
@@ -76,7 +75,7 @@ const TrendingProducts = () => {
             </Text> */}
             <Button
               variant="solid"
-              className="mt-2 flex w-full flex-row items-center justify-center gap-x-3 bg-stone-800"
+              className="mt-4 flex w-full flex-row items-center justify-center gap-x-3 bg-stone-800"
               onPress={() =>
                 router.push({
                   pathname: '/products/[product_id]',
@@ -84,7 +83,6 @@ const TrendingProducts = () => {
                 })
               }>
               <ButtonText className="font-worksans text-stone-200">View</ButtonText>
-              <AntDesign name="eyeo" size={18} color="lightgray" />
             </Button>
           </View>
         ))}

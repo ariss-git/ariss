@@ -11,6 +11,15 @@ export default function TabsLayout() {
         tabBarInactiveTintColor: 'gray',
         tabBarLabelStyle: { fontSize: 12, marginTop: 2, fontFamily: 'WorkSans' },
       }}>
+      {/* Home */}
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color, size }) => <FontAwesome5 name="home" size={size} color={color} />,
+        }}
+      />
+
       {/* Orders */}
       <Tabs.Screen
         name="order"
@@ -20,23 +29,12 @@ export default function TabsLayout() {
         }}
       />
 
-      {/* Cart */}
+      {/* Profile */}
       <Tabs.Screen
-        name="cart"
+        name="setting/profile"
         options={{
-          title: 'Cart',
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="shopping-cart" size={size} color={color} />
-          ),
-        }}
-      />
-
-      {/* Home */}
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, size }) => <FontAwesome5 name="home" size={size} color={color} />,
+          title: 'Account',
+          tabBarIcon: ({ color, size }) => <FontAwesome5 name="user" size={size} color={color} />,
         }}
       />
 
@@ -49,12 +47,14 @@ export default function TabsLayout() {
         }}
       />
 
-      {/* Profile */}
+      {/* Cart */}
       <Tabs.Screen
-        name="setting/profile"
+        name="cart"
         options={{
-          title: 'Account',
-          tabBarIcon: ({ color, size }) => <FontAwesome5 name="user" size={size} color={color} />,
+          title: 'Cart',
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="shopping-cart" size={size} color={color} />
+          ),
         }}
       />
     </Tabs>

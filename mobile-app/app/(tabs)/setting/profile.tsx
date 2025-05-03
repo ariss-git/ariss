@@ -156,40 +156,6 @@ const AccountSettings = () => {
             <Entypo name="chevron-small-right" size={24} color="gray" />
           </TouchableOpacity>
 
-          {userType === 'DEALER' && (
-            <TouchableOpacity
-              onPress={() => router.push('/wishlist')}
-              className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
-              <View className="flex flex-row items-center justify-center gap-x-6">
-                <AntDesign name="hearto" size={20} color="gray" />
-                <View className="flex flex-col">
-                  <Text className="font-worksans text-xl text-gray-200">Wishlists</Text>
-                  <Text className="font-worksans text-xs text-stone-500">
-                    Tap to check all wishlisted products.
-                  </Text>
-                </View>
-              </View>
-              <Entypo name="chevron-small-right" size={24} color="gray" />
-            </TouchableOpacity>
-          )}
-
-          {userType === 'BACKOFFICE' && (
-            <TouchableOpacity
-              onPress={() => router.push('/wishlist')}
-              className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
-              <View className="flex flex-row items-center justify-center gap-x-6">
-                <AntDesign name="hearto" size={20} color="gray" />
-                <View className="flex flex-col">
-                  <Text className="font-worksans text-xl text-gray-200">Wishlists</Text>
-                  <Text className="font-worksans text-xs text-stone-500">
-                    Tap to check all wishlisted products.
-                  </Text>
-                </View>
-              </View>
-              <Entypo name="chevron-small-right" size={24} color="gray" />
-            </TouchableOpacity>
-          )}
-
           <TouchableOpacity className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
             <View className="flex flex-row items-center justify-center gap-x-6">
               <Feather name="user-x" size={24} color="darkred" />

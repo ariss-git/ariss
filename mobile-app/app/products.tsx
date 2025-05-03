@@ -1,4 +1,3 @@
-import AntDesign from '@expo/vector-icons/AntDesign';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -120,11 +119,10 @@ const Products = () => {
                     params: { product_id: product.product_id },
                   })
                 }
-                className="mt-4 flex flex-row items-center justify-center gap-x-4 rounded-md bg-black py-2">
+                className="mt-4 flex flex-row items-center justify-center gap-x-4 rounded-md bg-stone-800 py-2">
                 <Text className="text-center font-worksans text-lg font-semibold text-white">
                   View
                 </Text>
-                <AntDesign name="eyeo" size={18} color="white" />
               </TouchableOpacity>
             </View>
           ))}
