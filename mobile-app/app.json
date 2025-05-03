@@ -1,15 +1,18 @@
 {
   "expo": {
     "name": "Ariss",
-    "slug": "ariss-mobile-app",
+    "slug": "mobile-app",
     "version": "1.0.0",
-    "scheme": "ariss-mobile-app",
+    "scheme": "mobile-app",
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-router", "expo-font"],
+    "plugins": [
+      "expo-router",
+      "expo-font"
+    ],
     "experiments": {
       "typedRoutes": true,
       "tsconfigPaths": true
@@ -22,13 +25,18 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.nxtribe.ariss",
+      "buildNumber": "1.0.0",
       "infoPlist": {
         "UIStatusBarStyle": "UIStatusBarStyleLightContent",
         "NSPhotoLibraryUsageDescription": "We need access to your photo library to select images.",
-        "NSCameraUsageDescription": "We need access to your camera to take pictures."
+        "NSCameraUsageDescription": "We need access to your camera to take pictures.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
