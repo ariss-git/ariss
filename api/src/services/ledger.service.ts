@@ -116,7 +116,7 @@ export const fetchUsersLedgerService = async (user_id: string) => {
         throw new Error('Ledger does not exists');
     }
 
-    return await prisma.ledger.findFirst({
+    return await prisma.ledger.findMany({
         where: {
             user_id,
         },

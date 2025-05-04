@@ -153,7 +153,7 @@ const Cart = () => {
         balance_due: totalAmount,
         quantity: cartItems.reduce((total, item) => total + item.quantity, 0),
         user_id: userType === 'DEALER' ? userData?.dealer_id : userData?.backoffice_id,
-        username: userData?.first_name + userData?.last_name,
+        username: `${userData?.first_name} ${userData?.last_name}`,
         usertype: userType,
         business_name:
           userType === 'DEALER' ? userData?.business_name : userData?.dealer?.business_name,
@@ -164,7 +164,7 @@ const Cart = () => {
       console.log('Ledger API Response: ', ledgerWrapper);
       Toast.show({
         type: 'success',
-        text1: 'Product has been booked, you will receive delivery date soon',
+        text1: 'You will receive delivery date soon.',
       });
     } catch (error) {
       console.error(error);

@@ -44,3 +44,7 @@ export const verifyPaymentAPI = async (data: PaymentVerificationData) => {
 export const createLedgerAPI = async (data: Ledger) => {
   return axios.post(`${API_URL}/ledger/create`, data);
 };
+
+export const fetchLedget = async (user_id: string) => {
+  return axios.get(`${API_URL}/ledger/${user_id}`);
+};
