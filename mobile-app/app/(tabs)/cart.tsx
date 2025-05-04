@@ -6,6 +6,7 @@ import { View, Text, TouchableOpacity, FlatList, Image, ActivityIndicator } from
 import Toast from 'react-native-toast-message';
 
 import { backOfficeProfile, dealerProfile, technicianProfile } from '~/api/authServices';
+import { createLedgerAPI } from '~/api/orderServices';
 // import { createOrderAPI, verifyPaymentAPI } from '~/api/orderServices';
 import { useAuthStore } from '~/store/auth';
 import { useCartStore } from '~/store/cartStore';
@@ -18,6 +19,12 @@ const Cart = () => {
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<any>(null);
   const { userType, setProfileData } = useAuthStore();
+
+  const baseTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const deliveryCharges = Math.floor(Math.random() * (700 - 500 + 1)) + 500;
+  const gst = +(baseTotal * 0.28).toFixed(2);
+  const convenienceFee = 200;
+  const total = baseTotal + deliveryCharges + gst + convenienceFee;
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -77,7 +84,7 @@ const Cart = () => {
 
   // const handleCheckout = async () => {
   //   try {
-  //     const totalAmount = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  //     const totalAmount = total.toFixed(2)
 
   //     const orderData = {
   //       username: `${userData?.first_name ?? ''} ${userData?.last_name ?? ''}`.trim(),
@@ -135,9 +142,39 @@ const Cart = () => {
   //   }
   // };
 
-  const handleCredit = () => {
-    console.log('Checkout with Credit');
-    // Future: credit order flow
+  const handleCredit = async () => {
+    setLoading(true);
+    try {
+      const totalAmount = Number(total.toFixed(2));
+
+      const ledgerData = {
+        product_id: cartItems[0]?.id,
+        total: totalAmount,
+        balance_due: totalAmount,
+        quantity: cartItems.reduce((total, item) => total + item.quantity, 0),
+        user_id: userType === 'DEALER' ? userData?.dealer_id : userData?.backoffice_id,
+        username: userData?.first_name + userData?.last_name,
+        usertype: userType,
+        business_name:
+          userType === 'DEALER' ? userData?.business_name : userData?.dealer?.business_name,
+        shipping_address: getFormattedAddress(),
+      };
+
+      const { data: ledgerWrapper } = await createLedgerAPI(ledgerData);
+      console.log('Ledger API Response: ', ledgerWrapper);
+      Toast.show({
+        type: 'success',
+        text1: 'Product has been booked, you will receive delivery date soon',
+      });
+    } catch (error) {
+      console.error(error);
+      Toast.show({
+        type: 'error',
+        text1: `${error}`,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const renderItem = ({ item }: { item: any }) => (
@@ -184,16 +221,10 @@ const Cart = () => {
         <View className="w-6" />
       </View>
 
-      <View className="flex flex-col items-start justify-start gap-y-4 px-4 py-2">
-        <Text>
-          Name: {userData?.first_name} {userData?.last_name}
+      <View className="mt-2 flex flex-col items-start justify-start gap-y-4 px-4 py-2">
+        <Text className="font-worksans font-semibold text-stone-500">
+          Shipping Address: {getFormattedAddress()}
         </Text>
-        <Text>UserType: {userData?.usertype}</Text>
-        <Text>
-          Business:{' '}
-          {userType === 'DEALER' ? userData?.business_name : userData?.dealer?.business_name}
-        </Text>
-        <Text>Shipping Address: {getFormattedAddress()}</Text>
       </View>
 
       <FlatList
@@ -205,7 +236,16 @@ const Cart = () => {
 
       <View className="bg-gray-100 px-4 py-2">
         <Text className="font-worksans text-lg font-bold text-black">
-          Total: ₹ {cartItems.reduce((total, item) => total + item.price * item.quantity, 0)}
+          Delivery charges: ₹ {deliveryCharges}
+        </Text>
+        <Text className="mt-1 font-worksans text-lg font-bold text-stone-800">
+          GST (28%): ₹ {gst}
+        </Text>
+        <Text className="mt-1 font-worksans text-lg font-bold text-stone-800">
+          Convenience Fee: ₹ {convenienceFee}
+        </Text>
+        <Text className="mt-1 font-worksans text-lg font-bold text-stone-800">
+          Total: ₹ {total.toFixed(2)}
         </Text>
       </View>
 
@@ -219,9 +259,16 @@ const Cart = () => {
 
         <TouchableOpacity
           onPress={handleCredit}
+          disabled={loading}
           className="flex-1 items-center justify-center rounded-lg bg-gray-300 py-4">
-          <Text className="text-xl font-bold text-black">Credit</Text>
-          <Feather name="credit-card" size={20} color="black" />
+          {loading ? (
+            <ActivityIndicator size="small" color="black" />
+          ) : (
+            <View className="flex items-center justify-center">
+              <Text className="text-xl font-bold text-black">Credit</Text>
+              <Feather name="credit-card" size={20} color="black" />
+            </View>
+          )}
         </TouchableOpacity>
       </View>
     </View>
