@@ -16,6 +16,7 @@ import rmaRoutes from './rma.routes.js';
 import courseRoutes from './course.routes.js';
 import adminRoutes from './admin.routes.js';
 import empRoutes from './employee.routes.js';
+import userCourseRoutes from './userCourse.routes.js';
 
 const router = Router();
 
@@ -35,6 +36,7 @@ router.use('/users', userRoutes);
 router.use('/wishlist', wishlistRoutes);
 router.use('/rma', rmaRoutes);
 router.use('/course', courseRoutes);
+router.use('/user-course', userCourseRoutes);
 router.use('/employee', empRoutes);
 
 export default router;

@@ -272,6 +272,8 @@ model Result {
   attempts     Int          @default(1)
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
+
+  @@unique([userId, courseId]) // Add unique constraint on userId and courseId
 }
 
 enum CourseStatus {
