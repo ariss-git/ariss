@@ -30,7 +30,9 @@
   "submit": {
     "production": {
       "ios": {
-        "appleId": "appledev.ariss@gmail.com"
+        "appleId": "appledev.ariss@gmail.com",
+        "ascAppId": "6745454628",
+        "appleTeamId": "H4F6VCR345"
       }
     }
   }

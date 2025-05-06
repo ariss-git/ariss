@@ -2,6 +2,8 @@ import { AntDesign } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 
+import Ledger from '~/components/Ledger';
+
 // import { useAuthStore } from '~/store/auth';
 
 const Orders = () => {
@@ -30,12 +32,8 @@ const Orders = () => {
           <Text className="font-worksans font-extrabold uppercase text-stone-200">Ledger</Text>
         </ScrollView>
       </View>
-      <View className="bg-transparent">
-        <ScrollView
-          className="flex min-h-screen flex-1 flex-col gap-y-10 "
-          contentContainerStyle={{ flexGrow: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Text>Hello</Text>
-        </ScrollView>
+      <View className="w-full bg-transparent p-4">
+        <Ledger />
       </View>
     </View>
     // <View className="flex min-h-screen w-full items-center justify-center">
