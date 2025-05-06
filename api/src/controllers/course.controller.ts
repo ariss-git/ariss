@@ -1,112 +1,83 @@
-// src/controllers/course.controller.ts
+// controllers/admin/course.controller.ts
 
 import { Request, Response } from 'express';
-import * as courseServices from '../services/course.service.js'; // Import all course-related service functions
+import * as courseService from '../services/course.service.js';
 
-// Controller to handle course creation
-export const createCourseController = async (req: Request, res: Response) => {
+export const createCourse = async (req: Request, res: Response) => {
+    const { title, description, content } = req.body;
+
     try {
-        const { title, content } = req.body;
-
-        // Call the service to create the course
-        const course = await courseServices.createCourseService({ title, content });
-
-        // Respond with success and the created course data
-        return res.status(201).json({ success: true, data: course });
+        const newCourse = await courseService.createCourse({ title, description, content });
+        return res.status(201).json(newCourse); // Respond with created course data
     } catch (error: any) {
-        // Handle unexpected errors
-        return res.status(500).json({ success: false, message: error.message });
+        return res.status(500).json({ error: error.message }); // Handle errors
     }
 };
 
-// Controller to handle course update
-export const updateCourseController = async (req: Request, res: Response) => {
+export const addQuestionsToCourse = async (req: Request, res: Response) => {
+    const { courseId } = req.params;
+    const questions = req.body; // Array of questions to add
+
     try {
-        const { course_id } = req.params;
-        const { title, content } = req.body;
-
-        // Call the service to update course fields
-        const course = await courseServices.updateCourseService(course_id, { title, content });
-
-        // Respond with updated course data
-        return res.status(200).json({ success: true, data: course });
+        const addedQuestions = await courseService.addQuestionsToCourse(courseId, questions);
+        return res.status(201).json(addedQuestions); // Respond with the added questions
     } catch (error: any) {
-        return res.status(500).json({ success: false, message: error.message });
+        return res.status(500).json({ error: error.message }); // Handle errors
     }
 };
 
-// Controller to handle course deletion
-export const deleteCourseController = async (req: Request, res: Response) => {
+export const editCourse = async (req: Request, res: Response) => {
+    const { courseId } = req.params;
+    const { title, description } = req.body;
+
     try {
-        const { course_id } = req.params;
-
-        // Delete the course using service layer
-        const course = await courseServices.deleteCourseService(course_id);
-
-        // Return a success message with the course title
-        return res.status(200).json({ success: true, message: `${course.title} deleted successfully` });
+        const updatedCourse = await courseService.editCourse(courseId, { title, description });
+        return res.status(200).json(updatedCourse); // Respond with updated course
     } catch (error: any) {
-        // Use 400 status for client-side issues like not found
-        return res.status(400).json({ success: false, message: error.message });
+        return res.status(500).json({ error: error.message }); // Handle errors
     }
 };
 
-// Controller to publish a course
-export const publishCourseController = async (req: Request, res: Response) => {
+export const getAllCourses = async (req: Request, res: Response) => {
     try {
-        const { course_id } = req.params;
-
-        // Set isPublished to true in DB
-        const course = await courseServices.publishCourseService(course_id);
-
-        // Send confirmation with the course title
-        return res
-            .status(200)
-            .json({ success: true, message: `${course.title} has been published successfully` });
+        const courses = await courseService.getAllCourses();
+        return res.status(200).json(courses); // Respond with list of courses
     } catch (error: any) {
-        return res.status(500).json({ success: false, message: error.message });
+        return res.status(500).json({ error: error.message }); // Handle errors
     }
 };
 
-// Controller to unpublish a course
-export const unpublishCourseController = async (req: Request, res: Response) => {
+export const getCourseById = async (req: Request, res: Response) => {
+    const { courseId } = req.params;
+
     try {
-        const { course_id } = req.params;
-
-        // Set isPublished to true in DB
-        const course = await courseServices.unpublishCourseService(course_id);
-
-        // Send confirmation with the course title
-        return res
-            .status(200)
-            .json({ success: true, message: `${course.title} has been unpublished successfully` });
+        const course = await courseService.getCourseById(courseId);
+        return res.status(200).json(course); // Respond with course details
     } catch (error: any) {
-        return res.status(500).json({ success: false, message: error.message });
+        return res.status(500).json({ error: error.message }); // Handle errors
     }
 };
 
-// Controller to fetch all courses
-export const getAllCoursesController = async (_req: Request, res: Response) => {
+export const toggleCourseStatus = async (req: Request, res: Response) => {
+    const { courseId } = req.params;
+    const { isActive } = req.body; // Whether to activate or deactivate the course
+
     try {
-        const courses = await courseServices.fetchAllCoursesService();
-        return res.status(200).json({ success: true, totat: courses.length, data: courses });
+        const updatedCourse = await courseService.toggleCourseStatus(courseId, isActive);
+        return res.status(200).json(updatedCourse); // Respond with updated course
     } catch (error: any) {
-        return res.status(400).json({ success: false, message: error.message });
+        return res.status(500).json({ error: error.message }); // Handle errors
     }
 };
 
-// Controller to fetch a single course
-export const getCourseController = async (req: Request, res: Response) => {
+export const getPassedFailedUsers = async (req: Request, res: Response) => {
+    const { courseId } = req.params;
+    const { status } = req.query; // Either "PASSED" or "FAILED"
+
     try {
-        const { course_id } = req.params;
-
-        if (!course_id) {
-            return res.status(400).json({ success: false, message: 'course id is required' });
-        }
-
-        const course = await courseServices.fetchCourseService(course_id);
-        return res.status(200).json({ success: true, data: course });
+        const users = await courseService.getPassedFailedUsers(courseId, status as 'PASSED' | 'FAILED');
+        return res.status(200).json(users); // Respond with list of users
     } catch (error: any) {
-        return res.status(400).json({ success: false, message: error.message });
+        return res.status(500).json({ error: error.message }); // Handle errors
     }
 };

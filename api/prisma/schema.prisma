@@ -199,56 +199,6 @@ model RMA {
   createdAt DateTime @default(now())
 }
 
-model Course {
-  course_id   String   @id @default(uuid())
-  title       String
-  content     Json
-  isPublished Boolean  @default(false)
-  createdAt   DateTime @default(now())
-
-  questions   CourseQuestion[]
-  enrollments CourseEnrollment[]
-}
-
-model CourseQuestion {
-  question_id String   @id @default(uuid())
-  course_id   String
-  question    String
-  options     String[]
-  answer      Int
-
-  course       Course         @relation(fields: [course_id], references: [course_id], onDelete: Cascade)
-  courseAnswer CourseAnswer[]
-}
-
-model CourseEnrollment {
-  enrollment_id String    @id @default(uuid())
-  course_id     String
-  user_id       String
-  user_type     UserType
-  enrolledAt    DateTime  @default(now())
-  isPassed      Boolean   @default(false)
-  passedAt      DateTime?
-  grade         Float?
-
-  course  Course         @relation(fields: [course_id], references: [course_id], onDelete: Cascade)
-  answers CourseAnswer[]
-
-  @@unique([course_id, user_id])
-}
-
-model CourseAnswer {
-  answer_id     String @id @default(uuid())
-  enrollment_id String
-  question_id   String
-  selected      Int
-
-  enrollment CourseEnrollment @relation(fields: [enrollment_id], references: [enrollment_id], onDelete: Cascade)
-  question   CourseQuestion   @relation(fields: [question_id], references: [question_id], onDelete: Cascade)
-
-  @@unique([enrollment_id, question_id])
-}
-
 model Admin {
   admin_id    String       @id @default(uuid())
   fullname    String
@@ -272,6 +222,61 @@ model Employee {
   usertype    EmployeeType @default(EMPLOYEE)
 
   createdAt DateTime @default(now())
+}
+
+model Course {
+  id          String       @id @default(uuid())
+  title       String
+  description String
+  content     String
+  isActive    Boolean      @default(false)
+  questions   Question[]
+  enrollments Enrollment[]
+  results     Result[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Question {
+  id       String @id @default(uuid())
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id])
+  text     String
+  optionA  String
+  optionB  String
+  optionC  String
+  optionD  String
+  correct  String
+}
+
+model Enrollment {
+  id           String   @id @default(uuid())
+  courseId     String
+  course       Course   @relation(fields: [courseId], references: [id])
+  userId       String
+  userName     String
+  businessName String
+  enrolledAt   DateTime @default(now())
+}
+
+model Result {
+  id           String       @id @default(uuid())
+  courseId     String
+  course       Course       @relation(fields: [courseId], references: [id])
+  userId       String
+  userName     String
+  businessName String
+  score        Int
+  percentage   Float
+  status       CourseStatus
+  attempts     Int          @default(1)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+enum CourseStatus {
+  PASSED
+  FAILED
 }
 
 enum EmployeeType {
