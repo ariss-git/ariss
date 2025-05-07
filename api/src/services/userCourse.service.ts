@@ -126,3 +126,12 @@ export const retakeTest = async (courseId: string, userId: string) => {
 
     return updatedResult;
 };
+
+// Service to fetch all active course
+export const activeCourse = async () => {
+    return await prisma.course.findMany({
+        where: {
+            isActive: true,
+        },
+    });
+};

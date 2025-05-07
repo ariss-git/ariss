@@ -1,5 +1,5 @@
 // components/AutoManualCarousel.tsx
-import React, { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import {
   FlatList,
   Image,

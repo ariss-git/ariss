@@ -48,8 +48,8 @@ export default function RegisterSubmit() {
       if (data.success) {
         Toast.show({
           type: 'success',
-          text1: 'Please check your Whatsapp or Email.',
-          text2: `Message sent to ${phone} `,
+          text1: 'Please wait until account is approved.',
+          text2: `Message sent to ${email} `,
         });
         router.replace('/login');
       } else {

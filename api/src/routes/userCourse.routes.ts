@@ -15,4 +15,7 @@ userCourseRouter.get('/results/:courseId', userController.getUserResults);
 // Retake the test for a user if failed
 userCourseRouter.post('/retake/:courseId', userController.retakeTest);
 
+// Retake the test for a user if failed
+userCourseRouter.get('/', userController.fetchAllActiveCourses);
+
 export default userCourseRouter;

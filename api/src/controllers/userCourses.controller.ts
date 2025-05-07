@@ -52,3 +52,13 @@ export const retakeTest = async (req: Request, res: Response) => {
         return res.status(400).json({ success: false, message: error.message });
     }
 };
+
+// Fetch all active courses
+export const fetchAllActiveCourses = async (_req: Request, res: Response) => {
+    try {
+        const courses = await userService.activeCourse();
+        return res.status(200).json({ success: true, courses });
+    } catch (error: any) {
+        return res.status(400).json({ success: false, message: error.message });
+    }
+};

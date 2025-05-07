@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
+  Image,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -96,9 +97,12 @@ export default function Login() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View className="flex-1 justify-between bg-black px-6 py-10">
-        <Text className="mt-10 text-center font-posterama text-6xl font-extrabold text-white">
+        {/* <Text className="mt-10 text-center font-posterama text-6xl font-extrabold text-white">
           ARISS
-        </Text>
+        </Text> */}
+        <View className="flex w-full items-center justify-center">
+          <Image source={require('../assets/1.png')} className="h-64 w-64" />
+        </View>
 
         <View>
           <Text
@@ -132,7 +136,7 @@ export default function Login() {
           </View>
 
           {/* Email Input */}
-          <View className="my-4 flex-row items-center rounded-xl border border-gray-500 p-4">
+          <View className="my-2 flex-row items-center rounded-xl border border-gray-500 p-4">
             <TextInput
               className="flex-1 font-worksans text-white"
               placeholder="Email Address"
@@ -145,7 +149,7 @@ export default function Login() {
           </View>
 
           {/* User Type Select */}
-          <View className="my-4 rounded-xl p-2">
+          <View className="my-2 rounded-xl p-2">
             <Select onValueChange={(val) => setUserType(val as UserType)} selectedValue={userType}>
               <SelectTrigger className="rounded-xl bg-transparent px-4 py-3">
                 <SelectInput
