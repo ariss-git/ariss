@@ -9,3 +9,7 @@ export const getAllActiveCourse = async () => {
 export const getSingleCourse = async (courseId: string) => {
   return axios.get(`${API_URL}/course/${courseId}`);
 };
+
+export const getQuestionsForCourse = async (courseId: string) => {
+  return axios.get(`${API_URL}/course/${courseId}`);
+};

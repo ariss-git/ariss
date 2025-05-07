@@ -103,7 +103,15 @@ const ReadContent = () => {
               <Button variant="outline" action="secondary" onPress={handleClose} size="sm">
                 <ButtonText>Cancel</ButtonText>
               </Button>
-              <Button size="sm" onPress={handleClose}>
+              <Button
+                size="sm"
+                onPress={() => {
+                  setShowAlertDialog(false);
+                  router.push({
+                    pathname: '/learn/give-test/[course_id]',
+                    params: { course_id: data!.id },
+                  });
+                }}>
                 <ButtonText>Yes</ButtonText>
               </Button>
             </AlertDialogFooter>

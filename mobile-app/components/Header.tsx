@@ -1,6 +1,5 @@
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRouter } from 'expo-router';
 import { View, Text } from 'react-native';
 
@@ -24,12 +23,7 @@ const Header = () => {
       </Text>
       <View className="flex flex-row items-center justify-center gap-x-4">
         <Feather name="search" size={22} color="white" onPress={() => router.push('/products')} />
-        <FontAwesome5
-          name="shopping-cart"
-          size={22}
-          color="white"
-          onPress={() => router.push('/cart')}
-        />
+        <Feather name="shopping-cart" size={24} color="white" />
       </View>
     </View>
   );

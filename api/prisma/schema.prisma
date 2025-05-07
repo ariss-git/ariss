@@ -146,7 +146,7 @@ model Ledger {
   balance_due      Float
   due_date         DateTime?
   payment_mode     PaymentMode @default(CREDIT)
-  product          Product?    @relation(fields: [product_id], references: [product_id])
+  product          Product?    @relation(fields: [product_id], references: [product_id], onDelete: Cascade)
   quantity         Int
   user_id          String
   business_name    String
@@ -240,7 +240,7 @@ model Course {
 model Question {
   id       String @id @default(uuid())
   courseId String
-  course   Course @relation(fields: [courseId], references: [id])
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   text     String
   optionA  String
   optionB  String
@@ -252,7 +252,7 @@ model Question {
 model Enrollment {
   id           String   @id @default(uuid())
   courseId     String
-  course       Course   @relation(fields: [courseId], references: [id])
+  course       Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   userId       String
   userName     String
   businessName String
@@ -262,7 +262,7 @@ model Enrollment {
 model Result {
   id           String       @id @default(uuid())
   courseId     String
-  course       Course       @relation(fields: [courseId], references: [id])
+  course       Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
   userId       String
   userName     String
   businessName String
