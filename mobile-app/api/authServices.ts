@@ -64,7 +64,7 @@ export const registerBackOffice = async (backOfficeData: BackOfficeRegistrationD
 };
 
 export const dealerProfile = async (token: string) => {
-  return axios.get('https://ariss-production.up.railway.app/api', {
+  return axios.get('https://ariss-production.up.railway.app/api/dealer/profile', {
     headers: {
       Authorization: `Bearer ${token}`, // Send token in Authorization header
     },
@@ -73,7 +73,7 @@ export const dealerProfile = async (token: string) => {
 };
 
 export const backOfficeProfile = async (token: string) => {
-  return axios.get('https://ariss-production.up.railway.app/api', {
+  return axios.get('https://ariss-production.up.railway.app/api/back-office/check', {
     headers: {
       Authorization: `Bearer ${token}`, // Send token in Authorization header
     },
@@ -82,7 +82,7 @@ export const backOfficeProfile = async (token: string) => {
 };
 
 export const technicianProfile = async (token: string) => {
-  return axios.get('https://ariss-production.up.railway.app/api', {
+  return axios.get('https://ariss-production.up.railway.app/api/technician/check', {
     headers: {
       Authorization: `Bearer ${token}`, // Send token in Authorization header
     },
