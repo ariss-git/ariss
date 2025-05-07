@@ -48,7 +48,7 @@ import { deleteCategory } from '../../api/categoryAPI';
 import { toast } from '../../hooks/use-toast';
 import { Link, useNavigate } from 'react-router-dom';
 
-const apiURL = 'http://localhost:5000/api';
+const apiURL = 'https://ariss-production.up.railway.app/api';
 
 export type Category = {
     category_id: string;
