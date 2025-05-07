@@ -28,17 +28,19 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { Label } from '../../components/ui/label';
 
 type Course = {
-    course_id: string;
+    id: string;
     title: string;
-    isPublished: boolean;
+    description: string;
+    isActive: boolean;
     createdAt: string;
+    updatedAt: string;
 };
 
 export default function FetchAllCourses() {
     const [data, setData] = useState<Course[]>([]);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({ course_id: false });
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [confirmText, setConfirmText] = useState('');
     const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
@@ -47,7 +49,24 @@ export default function FetchAllCourses() {
         setLoading(true);
         try {
             const res = await getAllCourses();
-            setData(res.data.data);
+            console.log('API Response:', res);
+
+            const courses = res?.data;
+
+            if (!Array.isArray(courses)) {
+                throw new Error('Invalid course data format');
+            }
+
+            const transformedData: Course[] = courses.map((course: Course) => ({
+                id: course.id,
+                title: course.title,
+                description: course.description,
+                isActive: course.isActive,
+                createdAt: course.createdAt,
+                updatedAt: course.updatedAt,
+            }));
+
+            setData(transformedData);
         } catch (error) {
             console.error(error);
             toast({
@@ -135,30 +154,36 @@ export default function FetchAllCourses() {
 
     const columns: ColumnDef<Course>[] = [
         {
-            accessorKey: 'course_id',
+            accessorKey: 'id',
             header: 'Course ID',
-            cell: ({ row }) => <div className="truncate max-w-[180px]">{row.getValue('course_id')}</div>,
+            cell: ({ row }) => <div className="truncate max-w-[180px]">{row.getValue('id')}</div>,
         },
         {
             accessorKey: 'title',
             header: 'Course Title',
         },
         {
-            accessorKey: 'isPublished',
+            accessorKey: 'description',
+            header: 'Description',
+            cell: ({ row }) => <div className="truncate max-w-[300px]">{row.getValue('description')}</div>,
+        },
+        {
+            accessorKey: 'isActive',
             header: 'Published',
             cell: ({ row }) => {
-                const value = row.getValue('isPublished');
-                return (
-                    <Badge className="rounded" variant={value ? 'default' : 'secondary'}>
-                        {value ? 'Yes' : 'No'}
-                    </Badge>
-                );
+                const value = row.getValue('isActive');
+                return <Badge className="rounded">{value ? 'Yes' : 'No'}</Badge>;
             },
         },
         {
             accessorKey: 'createdAt',
-            header: 'Created Date',
+            header: 'Created At',
             cell: ({ row }) => <div>{new Date(row.getValue('createdAt')).toLocaleDateString()}</div>,
+        },
+        {
+            accessorKey: 'updatedAt',
+            header: 'Updated At',
+            cell: ({ row }) => <div>{new Date(row.getValue('updatedAt')).toLocaleDateString()}</div>,
         },
         {
             header: 'Actions',
@@ -174,18 +199,19 @@ export default function FetchAllCourses() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="rounded font-work">
                             <DropdownMenuItem
-                                onClick={() => navigate(`/courses/${course.course_id}`)}
+                                onClick={() => navigate(`/courses/${course.id}`)}
                                 className="flex justify-between cursor-pointer"
                             >
-                                <h6>View and Edit</h6>
-                                <Eye className="ml-2 h-4 w-4" />
+                                View and Edit <Eye className="ml-2 h-4 w-4" />
                             </DropdownMenuItem>
-                            {/* <DropdownMenuItem className="flex justify-between cursor-pointer">
-                                <Link to={`/courses/${course.course_id}`}>Update</Link>{' '}
-                                <Pencil className="ml-2 h-4 w-4" />
-                            </DropdownMenuItem> */}
                             <DropdownMenuItem
-                                onClick={() => handlePublishCourse(course.course_id)}
+                                onClick={() => navigate(`/courses/questions/${course.id}`)}
+                                className="flex justify-between cursor-pointer"
+                            >
+                                Add Questions <PlusCircle className="ml-2 h-4 w-4" />
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => handlePublishCourse(course.id)}
                                 disabled={loading}
                                 className="flex justify-between cursor-pointer"
                             >
@@ -197,7 +223,7 @@ export default function FetchAllCourses() {
                                 )}
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                                onClick={() => handleUnpublishCourse(course.course_id)}
+                                onClick={() => handleUnpublishCourse(course.id)}
                                 className="flex justify-between cursor-pointer"
                             >
                                 Unpublish Course <X className="ml-2 h-4 w-4" />
@@ -205,7 +231,7 @@ export default function FetchAllCourses() {
                             <DropdownMenuItem
                                 onClick={() => {
                                     setIsDialogOpen(true);
-                                    setSelectedCourseId(course.course_id);
+                                    setSelectedCourseId(course.id);
                                 }}
                                 className="flex justify-between cursor-pointer text-red-500"
                             >
@@ -266,7 +292,7 @@ export default function FetchAllCourses() {
                                         onCheckedChange={(value) => column.toggleVisibility(!!value)}
                                         className="capitalize"
                                     >
-                                        {column.id.replace('_', ' ')}
+                                        {column.id.replace(/([A-Z])/g, ' $1').toLowerCase()}
                                     </DropdownMenuCheckboxItem>
                                 ))}
                         </DropdownMenuContent>

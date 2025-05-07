@@ -2,7 +2,7 @@
   "expo": {
     "name": "Ariss",
     "slug": "mobile-app",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "scheme": "mobile-app",
     "web": {
       "bundler": "metro",
@@ -15,18 +15,18 @@
       "tsconfigPaths": true
     },
     "orientation": "portrait",
-    "icon": "./assets/1.png",
+    "icon": "./assets/ariss_icon.png",
     "userInterfaceStyle": "dark",
     "splash": {
       "image": "./assets/images/Ariss_Logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.nxtribe.ariss",
-      "buildNumber": "1.0.2",
+      "buildNumber": "1.0.3",
       "infoPlist": {
         "UIStatusBarStyle": "UIStatusBarStyleLightContent",
         "NSPhotoLibraryUsageDescription": "We need access to your photo library to select images.",
@@ -36,7 +36,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/1.png",
+        "foregroundImage": "./assets/ariss_icon.png",
         "backgroundColor": "#000000"
       },
       "package": "com.mujahid_patel.mobileapp"

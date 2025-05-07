@@ -5,15 +5,17 @@ import Feather from '@expo/vector-icons/Feather';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import axios from 'axios';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 
+import { API_URL } from '~/api/productServices';
 import { useAuthStore } from '~/store/auth';
 
 const AccountSettings = () => {
   const [loading, setLoading] = useState(false);
-  const { logout, userType } = useAuthStore();
+  const { logout, userType, dealerId } = useAuthStore();
 
   const handleLogout = async () => {
     setLoading(true);
@@ -22,6 +24,18 @@ const AccountSettings = () => {
       await logout();
       console.log('Logout completed, routing to login');
       router.replace('/login');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (dealer_id: string) => {
+    setLoading(true);
+    try {
+      await axios.delete(`${API_URL}/customer/dealers/${dealer_id}`);
+      console.log('Deleted');
     } catch (error) {
       console.error(error);
     } finally {
@@ -156,18 +170,27 @@ const AccountSettings = () => {
             <Entypo name="chevron-small-right" size={24} color="gray" />
           </TouchableOpacity>
 
-          <TouchableOpacity className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
-            <View className="flex flex-row items-center justify-center gap-x-6">
-              <Feather name="user-x" size={24} color="darkred" />
-              <View className="flex flex-col">
-                <Text className="font-worksans text-xl text-red-700">Delete Account</Text>
-                <Text className="font-worksans text-xs text-stone-500">
-                  Tap to delete your account.
-                </Text>
-              </View>
-            </View>
-            <Entypo name="chevron-small-right" size={24} color="darkred" />
-          </TouchableOpacity>
+          {userType === 'DEALER' && (
+            <TouchableOpacity
+              onPress={() => handleDelete(dealerId)}
+              disabled={loading}
+              className="flex w-full flex-row items-center justify-between rounded-lg bg-stone-800 px-8 py-6">
+              {loading ? (
+                <ActivityIndicator size="small" color="darkred" />
+              ) : (
+                <View className="flex flex-row items-center justify-center gap-x-6">
+                  <Feather name="user-x" size={24} color="darkred" />
+                  <View className="flex flex-col">
+                    <Text className="font-worksans text-xl text-red-700">Delete Account</Text>
+                    <Text className="font-worksans text-xs text-stone-500">
+                      Tap to delete your account.
+                    </Text>
+                  </View>
+                </View>
+              )}
+              <Entypo name="chevron-small-right" size={24} color="darkred" />
+            </TouchableOpacity>
+          )}
 
           <View className="mt-2 flex h-[1px] w-full items-center justify-center bg-gray-300" />
 

@@ -11,30 +11,30 @@ type Course = {
 
 // Get all courses API endpoint
 export const getAllCourses = async () => {
-    return axios.get(`${apiURL}/course/admin/courses`);
+    return axios.get(`${apiURL}/course`);
 };
 
 // Get single course API endpoint
 export const getACourse = async (course_id: string) => {
-    return axios.get(`${apiURL}/course/admin/courses/${course_id}`);
+    return axios.get(`${apiURL}/course/${course_id}`);
 };
 
 // Publish course API endpoint
 export const publishCourse = async (course_id: string) => {
-    return axios.put(`${apiURL}/course/admin/courses/${course_id}/publish`);
+    return axios.put(`${apiURL}/course/${course_id}/publish`);
 };
 
 // Publish course API endpoint
 export const unpublishCourse = async (course_id: string) => {
-    return axios.put(`${apiURL}/course/admin/courses/${course_id}/unpublish`);
+    return axios.put(`${apiURL}/course/${course_id}/unpublish`);
 };
 
 // Delete course API endpoint
 export const deleteCourse = async (course_id: string) => {
-    return axios.delete(`${apiURL}/course/admin/courses/${course_id}`);
+    return axios.delete(`${apiURL}/course/${course_id}`);
 };
 
 // Update course API endpoint
 export const updateCourse = async (course_id: string, data: Course) => {
-    return axios.put(`${apiURL}/course/admin/courses/${course_id}`, data);
+    return axios.put(`${apiURL}/course/${course_id}`, data);
 };

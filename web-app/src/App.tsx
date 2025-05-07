@@ -27,7 +27,6 @@ import FetchSingleProduct from './pages/Product/FetchSingleProduct';
 import Courses from './pages/Courses/Index';
 import AddCourse from './pages/Courses/AddCouse';
 import FetchSingleCourse from './pages/Courses/FetchSingleCourse';
-import ProtectRoutes from './middleware/ProtectRoutes';
 import Login from './pages/Admin/Login';
 import Wishlists from './pages/Wishlist/Index';
 import AddBackOffice from './pages/Back-Office/AddBackOffice';
@@ -35,20 +34,14 @@ import AddTechnician from './pages/Technician/AddTechnician';
 import AddDealer from './pages/Customer/ApprovedDealers/AddDealer';
 import Orders from './pages/Order/Index';
 import Invoices from './pages/Invoice/Index';
+import AddQuestionsToCourse from './pages/Courses/AddQuestions';
 
 function App() {
     return (
         <ThemeProvider>
             <BrowserRouter>
                 <Routes>
-                    <Route
-                        path="/"
-                        element={
-                            <ProtectRoutes>
-                                <AdminLayout />
-                            </ProtectRoutes>
-                        }
-                    >
+                    <Route path="/" element={<AdminLayout />}>
                         <Route index element={<Dashboard />} />
 
                         <Route path="products" element={<Product />} />
@@ -88,6 +81,7 @@ function App() {
                         <Route path="courses" element={<Courses />} />
                         <Route path="courses/add" element={<AddCourse />} />
                         <Route path="courses/:course_id" element={<FetchSingleCourse />} />
+                        <Route path="courses/questions/:courseID" element={<AddQuestionsToCourse />} />
 
                         <Route path="orders" element={<Orders />} />
 
