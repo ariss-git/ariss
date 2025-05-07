@@ -2,7 +2,7 @@
   "expo": {
     "name": "Ariss",
     "slug": "mobile-app",
-    "version": "1.0.3",
+    "version": "1.0.6",
     "scheme": "mobile-app",
     "web": {
       "bundler": "metro",
@@ -26,7 +26,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.nxtribe.ariss",
-      "buildNumber": "1.0.3",
+      "buildNumber": "1.0.6",
       "infoPlist": {
         "UIStatusBarStyle": "UIStatusBarStyleLightContent",
         "NSPhotoLibraryUsageDescription": "We need access to your photo library to select images.",
