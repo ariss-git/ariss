@@ -134,3 +134,12 @@ export const getPassedFailedUsers = async (courseId: string, status: 'PASSED' | 
         throw new Error('Failed to fetch users: ' + error.message);
     }
 };
+
+// Get all questions
+export const fetchAllQuestions = async (courseId: string) => {
+    return await prisma.question.findMany({
+        where: {
+            courseId,
+        },
+    });
+};

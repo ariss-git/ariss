@@ -85,7 +85,14 @@ const Learn = () => {
                           <AccordionTitleText className="font-worksans text-xl font-extrabold">
                             Course: {course.title}
                           </AccordionTitleText>
-                          <AccordionTitleText className="mt-6 rounded bg-stone-200 px-6 py-2 text-stone-800 shadow">
+                          <AccordionTitleText
+                            onPress={() =>
+                              router.push({
+                                pathname: '/learn/read-content/[course_id]',
+                                params: { course_id: course.id },
+                              })
+                            }
+                            className="mt-6 rounded bg-stone-200 px-6 py-2 text-stone-800 shadow">
                             Get Started
                           </AccordionTitleText>
                         </View>

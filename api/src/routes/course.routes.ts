@@ -11,6 +11,12 @@ adminCourseRouter.post('/', courseController.createCourse);
 // Route to add questions to a specific course
 adminCourseRouter.post('/:courseId/questions', courseController.addQuestionsToCourse);
 
+// Route to fetch all questions to a specific course
+adminCourseRouter.get('/:courseId/questions', courseController.getAllQuestions);
+
+// Route to get all questions
+adminCourseRouter.get('/:courseId/questions', courseController.addQuestionsToCourse);
+
 // Route to edit course title and description
 adminCourseRouter.put('/:courseId', courseController.editCourse);
 

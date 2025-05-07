@@ -42,14 +42,14 @@ export const loginUserService = async (userType: UserType, phone: string, email:
             throw new Error('Invalid user type');
     }
 
-    // Bypass OTP only for the demo App Store account
-    const isOtpBypassed = email === 'saadsyed950@gmail.com' && otp === '123456';
+    // // Bypass OTP only for the demo App Store account
+    // const isOtpBypassed = email === 'saadsyed950@gmail.com' && otp === '123456';
 
-    if (!isOtpBypassed) {
-        // Verify OTP normally
-        const isVerified = await verifyOTP(email, otp);
-        if (!isVerified) throw new Error('Invalid or expired OTP');
-    }
+    // if (!isOtpBypassed) {
+    //     // Verify OTP normally
+    //     const isVerified = await verifyOTP(email, otp);
+    //     if (!isVerified) throw new Error('Invalid or expired OTP');
+    // }
 
     // Generate JWT
     const token = generateToken(userId);

@@ -81,3 +81,15 @@ export const getPassedFailedUsers = async (req: Request, res: Response) => {
         return res.status(500).json({ error: error.message }); // Handle errors
     }
 };
+
+// Get all questions controller
+export const getAllQuestions = async (req: Request, res: Response) => {
+    try {
+        const { courseId } = req.params;
+
+        const questions = await courseService.fetchAllQuestions(courseId);
+        return res.status(200).json(questions);
+    } catch (error: any) {
+        return res.status(400).json({ error: error.message }); // Handle errors
+    }
+};
