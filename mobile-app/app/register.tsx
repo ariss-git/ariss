@@ -90,13 +90,13 @@ const RegisterSendOTP = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View className="flex-1 justify-between bg-black px-6 py-10">
-        {/* <Text className="mt-10 text-center font-posterama text-6xl font-extrabold text-white">
+        <Text className="mt-10 text-center font-posterama text-6xl font-extrabold text-white">
           ARISS
-        </Text> */}
+        </Text>
 
-        <View className="flex w-full items-center justify-center">
+        {/* <View className="flex w-full items-center justify-center">
           <Image source={require('../assets/1.png')} className="h-64 w-64" />
-        </View>
+        </View> */}
 
         <View>
           <Text className="mb-2 font-worksans text-3xl font-bold uppercase text-white">
