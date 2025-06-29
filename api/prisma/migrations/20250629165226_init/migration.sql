@@ -1,4 +1,7 @@
 -- CreateEnum
+CREATE TYPE "CourseStatus" AS ENUM ('PASSED', 'FAILED');
+
+-- CreateEnum
 CREATE TYPE "EmployeeType" AS ENUM ('ADMIN', 'EMPLOYEE');
 
 -- CreateEnum
@@ -136,15 +139,40 @@ CREATE TABLE "Discount" (
 -- CreateTable
 CREATE TABLE "Order" (
     "order_id" TEXT NOT NULL,
-    "quantity" INTEGER NOT NULL,
+    "business_name" TEXT NOT NULL,
+    "shipping_address" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
+    "usertype" TEXT NOT NULL,
+    "product_id" TEXT,
     "total_amount" DOUBLE PRECISION NOT NULL,
+    "quantity" INTEGER NOT NULL,
+    "coupon_code" TEXT,
+    "delivery_date" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "status" "OrderStatus" NOT NULL DEFAULT 'PENDING',
     "payment_mode" "PaymentMode" NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "dealer_id" TEXT,
-    "product_id" TEXT,
 
     CONSTRAINT "Order_pkey" PRIMARY KEY ("order_id")
+);
+
+-- CreateTable
+CREATE TABLE "Ledger" (
+    "ledger_id" TEXT NOT NULL,
+    "total" DOUBLE PRECISION NOT NULL,
+    "amount_paid" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "balance_due" DOUBLE PRECISION NOT NULL,
+    "due_date" TIMESTAMP(3),
+    "payment_mode" "PaymentMode" NOT NULL DEFAULT 'CREDIT',
+    "quantity" INTEGER NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "business_name" TEXT NOT NULL,
+    "shipping_address" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
+    "usertype" TEXT NOT NULL,
+    "product_id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Ledger_pkey" PRIMARY KEY ("ledger_id")
 );
 
 -- CreateTable
@@ -157,20 +185,6 @@ CREATE TABLE "Payment" (
     "order_id" TEXT NOT NULL,
 
     CONSTRAINT "Payment_pkey" PRIMARY KEY ("payment_id")
-);
-
--- CreateTable
-CREATE TABLE "Ledger" (
-    "ledger_id" TEXT NOT NULL,
-    "total_due" DOUBLE PRECISION NOT NULL,
-    "amount_paid" DOUBLE PRECISION NOT NULL,
-    "balance_due" DOUBLE PRECISION NOT NULL,
-    "due_date" TIMESTAMP(3) NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "dealer_id" TEXT NOT NULL,
-    "order_id" TEXT NOT NULL,
-
-    CONSTRAINT "Ledger_pkey" PRIMARY KEY ("ledger_id")
 );
 
 -- CreateTable
@@ -204,52 +218,6 @@ CREATE TABLE "RMA" (
 );
 
 -- CreateTable
-CREATE TABLE "Course" (
-    "course_id" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
-    "content" JSONB NOT NULL,
-    "isPublished" BOOLEAN NOT NULL DEFAULT false,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "Course_pkey" PRIMARY KEY ("course_id")
-);
-
--- CreateTable
-CREATE TABLE "CourseQuestion" (
-    "question_id" TEXT NOT NULL,
-    "course_id" TEXT NOT NULL,
-    "question" TEXT NOT NULL,
-    "options" TEXT[],
-    "answer" INTEGER NOT NULL,
-
-    CONSTRAINT "CourseQuestion_pkey" PRIMARY KEY ("question_id")
-);
-
--- CreateTable
-CREATE TABLE "CourseEnrollment" (
-    "enrollment_id" TEXT NOT NULL,
-    "course_id" TEXT NOT NULL,
-    "user_id" TEXT NOT NULL,
-    "user_type" "UserType" NOT NULL,
-    "enrolledAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "isPassed" BOOLEAN NOT NULL DEFAULT false,
-    "passedAt" TIMESTAMP(3),
-    "grade" DOUBLE PRECISION,
-
-    CONSTRAINT "CourseEnrollment_pkey" PRIMARY KEY ("enrollment_id")
-);
-
--- CreateTable
-CREATE TABLE "CourseAnswer" (
-    "answer_id" TEXT NOT NULL,
-    "enrollment_id" TEXT NOT NULL,
-    "question_id" TEXT NOT NULL,
-    "selected" INTEGER NOT NULL,
-
-    CONSTRAINT "CourseAnswer_pkey" PRIMARY KEY ("answer_id")
-);
-
--- CreateTable
 CREATE TABLE "Admin" (
     "admin_id" TEXT NOT NULL,
     "fullname" TEXT NOT NULL,
@@ -278,6 +246,62 @@ CREATE TABLE "Employee" (
     CONSTRAINT "Employee_pkey" PRIMARY KEY ("emp_id")
 );
 
+-- CreateTable
+CREATE TABLE "Course" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Course_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Question" (
+    "id" TEXT NOT NULL,
+    "courseId" TEXT NOT NULL,
+    "text" TEXT NOT NULL,
+    "optionA" TEXT NOT NULL,
+    "optionB" TEXT NOT NULL,
+    "optionC" TEXT NOT NULL,
+    "optionD" TEXT NOT NULL,
+    "correct" TEXT NOT NULL,
+
+    CONSTRAINT "Question_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Enrollment" (
+    "id" TEXT NOT NULL,
+    "courseId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "userName" TEXT NOT NULL,
+    "businessName" TEXT NOT NULL,
+    "enrolledAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Enrollment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Result" (
+    "id" TEXT NOT NULL,
+    "courseId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "userName" TEXT NOT NULL,
+    "businessName" TEXT NOT NULL,
+    "score" INTEGER NOT NULL,
+    "percentage" DOUBLE PRECISION NOT NULL,
+    "status" "CourseStatus" NOT NULL,
+    "attempts" INTEGER NOT NULL DEFAULT 1,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Result_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Dealers_phone_key" ON "Dealers"("phone");
 
@@ -300,10 +324,10 @@ CREATE UNIQUE INDEX "Subcategory_subcategory_name_key" ON "Subcategory"("subcate
 CREATE UNIQUE INDEX "Discount_dealer_id_product_id_key" ON "Discount"("dealer_id", "product_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Payment_order_id_key" ON "Payment"("order_id");
+CREATE UNIQUE INDEX "Ledger_product_id_key" ON "Ledger"("product_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Ledger_order_id_key" ON "Ledger"("order_id");
+CREATE UNIQUE INDEX "Payment_order_id_key" ON "Payment"("order_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Wishlist_product_id_key" ON "Wishlist"("product_id");
@@ -321,12 +345,6 @@ CREATE UNIQUE INDEX "RMA_phone_key" ON "RMA"("phone");
 CREATE UNIQUE INDEX "RMA_product_serial_key" ON "RMA"("product_serial");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "CourseEnrollment_course_id_user_id_key" ON "CourseEnrollment"("course_id", "user_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "CourseAnswer_enrollment_id_question_id_key" ON "CourseAnswer"("enrollment_id", "question_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Admin_email_key" ON "Admin"("email");
 
 -- CreateIndex
@@ -334,6 +352,9 @@ CREATE UNIQUE INDEX "Admin_phone_key" ON "Admin"("phone");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Employee_email_key" ON "Employee"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Result_userId_courseId_key" ON "Result"("userId", "courseId");
 
 -- AddForeignKey
 ALTER TABLE "Technicians" ADD CONSTRAINT "Technicians_dealerid_fkey" FOREIGN KEY ("dealerid") REFERENCES "Dealers"("dealer_id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -357,19 +378,13 @@ ALTER TABLE "Discount" ADD CONSTRAINT "Discount_dealer_id_fkey" FOREIGN KEY ("de
 ALTER TABLE "Discount" ADD CONSTRAINT "Discount_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "Product"("product_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Order" ADD CONSTRAINT "Order_dealer_id_fkey" FOREIGN KEY ("dealer_id") REFERENCES "Dealers"("dealer_id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Order" ADD CONSTRAINT "Order_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "Product"("product_id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Ledger" ADD CONSTRAINT "Ledger_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "Product"("product_id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Payment" ADD CONSTRAINT "Payment_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "Order"("order_id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Ledger" ADD CONSTRAINT "Ledger_dealer_id_fkey" FOREIGN KEY ("dealer_id") REFERENCES "Dealers"("dealer_id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Ledger" ADD CONSTRAINT "Ledger_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "Order"("order_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Wishlist" ADD CONSTRAINT "Wishlist_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "Product"("product_id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -378,13 +393,10 @@ ALTER TABLE "Wishlist" ADD CONSTRAINT "Wishlist_product_id_fkey" FOREIGN KEY ("p
 ALTER TABLE "Wishlist" ADD CONSTRAINT "Wishlist_dealer_id_fkey" FOREIGN KEY ("dealer_id") REFERENCES "Dealers"("dealer_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "CourseQuestion" ADD CONSTRAINT "CourseQuestion_course_id_fkey" FOREIGN KEY ("course_id") REFERENCES "Course"("course_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Question" ADD CONSTRAINT "Question_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "CourseEnrollment" ADD CONSTRAINT "CourseEnrollment_course_id_fkey" FOREIGN KEY ("course_id") REFERENCES "Course"("course_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Enrollment" ADD CONSTRAINT "Enrollment_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "CourseAnswer" ADD CONSTRAINT "CourseAnswer_enrollment_id_fkey" FOREIGN KEY ("enrollment_id") REFERENCES "CourseEnrollment"("enrollment_id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "CourseAnswer" ADD CONSTRAINT "CourseAnswer_question_id_fkey" FOREIGN KEY ("question_id") REFERENCES "CourseQuestion"("question_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Result" ADD CONSTRAINT "Result_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course"("id") ON DELETE CASCADE ON UPDATE CASCADE;
