@@ -36,7 +36,7 @@ import { toast } from '../../hooks/use-toast';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const apiURL = 'https://ariss-production.up.railway.app/api';
+const apiURL = 'https://ariss-app-dev.onrender.com/api';
 
 type Discount = {
     discount_id: string;

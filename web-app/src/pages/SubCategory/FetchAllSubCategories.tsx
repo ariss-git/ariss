@@ -45,7 +45,7 @@ import { toast } from '../../hooks/use-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const apiURL = 'https://ariss-production.up.railway.app/api';
+const apiURL = 'https://ariss-app-dev.onrender.com/api';
 
 export type Subcategory = {
     subcategory_id: string;

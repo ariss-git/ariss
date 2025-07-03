@@ -37,7 +37,7 @@ export interface BackOfficeRegistrationData {
   dealerId: string;
 }
 
-const API_URL = 'https://ariss-production.up.railway.app/api';
+const API_URL = 'https://ariss-app-dev.onrender.com/api';
 
 export const sendOTP = async (phone: string, email: string) => {
   return axios.post(`${API_URL}/otp`, { phone, email });
@@ -64,7 +64,7 @@ export const registerBackOffice = async (backOfficeData: BackOfficeRegistrationD
 };
 
 export const dealerProfile = async (token: string) => {
-  return axios.get('https://ariss-production.up.railway.app/api/dealer/profile', {
+  return axios.get('https://ariss-app-dev.onrender.com/api/dealer/profile', {
     headers: {
       Authorization: `Bearer ${token}`, // Send token in Authorization header
     },
@@ -73,7 +73,7 @@ export const dealerProfile = async (token: string) => {
 };
 
 export const backOfficeProfile = async (token: string) => {
-  return axios.get('https://ariss-production.up.railway.app/api/back-office/check', {
+  return axios.get('https://ariss-app-dev.onrender.com/api/back-office/check', {
     headers: {
       Authorization: `Bearer ${token}`, // Send token in Authorization header
     },
@@ -82,7 +82,7 @@ export const backOfficeProfile = async (token: string) => {
 };
 
 export const technicianProfile = async (token: string) => {
-  return axios.get('https://ariss-production.up.railway.app/api/technician/check', {
+  return axios.get('https://ariss-app-dev.onrender.com/api/technician/check', {
     headers: {
       Authorization: `Bearer ${token}`, // Send token in Authorization header
     },
