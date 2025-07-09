@@ -4,33 +4,37 @@ import { SplashScreen, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import Toast from 'react-native-toast-message';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'; // Import these
 
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 
-SplashScreen.preventAutoHideAsync(); // prevent splash screen from hiding too early
+SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({
     Posterama: require('../assets/fonts/Posterama.ttf'),
     WorkSans: require('../assets/fonts/HankenGrotesk.ttf'),
-    // Add more styles if needed
   });
 
   useEffect(() => {
     if (fontsLoaded) {
-      SplashScreen.hideAsync(); // hide splash once fonts are ready
+      SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
 
   if (!fontsLoaded) {
-    return null; // Optional: Show a loader here
+    return null;
   }
 
   return (
-    <GluestackUIProvider mode="light">
-      <StatusBar hidden />
-      <Stack screenOptions={{ headerShown: false }} />
-      <Toast />
-    </GluestackUIProvider>
+    <SafeAreaProvider> 
+      <GluestackUIProvider mode="light">
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+          <StatusBar hidden />
+          <Stack screenOptions={{ headerShown: false }} />
+          <Toast />
+        </SafeAreaView>
+      </GluestackUIProvider>
+    </SafeAreaProvider>
   );
 }
