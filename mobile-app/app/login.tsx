@@ -94,6 +94,8 @@ export default function Login() {
     }
   };
 
+  const paddingClass = Platform.OS === 'ios' ? 'p-4' : 'p-0 px-2 py-1';
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View className="flex-1 justify-between bg-black px-6 py-10">
@@ -115,7 +117,8 @@ export default function Login() {
           </Text>
 
           {/* Mobile Number Input with +91 prefix */}
-          <View className="my-4 flex-row items-center rounded-xl border border-gray-500 p-4">
+          <View
+            className={`my-4 flex-row items-center rounded-xl border border-gray-500 p-4 ${paddingClass}`}>
             <View className="mr-2 w-[50px]">
               <TextInput
                 className="text-center font-worksans text-white"
@@ -136,7 +139,8 @@ export default function Login() {
           </View>
 
           {/* Email Input */}
-          <View className="my-2 flex-row items-center rounded-xl border border-gray-500 p-4">
+          <View
+            className={`my-2 flex-row items-center rounded-xl border border-gray-500 p-4 ${paddingClass}`}>
             <TextInput
               className="flex-1 font-worksans text-white"
               placeholder="Email Address"
