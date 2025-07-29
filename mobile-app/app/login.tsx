@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
-  Image,
+  Platform,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -153,6 +153,13 @@ export default function Login() {
             <Select onValueChange={(val) => setUserType(val as UserType)} selectedValue={userType}>
               <SelectTrigger className="rounded-xl bg-transparent px-4 py-3">
                 <SelectInput
+                  style={{
+                    color: 'white',
+                    fontFamily: 'WorkSans',
+                    paddingVertical: Platform.OS === 'android' ? 8 : 0,
+                    height: 48,
+                    textAlignVertical: 'center',
+                  }}
                   placeholder="Select User Type"
                   placeholderTextColor="#999"
                   className="font-worksans text-white"
