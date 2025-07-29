@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  Image,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -99,12 +100,12 @@ export default function Login() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View className="flex-1 justify-between bg-black px-6 py-10">
-        <Text className="mt-10 text-center font-posterama text-6xl font-extralight text-white">
+        {/* <Text className="mt-10 text-center font-posterama text-6xl font-extralight text-white">
           ARISS
-        </Text>
-        {/* <View className="flex w-full items-center justify-center">
+        </Text> */}
+        <View className="flex w-full items-center justify-center">
           <Image source={require('../assets/1.png')} className="h-64 w-64" />
-        </View> */}
+        </View>
 
         <View>
           <Text

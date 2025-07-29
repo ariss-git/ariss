@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ActivityIndicator,
+  Platform,
   Image,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -87,16 +88,18 @@ const RegisterSendOTP = () => {
     // }
   };
 
+  const paddingClass = Platform.OS === 'ios' ? 'p-4' : 'p-0 px-2 py-1';
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View className="flex-1 justify-between bg-black px-6 py-10">
-        <Text className="mt-10 text-center font-posterama text-6xl font-extrabold text-white">
-          ARISS
-        </Text>
+        {/* <Text className="mt-10 text-center font-posterama text-6xl font-extrabold text-white">
+            ARISS
+          </Text> */}
 
-        {/* <View className="flex w-full items-center justify-center">
+        <View className="flex w-full items-center justify-center">
           <Image source={require('../assets/1.png')} className="h-64 w-64" />
-        </View> */}
+        </View>
 
         <View>
           <Text className="mb-2 font-worksans text-3xl font-bold uppercase text-white">
@@ -107,7 +110,8 @@ const RegisterSendOTP = () => {
           </Text>
 
           {/* Mobile Number Input with +91 prefix */}
-          <View className="my-4 flex-row items-center rounded-xl border border-gray-500 p-4">
+          <View
+            className={`my-4 flex-row items-center rounded-xl border border-gray-500 p-4 ${paddingClass}`}>
             <View className="mr-2 w-[50px]">
               <Text className="text-center font-worksans text-white">+91</Text>
             </View>
@@ -122,7 +126,8 @@ const RegisterSendOTP = () => {
             />
           </View>
 
-          <View className="mb-6 flex-row items-center rounded-xl border border-gray-500 p-4">
+          <View
+            className={`mb-6 flex-row items-center rounded-xl border border-gray-500 p-4 ${paddingClass}`}>
             <TextInput
               className="flex-1 font-worksans text-white"
               placeholder="Email Address"
