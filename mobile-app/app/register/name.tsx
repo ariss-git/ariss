@@ -1,7 +1,7 @@
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Platform } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { ChevronDownIcon } from '~/components/ui/icon';
@@ -76,6 +76,8 @@ export default function RegisterName() {
     }
   };
 
+  const paddingClass = Platform.OS === 'ios' ? 'p-4' : 'p-0 px-2 py-1';
+
   return (
     <View className="flex-1 justify-between bg-black px-6 py-10">
       <View>
@@ -87,7 +89,8 @@ export default function RegisterName() {
       </View>
 
       <View>
-        <View className="my-4 flex-row items-center rounded-xl border border-gray-500 p-4">
+        <View
+          className={`my-4 flex-row items-center rounded-xl border border-gray-500 p-4 ${paddingClass}`}>
           <TextInput
             className="flex-1 font-worksans text-white"
             placeholder="First Name"
@@ -98,7 +101,8 @@ export default function RegisterName() {
           />
         </View>
 
-        <View className="my-4 flex-row items-center rounded-xl border border-gray-500 p-4">
+        <View
+          className={`my-4 flex-row items-center rounded-xl border border-gray-500 p-4 ${paddingClass}`}>
           <TextInput
             className="flex-1 font-worksans text-white"
             placeholder="Last Name"
@@ -114,6 +118,13 @@ export default function RegisterName() {
           <Select onValueChange={(val) => setUserType(val as UserType)} selectedValue={userType}>
             <SelectTrigger className="rounded-xl bg-transparent px-4 py-3">
               <SelectInput
+                style={{
+                  color: 'white',
+                  fontFamily: 'WorkSans',
+                  paddingVertical: Platform.OS === 'android' ? 8 : 0,
+                  height: 48,
+                  textAlignVertical: 'center',
+                }}
                 placeholder="Select User Type"
                 placeholderTextColor="#999"
                 className="font-worksans text-white"
