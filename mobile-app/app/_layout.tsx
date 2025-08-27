@@ -27,9 +27,9 @@ export default function Layout() {
   }
 
   return (
-    <SafeAreaProvider> 
+    <SafeAreaProvider>
       <GluestackUIProvider mode="light">
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
           <StatusBar hidden />
           <Stack screenOptions={{ headerShown: false }} />
           <Toast />
