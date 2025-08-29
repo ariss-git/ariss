@@ -5,52 +5,62 @@ import { prisma } from '../db/prismaSingleton.js';
 import { verifyOTP } from './otp.service.js';
 import { confirmRegisterBackOffice } from '../lib/confirmRegister.js';
 
-// Service to Register Back Office
-export const registerBackOfficeService = async (
-    phone: string,
-    email: string,
-    first_name: string,
-    last_name: string,
-    usertype: string,
-    dealerId: string,
-    otp: string
-) => {
-    // Check if Back Office account exists already
-    const existingBackOffice = await prisma.backOffice.findFirst({ where: { OR: [{ email }, { phone }] } });
-    if (existingBackOffice) throw new Error('Back Office account already exists');
+export class BackOfficeService {
+    private prismaClient;
 
-    // Setting proper type for Enum
-    const userTypeEnum = usertype as UserType;
-    if (!Object.values(UserType).includes(userTypeEnum)) {
-        throw new Error(`Invalid user type: ${usertype}`);
+    constructor(prismaClient = prisma) {
+        this.prismaClient = prismaClient;
     }
 
-    // Verify dealer id
-    const existingDealer = await prisma.dealers.findUnique({
-        where: {
-            dealer_id: dealerId,
-        },
-    });
+    // Service method to register a back office user
+    async registerBackOfficeService(
+        phone: string,
+        email: string,
+        first_name: string,
+        last_name: string,
+        usertype: string,
+        dealerId: string,
+        otp: string
+    ) {
+        // Check if Back Office account exists already
+        const existingBackOffice = await prisma.backOffice.findFirst({
+            where: { OR: [{ email }, { phone }] },
+        });
+        if (existingBackOffice) throw new Error('Back Office account already exists');
 
-    if (!existingDealer) throw new Error('Dealer with this ID does not exist');
+        // Setting proper type for Enum
+        const userTypeEnum = usertype as UserType;
+        if (!Object.values(UserType).includes(userTypeEnum)) {
+            throw new Error(`Invalid user type: ${usertype}`);
+        }
 
-    // Verify OTP before register
-    if (!(await verifyOTP(email, otp))) throw new Error('Invalid or expired OTP');
+        // Verify dealer id
+        const existingDealer = await prisma.dealers.findUnique({
+            where: {
+                dealer_id: dealerId,
+            },
+        });
 
-    confirmRegisterBackOffice(phone, first_name, last_name, email);
+        if (!existingDealer) throw new Error('Dealer with this ID does not exist');
 
-    // Register Back Office
-    return await prisma.backOffice.create({
-        data: {
-            phone,
-            email,
-            first_name,
-            last_name,
-            usertype: userTypeEnum,
-            dealerid: dealerId,
-        },
-    });
-};
+        // Verify OTP before register
+        if (!(await verifyOTP(email, otp))) throw new Error('Invalid or expired OTP');
+
+        confirmRegisterBackOffice(phone, first_name, last_name, email);
+
+        // Register Back Office
+        return await prisma.backOffice.create({
+            data: {
+                phone,
+                email,
+                first_name,
+                last_name,
+                usertype: userTypeEnum,
+                dealerid: dealerId,
+            },
+        });
+    }
+}
 
 // Service to verify Back Office is logged in
 export const isBackOfficeSignedIn = async (backoffice_id: string) => {
