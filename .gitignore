@@ -58,5 +58,8 @@ out/
 .idea/
 .v
 
-#Ignore workflow dir
+# Ignore workflow dir
 workflows/
+
+# Ignore misc.
+TODO.txt
