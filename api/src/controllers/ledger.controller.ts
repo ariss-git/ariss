@@ -1,9 +1,15 @@
 // src/controllers/ledger.controller.ts
 
-import * as ledgerServices from '../services/ledger.service.js';
+import { LedgerService } from '../services/ledger.service.js';
 import { Request, Response } from 'express';
 
-// Controller to create a ledger order
+const ledgerServices = new LedgerService();
+
+/**
+ * @desc      Controller to create a new ledger order
+ * @route     POST /ledger
+ * @access    Public (or auth-protected if middleware is applied)
+ */
 export const createLedgerController = async (req: Request, res: Response) => {
     const {
         product_id,
@@ -49,7 +55,11 @@ export const createLedgerController = async (req: Request, res: Response) => {
     }
 };
 
-// Controller to fetch all ledger orders
+/**
+ * @desc      Controller to fetch all ledger orders
+ * @route     GET /ledger
+ * @access    Public
+ */
 export const fetchAllLedgerController = async (req: Request, res: Response) => {
     try {
         const ledger = await ledgerServices.fetchAllLedgerService();
@@ -59,7 +69,11 @@ export const fetchAllLedgerController = async (req: Request, res: Response) => {
     }
 };
 
-// Controller to fetch single ledger orders
+/**
+ * @desc      Controller to fetch a single ledger order by ID
+ * @route     GET /ledger/:ledger_id
+ * @access    Public
+ */
 export const fetchSingleLedgerController = async (req: Request, res: Response) => {
     const { ledger_id } = req.params;
 
@@ -77,7 +91,11 @@ export const fetchSingleLedgerController = async (req: Request, res: Response) =
     }
 };
 
-// Controller to fetch single ledger orders for a user
+/**
+ * @desc      Controller to fetch all ledger orders for a specific user
+ * @route     GET /ledger/user/:user_id
+ * @access    Public
+ */
 export const fetchUserLedgerController = async (req: Request, res: Response) => {
     const { user_id } = req.params;
 
@@ -95,7 +113,11 @@ export const fetchUserLedgerController = async (req: Request, res: Response) => 
     }
 };
 
-// Controller to set due date of ledger orders
+/**
+ * @desc      Controller to set the due date for a ledger order
+ * @route     PATCH /ledger/:ledger_id/due-date
+ * @access    Public
+ */
 export const setDueDateController = async (req: Request, res: Response) => {
     const { ledger_id } = req.params;
     const { due_date } = req.body;
@@ -118,7 +140,11 @@ export const setDueDateController = async (req: Request, res: Response) => {
     }
 };
 
-// Controller to update amount
+/**
+ * @desc      Controller to update the amount paid on a ledger order
+ * @route     PATCH /ledger/:ledger_id/amount
+ * @access    Public
+ */
 export const updateAmountsController = async (req: Request, res: Response) => {
     const { ledger_id } = req.params;
     const { amount_paid } = req.body;
@@ -141,7 +167,11 @@ export const updateAmountsController = async (req: Request, res: Response) => {
     }
 };
 
-// Controller to cancel ledger order
+/**
+ * @desc      Controller to cancel a ledger order
+ * @route     DELETE /ledger/:ledger_id
+ * @access    Public
+ */
 export const cancelLedgerOrderController = async (req: Request, res: Response) => {
     const { ledger_id } = req.params;
 
