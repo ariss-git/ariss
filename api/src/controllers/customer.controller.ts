@@ -1,25 +1,9 @@
 // src/controllers/customer.controller.ts
 
-import {
-    approveDealerService,
-    deleteBackOfficeService,
-    deleteDealerService,
-    deleteTechnicianService,
-    disapproveDealerService,
-    fetchAllCustomersService,
-    getAllApprovedCustomerService,
-    getAllBackOfficeService,
-    getAllDistributorCustomerService,
-    getAllNotApprovedCustomerService,
-    getAllTechniciansService,
-    getSingleDealerService,
-    updateBackOfficeService,
-    updateDealerService,
-    updateDistributorToDealerService,
-    updateTechnicianService,
-    updateToDistributorService,
-} from '../services/customer.service.js';
+import { CustomerService } from '../services/customer.service.js';
 import { Request, Response } from 'express';
+
+const customerServices = new CustomerService();
 
 /**
  * =========================
@@ -30,7 +14,7 @@ import { Request, Response } from 'express';
 // Fetch all approved dealers
 export const getAllApprovedCustomerController = async (req: Request, res: Response) => {
     try {
-        const dealers = await getAllApprovedCustomerService();
+        const dealers = await customerServices.getAllApprovedCustomerService();
 
         if (!dealers) {
             return res
@@ -53,7 +37,7 @@ export const getSingleDealerController = async (req: Request, res: Response) => 
             return res.status(400).json({ success: false, error: 'Dealer with this ID is invalid' });
         }
 
-        const dealer = await getSingleDealerService(dealer_id);
+        const dealer = await customerServices.getSingleDealerService(dealer_id);
         return res.status(200).json({ success: true, data: dealer });
     } catch (error: any) {
         return res.status(400).json({ success: false, error: error.message });
@@ -63,7 +47,7 @@ export const getSingleDealerController = async (req: Request, res: Response) => 
 // Fetch all non-approved dealers
 export const getAllNotApprovedCustomerController = async (_req: Request, res: Response) => {
     try {
-        const dealers = await getAllNotApprovedCustomerService();
+        const dealers = await customerServices.getAllNotApprovedCustomerService();
 
         if (!dealers) {
             return res
@@ -86,7 +70,7 @@ export const approveDealerController = async (req: Request, res: Response) => {
             res.status(400).json({ message: 'Dealer ID is required' });
         }
 
-        const approve = await approveDealerService(dealer_id);
+        const approve = await customerServices.approveDealerService(dealer_id);
 
         return res.status(200).json({ success: true, message: `${approve.business_name} is approved` });
     } catch (error: any) {
@@ -103,7 +87,7 @@ export const disapproveDealerController = async (req: Request, res: Response) =>
             res.status(400).json({ message: 'Dealer ID is required' });
         }
 
-        const approve = await disapproveDealerService(dealer_id);
+        const approve = await customerServices.disapproveDealerService(dealer_id);
 
         return res.status(200).json({ success: true, message: `${approve.business_name} is disapproved` });
     } catch (error: any) {
@@ -121,7 +105,13 @@ export const updateDealerController = async (req: Request, res: Response) => {
             res.status(400).json({ message: 'Dealer ID is required' });
         }
 
-        const dealer = await updateDealerService(dealer_id, first_name, last_name, profile_pic, isApproved);
+        const dealer = await customerServices.updateDealerService(
+            dealer_id,
+            first_name,
+            last_name,
+            profile_pic,
+            isApproved
+        );
 
         return res.json({ success: true, data: dealer });
     } catch (error: any) {
@@ -138,7 +128,7 @@ export const updateToDistributorController = async (req: Request, res: Response)
             res.status(400).json({ message: 'Dealer ID is required' });
         }
 
-        const distributor = await updateToDistributorService(dealer_id);
+        const distributor = await customerServices.updateToDistributorService(dealer_id);
 
         return res.json({
             success: true,
@@ -159,7 +149,7 @@ export const updateDistributorToDealerController = async (req: Request, res: Res
             res.status(400).json({ message: 'Dealer ID is required' });
         }
 
-        const distributor = await updateDistributorToDealerService(dealer_id);
+        const distributor = await customerServices.updateDistributorToDealerService(dealer_id);
 
         return res.json({
             success: true,
@@ -180,7 +170,7 @@ export const deleteDealerController = async (req: Request, res: Response) => {
             return res.status(404).json({ success: false, error: 'Dealer ID is required' });
         }
 
-        const dealer = await deleteDealerService(dealer_id);
+        const dealer = await customerServices.deleteDealerService(dealer_id);
 
         return res.status(200).json({
             success: true,
@@ -200,7 +190,7 @@ export const deleteDealerController = async (req: Request, res: Response) => {
 // Fetch all technicians
 export const getAllTechniciansController = async (req: Request, res: Response) => {
     try {
-        const technicians = await getAllTechniciansService();
+        const technicians = await customerServices.getAllTechniciansService();
 
         if (!technicians) {
             return res.status(400).json({ success: false, error: 'Failed fetching all the technicians' });
@@ -222,7 +212,7 @@ export const updateTechnicianController = async (req: Request, res: Response) =>
             res.status(400).json({ message: 'Technician ID is required' });
         }
 
-        const technician = await updateTechnicianService(
+        const technician = await customerServices.updateTechnicianService(
             tech_id,
             first_name,
             last_name,
@@ -245,7 +235,7 @@ export const deleteTechnicianController = async (req: Request, res: Response) =>
             return res.status(404).json({ success: false, error: 'Technician ID is required' });
         }
 
-        const technician = await deleteTechnicianService(tech_id);
+        const technician = await customerServices.deleteTechnicianService(tech_id);
 
         return res.status(200).json({
             success: true,
@@ -265,7 +255,7 @@ export const deleteTechnicianController = async (req: Request, res: Response) =>
 // Fetch all back office users
 export const getAllBackOfficeController = async (req: Request, res: Response) => {
     try {
-        const backOffice = await getAllBackOfficeService();
+        const backOffice = await customerServices.getAllBackOfficeService();
 
         if (!backOffice) {
             return res.status(400).json({ success: false, error: 'Failed fetching all the back office' });
@@ -287,7 +277,12 @@ export const updateBackOfficeController = async (req: Request, res: Response) =>
             res.status(400).json({ message: 'Back Office ID is required' });
         }
 
-        const backOffice = await updateBackOfficeService(backoffice_id, first_name, last_name, profile_pic);
+        const backOffice = await customerServices.updateBackOfficeService(
+            backoffice_id,
+            first_name,
+            last_name,
+            profile_pic
+        );
 
         return res.json({ success: true, data: backOffice });
     } catch (error: any) {
@@ -304,7 +299,7 @@ export const deleteBackOfficeController = async (req: Request, res: Response) =>
             return res.status(404).json({ success: false, error: 'Back Office ID is required' });
         }
 
-        const backOffice = await deleteBackOfficeService(backoffice_id);
+        const backOffice = await customerServices.deleteBackOfficeService(backoffice_id);
 
         return res.status(200).json({
             success: true,
@@ -324,7 +319,7 @@ export const deleteBackOfficeController = async (req: Request, res: Response) =>
 // Fetch all dealers marked as distributors
 export const getAllDistributorCustomerController = async (_req: Request, res: Response) => {
     try {
-        const distributors = await getAllDistributorCustomerService();
+        const distributors = await customerServices.getAllDistributorCustomerService();
 
         if (!distributors) {
             return res.status(400).json({ success: false, error: 'Failed fetching all the distributors' });
@@ -345,7 +340,7 @@ export const getAllDistributorCustomerController = async (_req: Request, res: Re
 // Fetch all sorts of customers controller
 export const fetchAllCustomersController = async (_req: Request, res: Response) => {
     try {
-        const customers = await fetchAllCustomersService();
+        const customers = await customerServices.fetchAllCustomersService();
 
         if (!customers.dealers) {
             return res.status(404).json({ success: true, error: 'There was an error fetching dealers' });
