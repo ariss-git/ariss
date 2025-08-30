@@ -23,7 +23,7 @@ export class BackOfficeService {
         otp: string
     ) {
         // Check if Back Office account exists already
-        const existingBackOffice = await prisma.backOffice.findFirst({
+        const existingBackOffice = await this.prismaClient.backOffice.findFirst({
             where: { OR: [{ email }, { phone }] },
         });
         if (existingBackOffice) throw new Error('Back Office account already exists');
@@ -35,7 +35,7 @@ export class BackOfficeService {
         }
 
         // Verify dealer id
-        const existingDealer = await prisma.dealers.findUnique({
+        const existingDealer = await this.prismaClient.dealers.findUnique({
             where: {
                 dealer_id: dealerId,
             },
@@ -49,7 +49,7 @@ export class BackOfficeService {
         confirmRegisterBackOffice(phone, first_name, last_name, email);
 
         // Register Back Office
-        return await prisma.backOffice.create({
+        return await this.prismaClient.backOffice.create({
             data: {
                 phone,
                 email,
@@ -60,107 +60,107 @@ export class BackOfficeService {
             },
         });
     }
-}
 
-// Service to verify Back Office is logged in
-export const isBackOfficeSignedIn = async (backoffice_id: string) => {
-    return await prisma.backOffice.findUnique({
-        where: {
-            backoffice_id,
-        },
-        select: {
-            backoffice_id: true,
-            phone: true,
-            email: true,
-            first_name: true,
-            last_name: true,
-            profile_pic: true,
-            dealerid: true,
-            createdAt: true,
-            usertype: true,
-            dealer: {
-                select: {
-                    business_name: true,
-                    shipping_address: true,
+    // Service method to verify Back Office is logged in
+    async isBackOfficeSignedIn(backoffice_id: string) {
+        return await this.prismaClient.backOffice.findUnique({
+            where: {
+                backoffice_id,
+            },
+            select: {
+                backoffice_id: true,
+                phone: true,
+                email: true,
+                first_name: true,
+                last_name: true,
+                profile_pic: true,
+                dealerid: true,
+                createdAt: true,
+                usertype: true,
+                dealer: {
+                    select: {
+                        business_name: true,
+                        shipping_address: true,
+                    },
                 },
             },
-        },
-    });
-};
+        });
+    }
 
-// Service to approve a back office
-export const approveBackOfficeService = async (dealer_id: string, backoffice_id: string) => {
-    const existingBackOffice = await prisma.backOffice.findUnique({
-        where: { backoffice_id, dealerid: dealer_id },
-    });
+    // Service method to approve a back office user
+    async approveBackOfficeService(dealer_id: string, backoffice_id: string) {
+        const existingBackOffice = await this.prismaClient.backOffice.findUnique({
+            where: { backoffice_id, dealerid: dealer_id },
+        });
 
-    if (!existingBackOffice) throw new Error('BackOffice do not exist');
+        if (!existingBackOffice) throw new Error('BackOffice do not exist');
 
-    return await prisma.backOffice.update({
-        where: {
-            backoffice_id,
-        },
-        data: {
-            isApproved: true,
-        },
-    });
-};
+        return await this.prismaClient.backOffice.update({
+            where: {
+                backoffice_id,
+            },
+            data: {
+                isApproved: true,
+            },
+        });
+    }
 
-// Service to fetch all approved back-offices
-export const getAllApprovedBackOfficesService = async (dealer_id: string) => {
-    const existingDealer = await prisma.dealers.findUnique({
-        where: {
-            dealer_id,
-        },
-    });
-    if (!existingDealer) throw new Error('Dealer with this ID is not found');
+    // Service method to fetch all approved back offices users
+    async getAllApprovedBackOfficesService(dealer_id: string) {
+        const existingDealer = await this.prismaClient.dealers.findUnique({
+            where: {
+                dealer_id,
+            },
+        });
+        if (!existingDealer) throw new Error('Dealer with this ID is not found');
 
-    return await prisma.backOffice.findMany({
-        where: {
-            isApproved: true,
-        },
-    });
-};
+        return await this.prismaClient.backOffice.findMany({
+            where: {
+                isApproved: true,
+            },
+        });
+    }
 
-// Service to fetch all not-approved back-offices
-export const getAllDisapprovedBackOfficesService = async (dealer_id: string) => {
-    const existingDealer = await prisma.dealers.findUnique({
-        where: {
-            dealer_id,
-        },
-    });
-    if (!existingDealer) throw new Error('Dealer with this ID is not found');
+    // Service method to fetch all not-approved back offices users
+    async getAllDisapprovedBackOfficesService(dealer_id: string) {
+        const existingDealer = await this.prismaClient.dealers.findUnique({
+            where: {
+                dealer_id,
+            },
+        });
+        if (!existingDealer) throw new Error('Dealer with this ID is not found');
 
-    return await prisma.backOffice.findMany({
-        where: {
-            isApproved: false,
-        },
-    });
-};
+        return await this.prismaClient.backOffice.findMany({
+            where: {
+                isApproved: false,
+            },
+        });
+    }
 
-// Service to disapprove a back office
-export const disapproveBackOfficeService = async (dealer_id: string, backoffice_id: string) => {
-    const existingBackOffice = await prisma.backOffice.findUnique({
-        where: { backoffice_id, dealerid: dealer_id },
-    });
+    // Service method to disapprove a back office user
+    async disapproveBackOfficeServicea(dealer_id: string, backoffice_id: string) {
+        const existingBackOffice = await this.prismaClient.backOffice.findUnique({
+            where: { backoffice_id, dealerid: dealer_id },
+        });
 
-    if (!existingBackOffice) throw new Error('BackOffice do not exist');
+        if (!existingBackOffice) throw new Error('BackOffice do not exist');
 
-    return await prisma.backOffice.update({
-        where: {
-            backoffice_id,
-        },
-        data: {
-            isApproved: false,
-        },
-    });
-};
+        return await this.prismaClient.backOffice.update({
+            where: {
+                backoffice_id,
+            },
+            data: {
+                isApproved: false,
+            },
+        });
+    }
 
-// Service to fetch all backoffices for a dealer
-export const getAllBackofficesForDealer = async (dealer_id: string) => {
-    return await prisma.backOffice.findMany({
-        where: {
-            dealerid: dealer_id,
-        },
-    });
-};
+    // Service method to fetch all back office users for a dealer
+    getAllBackofficesForDealer = async (dealer_id: string) => {
+        return await this.prismaClient.backOffice.findMany({
+            where: {
+                dealerid: dealer_id,
+            },
+        });
+    };
+}
