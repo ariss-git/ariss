@@ -1,30 +1,28 @@
 // src/controllers/discount.controller.ts
 
-import {
-    assignDiscountService,
-    deleteExpiredDiscountsService,
-    getAllDiscountsForDealerService,
-    getAllDiscountsService,
-    getSingleDiscount,
-} from '../services/discount.service.js';
+import { DiscountService } from '../services/discount.service.js';
 import { Request, Response } from 'express';
 
+const discountServices = new DiscountService();
+
+/**
+ * @desc      Assign a discount to a dealer
+ * @route     POST /
+ * @access    Public
+ */
 export const assignDiscountController = async (req: Request, res: Response) => {
     try {
         const { dealer_id, product_id, discount_type, expiry_date, amount, percentage } = req.body;
 
-        // Validate required fields
         if (!dealer_id || !product_id || !discount_type || !expiry_date) {
             return res.status(400).json({ success: false, message: 'Missing fields are required' });
         }
 
-        // Ensure correct type for amount and percentage based on discount type
         const parsedAmount = discount_type === 'AMOUNT' ? (amount ? Number(amount) : null) : null;
         const parsedPercentage =
             discount_type === 'PERCENTAGE' ? (percentage ? Number(percentage) : null) : null;
 
-        // Call service to assign discount
-        const discount = await assignDiscountService(
+        const discount = await discountServices.assignDiscountService(
             dealer_id,
             product_id,
             discount_type,
@@ -35,15 +33,19 @@ export const assignDiscountController = async (req: Request, res: Response) => {
 
         return res.status(201).json({ success: true, data: discount });
     } catch (error: any) {
-        console.error(error); // Log the error for better visibility
+        console.error(error);
         return res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// Controller to fetch all discounts
+/**
+ * @desc      Fetch all discounts
+ * @route     GET /
+ * @access    Public
+ */
 export const getAllDiscountsController = async (_req: Request, res: Response) => {
     try {
-        const discounts = await getAllDiscountsService();
+        const discounts = await discountServices.getAllDiscountsService();
 
         return res.status(200).json({ success: true, total: discounts.length, data: discounts });
     } catch (error: any) {
@@ -51,7 +53,11 @@ export const getAllDiscountsController = async (_req: Request, res: Response) =>
     }
 };
 
-// Controller to delete single discount
+/**
+ * @desc      Fetch a single discount by ID
+ * @route     DELETE /:discount_id
+ * @access    Public
+ */
 export const getSingleDiscountController = async (req: Request, res: Response) => {
     try {
         const { discount_id } = req.params;
@@ -60,7 +66,7 @@ export const getSingleDiscountController = async (req: Request, res: Response) =
             return res.status(404).json({ success: false, message: 'Discount ID is invalid' });
         }
 
-        const discount = await getSingleDiscount(discount_id);
+        const discount = await discountServices.getSingleDiscount(discount_id);
 
         return res.status(200).json({ success: true, data: discount });
     } catch (error: any) {
@@ -68,10 +74,14 @@ export const getSingleDiscountController = async (req: Request, res: Response) =
     }
 };
 
-// Controller to delete discount manually, if Cronjob fails
+/**
+ * @desc      Manually delete expired discounts (fallback if Cron fails)
+ * @route     DELETE /
+ * @access    Public
+ */
 export const deleteExpiredDiscountsController = async (_req: Request, res: Response) => {
     try {
-        await deleteExpiredDiscountsService();
+        await discountServices.deleteExpiredDiscountsService();
 
         return res.status(200).json({ success: true, message: 'Coupon code is successfully expired' });
     } catch (error: any) {
@@ -79,7 +89,11 @@ export const deleteExpiredDiscountsController = async (_req: Request, res: Respo
     }
 };
 
-// Controller to get all discounts for a dealer
+/**
+ * @desc      Fetch all discounts for a specific dealer
+ * @route     GET /app/:dealer_id
+ * @access    Public
+ */
 export const getAllDiscountsForDealerController = async (req: Request, res: Response) => {
     try {
         const { dealer_id } = req.params;
@@ -88,7 +102,7 @@ export const getAllDiscountsForDealerController = async (req: Request, res: Resp
             return res.status(404).json({ success: false, message: 'Dealer with this ID is not found' });
         }
 
-        const discounts = await getAllDiscountsForDealerService(dealer_id);
+        const discounts = await discountServices.getAllDiscountsForDealerService(dealer_id);
         return res.status(200).json({ success: true, total: discounts.length, data: discounts });
     } catch (error: any) {
         return res.status(400).json({ success: false, message: error.message });
