@@ -1,9 +1,10 @@
 // src/middleware/cronjob.middleware.ts
 import cron from 'node-cron';
-import { deleteExpiredDiscountsService } from '../services/discount.service.js';
+import { DiscountService } from '../services/discount.service.js';
+const discountServices = new DiscountService();
 cron.schedule('0 0 * * *', async () => {
     console.log('Running cron job: Deleting expired discounts...');
-    await deleteExpiredDiscountsService();
+    await discountServices.deleteExpiredDiscountsService();
 });
 // cron.schedule('*/5 * * * *', async () => {
 //     console.log('Running Auto-Dispatch Cron Job...');

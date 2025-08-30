@@ -5,152 +5,174 @@ import { prisma } from '../db/prismaSingleton.js';
 import { verifyOTP } from './otp.service.js';
 import { confirmRegisterTechnician } from '../lib/confirmRegister.js';
 
-// Service to Register Technician
-export const registerTechinicianService = async (
-    phone: string,
-    email: string,
-    first_name: string,
-    last_name: string,
-    usertype: string,
-    dealerId: string,
-    otp: string
-) => {
-    // Check if Techinian account exists already
-    const existingTechnician = await prisma.technicians.findFirst({ where: { OR: [{ email }, { phone }] } });
-    if (existingTechnician) throw new Error('Techinican account already exists');
+/**
+ * @class TechinianService
+ * @desc  Contains all business logic for technician management including registration, approval, and retrieval.
+ */
+export class TechinianService {
+    private prismaClient;
 
-    // Setting proper type for Enum
-    const userTypeEnum = usertype as UserType;
-    if (!Object.values(UserType).includes(userTypeEnum)) {
-        throw new Error(`Invalid user type: ${usertype}`);
+    constructor(prismaClient = prisma) {
+        this.prismaClient = prismaClient;
     }
 
-    // Verify dealer id
-    const existingDealer = await prisma.dealers.findUnique({
-        where: {
-            dealer_id: dealerId,
-        },
-    });
+    /**
+     * @desc    Registers a new technician after verifying OTP and dealer
+     * @param   phone Technician phone number
+     * @param   email Technician email
+     * @param   first_name Technician first name
+     * @param   last_name Technician last name
+     * @param   usertype User type (must be TECHNICIAN)
+     * @param   dealerId Associated dealer ID
+     * @param   otp One-time password for verification
+     * @returns Newly created technician record
+     * @throws  Error if technician exists, OTP invalid, or dealer invalid
+     */
+    async registerTechinicianService(
+        phone: string,
+        email: string,
+        first_name: string,
+        last_name: string,
+        usertype: string,
+        dealerId: string,
+        otp: string
+    ) {
+        const existingTechnician = await this.prismaClient.technicians.findFirst({
+            where: { OR: [{ email }, { phone }] },
+        });
+        if (existingTechnician) throw new Error('Techinican account already exists');
 
-    if (!existingDealer) throw new Error('Dealer with this ID does not exist');
+        const userTypeEnum = usertype as UserType;
+        if (!Object.values(UserType).includes(userTypeEnum)) {
+            throw new Error(`Invalid user type: ${usertype}`);
+        }
 
-    // Verify OTP before register
-    if (!(await verifyOTP(email, otp))) throw new Error('Invalid or expired OTP');
+        const existingDealer = await this.prismaClient.dealers.findUnique({
+            where: { dealer_id: dealerId },
+        });
+        if (!existingDealer) throw new Error('Dealer with this ID does not exist');
 
-    confirmRegisterTechnician(phone, first_name, last_name, email);
+        if (!(await verifyOTP(email, otp))) throw new Error('Invalid or expired OTP');
 
-    // Register techinician
-    return await prisma.technicians.create({
-        data: {
-            phone,
-            email,
-            first_name,
-            last_name,
-            usertype: userTypeEnum,
-            dealerid: dealerId,
-        },
-    });
-};
+        confirmRegisterTechnician(phone, first_name, last_name, email);
 
-// Service to verify technician is logged in
-export const isTechnicianSignedIn = async (tech_id: string) => {
-    return await prisma.technicians.findUnique({
-        where: {
-            tech_id,
-        },
-        select: {
-            tech_id: true,
-            phone: true,
-            email: true,
-            first_name: true,
-            last_name: true,
-            profile_pic: true,
-            dealerid: true,
-            createdAt: true,
-            usertype: true,
-            dealer: {
-                select: {
-                    business_name: true,
-                    shipping_address: true,
-                },
+        return await this.prismaClient.technicians.create({
+            data: {
+                phone,
+                email,
+                first_name,
+                last_name,
+                usertype: userTypeEnum,
+                dealerid: dealerId,
             },
-        },
-    });
-};
+        });
+    }
 
-// Service to approve a technician
-export const approveTechnicianService = async (dealer_id: string, tech_id: string) => {
-    const existingTechnician = await prisma.technicians.findUnique({
-        where: { tech_id, dealerid: dealer_id },
-    });
+    /**
+     * @desc    Checks if a technician is logged in and fetches their profile details
+     * @param   tech_id Technician ID
+     * @returns Technician profile data or null if not found
+     */
+    async isTechnicianSignedIn(tech_id: string) {
+        return await this.prismaClient.technicians.findUnique({
+            where: { tech_id },
+            select: {
+                tech_id: true,
+                phone: true,
+                email: true,
+                first_name: true,
+                last_name: true,
+                profile_pic: true,
+                dealerid: true,
+                createdAt: true,
+                usertype: true,
+                dealer: { select: { business_name: true, shipping_address: true } },
+            },
+        });
+    }
 
-    if (!existingTechnician) throw new Error('Technician do not exist');
+    /**
+     * @desc    Approves a technician for a dealer
+     * @param   dealer_id Dealer ID
+     * @param   tech_id Technician ID
+     * @returns Updated technician record
+     * @throws  Error if technician does not exist
+     */
+    async approveTechnicianService(dealer_id: string, tech_id: string) {
+        const existingTechnician = await this.prismaClient.technicians.findUnique({
+            where: { tech_id, dealerid: dealer_id },
+        });
 
-    return await prisma.technicians.update({
-        where: {
-            tech_id,
-        },
-        data: {
-            isApproved: true,
-        },
-    });
-};
+        if (!existingTechnician) throw new Error('Technician do not exist');
 
-// Service to fetch all approved technicians
-export const getAllApprovedTechniciansService = async (dealer_id: string) => {
-    const existingDealer = await prisma.dealers.findUnique({
-        where: {
-            dealer_id,
-        },
-    });
-    if (!existingDealer) throw new Error('Dealer with this ID is not found');
+        return await this.prismaClient.technicians.update({
+            where: { tech_id },
+            data: { isApproved: true },
+        });
+    }
 
-    return await prisma.technicians.findMany({
-        where: {
-            isApproved: true,
-        },
-    });
-};
+    /**
+     * @desc    Retrieves all approved technicians for a specific dealer
+     * @param   dealer_id Dealer ID
+     * @returns List of approved technicians
+     * @throws  Error if dealer not found
+     */
+    async getAllApprovedTechniciansService(dealer_id: string) {
+        const existingDealer = await this.prismaClient.dealers.findUnique({
+            where: { dealer_id },
+        });
+        if (!existingDealer) throw new Error('Dealer with this ID is not found');
 
-// Service to fetch all not-approved technicians
-export const getAllDisapprovedTechniciansService = async (dealer_id: string) => {
-    const existingDealer = await prisma.dealers.findUnique({
-        where: {
-            dealer_id,
-        },
-    });
-    if (!existingDealer) throw new Error('Dealer with this ID is not found');
+        return await this.prismaClient.technicians.findMany({
+            where: { isApproved: true },
+        });
+    }
 
-    return await prisma.technicians.findMany({
-        where: {
-            isApproved: false,
-        },
-    });
-};
+    /**
+     * @desc    Retrieves all disapproved technicians for a specific dealer
+     * @param   dealer_id Dealer ID
+     * @returns List of disapproved technicians
+     * @throws  Error if dealer not found
+     */
+    async getAllDisapprovedTechniciansService(dealer_id: string) {
+        const existingDealer = await this.prismaClient.dealers.findUnique({
+            where: { dealer_id },
+        });
+        if (!existingDealer) throw new Error('Dealer with this ID is not found');
 
-// Service to disapprove a technician
-export const disapproveTechnicianService = async (dealer_id: string, tech_id: string) => {
-    const existingTechnician = await prisma.technicians.findUnique({
-        where: { tech_id, dealerid: dealer_id },
-    });
+        return await this.prismaClient.technicians.findMany({
+            where: { isApproved: false },
+        });
+    }
 
-    if (!existingTechnician) throw new Error('Technician do not exist');
+    /**
+     * @desc    Disapproves a technician for a dealer
+     * @param   dealer_id Dealer ID
+     * @param   tech_id Technician ID
+     * @returns Updated technician record
+     * @throws  Error if technician does not exist
+     */
+    async disapproveTechnicianService(dealer_id: string, tech_id: string) {
+        const existingTechnician = await this.prismaClient.technicians.findUnique({
+            where: { tech_id, dealerid: dealer_id },
+        });
 
-    return await prisma.technicians.update({
-        where: {
-            tech_id,
-        },
-        data: {
-            isApproved: false,
-        },
-    });
-};
+        if (!existingTechnician) throw new Error('Technician do not exist');
 
-// Service to fetch all technicians for a dealer
-export const getAllTechniciansForDealer = async (dealer_id: string) => {
-    return await prisma.technicians.findMany({
-        where: {
-            dealerid: dealer_id,
-        },
-    });
-};
+        return await this.prismaClient.technicians.update({
+            where: { tech_id },
+            data: { isApproved: false },
+        });
+    }
+
+    /**
+     * @desc    Retrieves all technicians associated with a specific dealer
+     * @param   dealer_id Dealer ID
+     * @returns List of all technicians for the dealer
+     */
+    async getAllTechniciansForDealer(dealer_id: string) {
+        return await this.prismaClient.technicians.findMany({
+            where: { dealerid: dealer_id },
+        });
+    }
+}

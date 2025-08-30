@@ -1,13 +1,13 @@
 // src/middleware/cronjob.middleware.ts
 
 import cron from 'node-cron';
-import { deleteExpiredDiscountsService } from '../services/discount.service.js';
-import { prisma } from '../db/prismaSingleton.js';
-import { OrderStatus } from '@prisma/client';
+import { DiscountService } from '../services/discount.service.js';
+
+const discountServices = new DiscountService();
 
 cron.schedule('0 0 * * *', async () => {
     console.log('Running cron job: Deleting expired discounts...');
-    await deleteExpiredDiscountsService();
+    await discountServices.deleteExpiredDiscountsService();
 });
 
 // cron.schedule('*/5 * * * *', async () => {

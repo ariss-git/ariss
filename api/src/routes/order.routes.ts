@@ -1,9 +1,12 @@
+// src/routes/order.routes.ts
+
 import { Router } from 'express';
-import { createOrderController } from '../controllers/order.controller.js';
+import * as orderControllers from '../controllers/order.controller.js';
 
 const orderRoutes = Router();
 
-// Route for creating a new order
-orderRoutes.post('/create', createOrderController);
+// @route   POST /create
+// @desc    Route to create a new order
+orderRoutes.post('/create', orderControllers.createOrderController);
 
 export default orderRoutes;

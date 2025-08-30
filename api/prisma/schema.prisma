@@ -25,7 +25,6 @@ model Dealers {
   BackOffice       BackOffice[]
   Discount         Discount[]
   Technicians      Technicians[]
-  Wishlist         Wishlist?
 }
 
 model Technicians {
@@ -80,7 +79,6 @@ model Product {
 
   category    Category?    @relation(fields: [category_id], references: [category_id], onDelete: Cascade)
   subcategory Subcategory? @relation(fields: [subcategory_id], references: [subcategory_id], onDelete: Cascade)
-  Wishlist    Wishlist?
   Ledger      Ledger?
 }
 
@@ -169,16 +167,6 @@ model Payment {
   Order          Order         @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
 }
 
-model Wishlist {
-  wishlist_id String  @id @default(uuid())
-  isMarked    Boolean @default(false)
-  product_id  String  @unique
-  dealer_id   String  @unique
-
-  product Product @relation(fields: [product_id], references: [product_id], onDelete: Cascade)
-  dealer  Dealers @relation(fields: [dealer_id], references: [dealer_id], onDelete: Cascade)
-}
-
 model RMA {
   rma_id String @id @default(uuid())
 
@@ -197,93 +185,6 @@ model RMA {
   product_images String[]
 
   createdAt DateTime @default(now())
-}
-
-model Admin {
-  admin_id    String       @id @default(uuid())
-  fullname    String
-  email       String       @unique
-  phone       String       @unique
-  password    String
-  profile_pic String       @default("https://static.thenounproject.com/png/5034901-200.png")
-  usertype    EmployeeType @default(ADMIN)
-
-  createdAt DateTime @default(now())
-}
-
-model Employee {
-  emp_id      String       @id @default(uuid())
-  fullname    String
-  email       String       @unique
-  phone       String
-  password    String
-  profile_pic String       @default("https://static.thenounproject.com/png/5034901-200.png")
-  isApproved  Boolean      @default(false)
-  usertype    EmployeeType @default(EMPLOYEE)
-
-  createdAt DateTime @default(now())
-}
-
-model Course {
-  id          String       @id @default(uuid())
-  title       String
-  description String
-  content     String
-  isActive    Boolean      @default(false)
-  questions   Question[]
-  enrollments Enrollment[]
-  results     Result[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-}
-
-model Question {
-  id       String @id @default(uuid())
-  courseId String
-  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  text     String
-  optionA  String
-  optionB  String
-  optionC  String
-  optionD  String
-  correct  String
-}
-
-model Enrollment {
-  id           String   @id @default(uuid())
-  courseId     String
-  course       Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  userId       String
-  userName     String
-  businessName String
-  enrolledAt   DateTime @default(now())
-}
-
-model Result {
-  id           String       @id @default(uuid())
-  courseId     String
-  course       Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  userId       String
-  userName     String
-  businessName String
-  score        Int
-  percentage   Float
-  status       CourseStatus
-  attempts     Int          @default(1)
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-
-  @@unique([userId, courseId]) // Add unique constraint on userId and courseId
-}
-
-enum CourseStatus {
-  PASSED
-  FAILED
-}
-
-enum EmployeeType {
-  ADMIN
-  EMPLOYEE
 }
 
 enum UserType {

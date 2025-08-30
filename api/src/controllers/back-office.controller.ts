@@ -1,27 +1,26 @@
 // src/controllers/back-office.controller.ts
 
 import { AuthRequest } from '../middleware/auth.middleware.js';
-import {
-    registerBackOfficeService,
-    isBackOfficeSignedIn,
-    approveBackOfficeService,
-    getAllApprovedBackOfficesService,
-    getAllDisapprovedBackOfficesService,
-    disapproveBackOfficeService,
-    getAllBackofficesForDealer,
-} from '../services/back-office.service.js';
+import { BackOfficeService } from '../services/back-office.service.js';
 import { Request, Response } from 'express';
 
-// Controller to register Back Office
+const backOfficeServices = new BackOfficeService();
+
+/**
+ * @controller registerBackOfficeController
+ * @route POST /back-office/register
+ * @desc Register a new back-office user
+ */
 export const registerBackOfficeController = async (req: Request, res: Response) => {
     try {
         const { phone, email, first_name, last_name, usertype, dealerId, otp } = req.body;
 
+        // Ensure only BACKOFFICE usertype is allowed
         if (usertype != 'BACKOFFICE') {
             return res.status(404).json({ success: false, message: 'Select proper type: BACKOFFICE' });
         }
 
-        const backOffice = await registerBackOfficeService(
+        const backOffice = await backOfficeServices.registerBackOfficeService(
             phone,
             email,
             first_name,
@@ -33,11 +32,15 @@ export const registerBackOfficeController = async (req: Request, res: Response) 
 
         return res.status(201).json({ success: true, data: backOffice });
     } catch (error: any) {
-        return res.status(500).json({ success: false, message: error.message }); // Throw error with message
+        return res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// Controller to check if Back Office is logged in
+/**
+ * @controller isBackOfficeSignedInController
+ * @route GET /back-office/check
+ * @desc Verify if a back-office user is logged in
+ */
 export const isBackOfficeSignedInController = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         if (!req.user) {
@@ -45,7 +48,7 @@ export const isBackOfficeSignedInController = async (req: AuthRequest, res: Resp
             return;
         }
 
-        const backOffice = await isBackOfficeSignedIn(req.user.userid);
+        const backOffice = await backOfficeServices.isBackOfficeSignedIn(req.user.userid);
         if (!backOffice) {
             res.status(404).json({ message: 'Back Office not found' });
             return;
@@ -53,11 +56,15 @@ export const isBackOfficeSignedInController = async (req: AuthRequest, res: Resp
 
         res.status(200).json(backOffice);
     } catch (error: any) {
-        res.status(500).json({ success: false, message: error.message }); // Throw error with message
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// Controller to approve a back office
+/**
+ * @controller approveBackOfficeController
+ * @route PUT /back-office/approve/:dealer_id/:backoffice_id
+ * @desc Approve a back-office user for a dealer
+ */
 export const approveBackOfficeController = async (req: Request, res: Response) => {
     try {
         const { dealer_id, backoffice_id } = req.params;
@@ -66,49 +73,58 @@ export const approveBackOfficeController = async (req: Request, res: Response) =
             res.status(404).json({ message: 'Back office or Dealer not found' });
         }
 
-        const backOffice = await approveBackOfficeService(dealer_id, backoffice_id);
-
+        const backOffice = await backOfficeServices.approveBackOfficeService(dealer_id, backoffice_id);
         return res.status(200).json({ success: true, data: backOffice });
     } catch (error: any) {
-        res.status(500).json({ success: false, message: error.message }); // Throw error with message
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// Controller to fetch all approved back-offices
+/**
+ * @controller getAllApprovedBackOfficesController
+ * @route GET /back-office/approved/:dealer_id
+ * @desc Fetch all approved back-office users for a dealer
+ */
 export const getAllApprovedBackOfficesController = async (req: Request, res: Response) => {
     try {
         const { dealer_id } = req.params;
 
         if (!dealer_id) {
-            return res.status(404).json({ message: 'Dealer with this ID do not exist' });
+            return res.status(404).json({ message: 'Dealer with this ID does not exist' });
         }
 
-        const backOffices = await getAllApprovedBackOfficesService(dealer_id);
-
+        const backOffices = await backOfficeServices.getAllApprovedBackOfficesService(dealer_id);
         return res.status(200).json({ success: true, total: backOffices.length, data: backOffices });
     } catch (error: any) {
-        res.status(404).json({ success: false, message: error.message }); // Throw error with message
+        res.status(404).json({ success: false, message: error.message });
     }
 };
 
-// Controller to fetch all not-approved back-offices
+/**
+ * @controller getAllDisapprovedBackOfficesController
+ * @route GET /back-office/disapproved/:dealer_id
+ * @desc Fetch all disapproved back-office users for a dealer
+ */
 export const getAllDisapprovedBackOfficesController = async (req: Request, res: Response) => {
     try {
         const { dealer_id } = req.params;
 
         if (!dealer_id) {
-            return res.status(404).json({ message: 'Dealer with this ID do not exist' });
+            return res.status(404).json({ message: 'Dealer with this ID does not exist' });
         }
 
-        const backOffices = await getAllDisapprovedBackOfficesService(dealer_id);
-
+        const backOffices = await backOfficeServices.getAllDisapprovedBackOfficesService(dealer_id);
         return res.status(200).json({ success: true, total: backOffices.length, data: backOffices });
     } catch (error: any) {
-        res.status(404).json({ success: false, message: error.message }); // Throw error with message
+        res.status(404).json({ success: false, message: error.message });
     }
 };
 
-// Controller to disapprove a back office
+/**
+ * @controller disapproveBackOfficeController
+ * @route PUT /back-office/disapprove/:dealer_id/:backoffice_id
+ * @desc Disapprove a back-office user for a dealer
+ */
 export const disapproveBackOfficeController = async (req: Request, res: Response) => {
     try {
         const { dealer_id, backoffice_id } = req.params;
@@ -117,26 +133,29 @@ export const disapproveBackOfficeController = async (req: Request, res: Response
             res.status(404).json({ message: 'Back office or Dealer not found' });
         }
 
-        const backOffice = await disapproveBackOfficeService(dealer_id, backoffice_id);
-
+        const backOffice = await backOfficeServices.disapproveBackOfficeService(dealer_id, backoffice_id);
         return res.status(200).json({ success: true, data: backOffice });
     } catch (error: any) {
-        res.status(500).json({ success: false, message: error.message }); // Throw error with message
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// Controller to get all backoffices for a dealer
+/**
+ * @controller getAllBackofficesForDealerController
+ * @route GET /back-office/approvals/:dealer_id
+ * @desc Fetch all back-office users (approved and disapproved) for a dealer
+ */
 export const getAllBackofficesForDealerController = async (req: Request, res: Response) => {
     try {
         const { dealer_id } = req.params;
 
         if (!dealer_id) {
-            res.status(404).json({ success: false, message: 'Dealer ID invalid' }); // Throw error with message
+            res.status(404).json({ success: false, message: 'Dealer ID invalid' });
         }
 
-        const backoffices = await getAllBackofficesForDealer(dealer_id);
+        const backoffices = await backOfficeServices.getAllBackofficesForDealer(dealer_id);
         return res.status(200).json({ success: true, total: backoffices.length, data: backoffices });
     } catch (error: any) {
-        return res.status(400).json({ success: false, message: error.message }); // Throw error with message
+        return res.status(400).json({ success: false, message: error.message });
     }
 };

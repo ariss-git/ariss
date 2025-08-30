@@ -1,14 +1,18 @@
 // src/controllers/customer.controller.ts
-import { approveDealerService, deleteBackOfficeService, deleteDealerService, deleteTechnicianService, disapproveDealerService, fetchAllCustomersService, getAllApprovedCustomerService, getAllBackOfficeService, getAllDistributorCustomerService, getAllNotApprovedCustomerService, getAllTechniciansService, getSingleDealerService, updateBackOfficeService, updateDealerService, updateDistributorToDealerService, updateTechnicianService, updateToDistributorService, } from '../services/customer.service.js';
+import { CustomerService } from '../services/customer.service.js';
+const customerServices = new CustomerService();
 /**
  * =========================
  *        DEALERS
  * =========================
  */
-// Fetch all approved dealers
+/**
+ * Fetch all approved dealers
+ * @route GET /dealers/approved
+ */
 export const getAllApprovedCustomerController = async (req, res) => {
     try {
-        const dealers = await getAllApprovedCustomerService();
+        const dealers = await customerServices.getAllApprovedCustomerService();
         if (!dealers) {
             return res
                 .status(400)
@@ -20,24 +24,30 @@ export const getAllApprovedCustomerController = async (req, res) => {
         return res.status(400).json({ success: false, error: error.message });
     }
 };
-// Fetch single dealer controller
+/**
+ * Fetch single dealer by ID
+ * @route GET /dealers/view-edit/:dealer_id
+ */
 export const getSingleDealerController = async (req, res) => {
     try {
         const { dealer_id } = req.params;
         if (!dealer_id) {
             return res.status(400).json({ success: false, error: 'Dealer with this ID is invalid' });
         }
-        const dealer = await getSingleDealerService(dealer_id);
+        const dealer = await customerServices.getSingleDealerService(dealer_id);
         return res.status(200).json({ success: true, data: dealer });
     }
     catch (error) {
         return res.status(400).json({ success: false, error: error.message });
     }
 };
-// Fetch all non-approved dealers
+/**
+ * Fetch all non-approved dealers
+ * @route GET /dealers/not-approved
+ */
 export const getAllNotApprovedCustomerController = async (_req, res) => {
     try {
-        const dealers = await getAllNotApprovedCustomerService();
+        const dealers = await customerServices.getAllNotApprovedCustomerService();
         if (!dealers) {
             return res
                 .status(400)
@@ -49,35 +59,44 @@ export const getAllNotApprovedCustomerController = async (_req, res) => {
         return res.status(400).json({ success: false, error: error.message });
     }
 };
-// Approve a dealer account
+/**
+ * Approve a dealer account
+ * @route PUT /dealers/approved/:dealer_id
+ */
 export const approveDealerController = async (req, res) => {
     try {
         const { dealer_id } = req.params;
         if (!dealer_id) {
             res.status(400).json({ message: 'Dealer ID is required' });
         }
-        const approve = await approveDealerService(dealer_id);
+        const approve = await customerServices.approveDealerService(dealer_id);
         return res.status(200).json({ success: true, message: `${approve.business_name} is approved` });
     }
     catch (error) {
         res.status(400).json({ message: 'Something went wrong', error: error.message });
     }
 };
-// Disapprove a dealer account
+/**
+ * Disapprove a dealer account
+ * @route PUT /dealers/not-approved/:dealer_id
+ */
 export const disapproveDealerController = async (req, res) => {
     try {
         const { dealer_id } = req.params;
         if (!dealer_id) {
             res.status(400).json({ message: 'Dealer ID is required' });
         }
-        const approve = await disapproveDealerService(dealer_id);
+        const approve = await customerServices.disapproveDealerService(dealer_id);
         return res.status(200).json({ success: true, message: `${approve.business_name} is disapproved` });
     }
     catch (error) {
         res.status(400).json({ message: 'Something went wrong', error: error.message });
     }
 };
-// Update dealer details (profile, status)
+/**
+ * Update dealer details (profile, status)
+ * @route PUT /dealers/edit/:dealer_id
+ */
 export const updateDealerController = async (req, res) => {
     try {
         const { dealer_id } = req.params;
@@ -85,21 +104,24 @@ export const updateDealerController = async (req, res) => {
         if (!dealer_id) {
             res.status(400).json({ message: 'Dealer ID is required' });
         }
-        const dealer = await updateDealerService(dealer_id, first_name, last_name, profile_pic, isApproved);
+        const dealer = await customerServices.updateDealerService(dealer_id, first_name, last_name, profile_pic, isApproved);
         return res.json({ success: true, data: dealer });
     }
     catch (error) {
         res.status(500).json({ message: 'Unable to update dealer info', error: error.message });
     }
 };
-// Promote a dealer to distributor
+/**
+ * Promote a dealer to distributor
+ * @route PUT /distributor/:dealer_id
+ */
 export const updateToDistributorController = async (req, res) => {
     try {
         const { dealer_id } = req.params;
         if (!dealer_id) {
             res.status(400).json({ message: 'Dealer ID is required' });
         }
-        const distributor = await updateToDistributorService(dealer_id);
+        const distributor = await customerServices.updateToDistributorService(dealer_id);
         return res.json({
             success: true,
             message: `${distributor.business_name} updated to Distributor`,
@@ -110,14 +132,17 @@ export const updateToDistributorController = async (req, res) => {
         res.status(500).json({ message: 'Unable to update dealer info', error: error.message });
     }
 };
-// Assign a distributor to dealer
+/**
+ * Convert distributor back to dealer
+ * @route PUT /distributor-dealer/:dealer_id
+ */
 export const updateDistributorToDealerController = async (req, res) => {
     try {
         const { dealer_id } = req.params;
         if (!dealer_id) {
             res.status(400).json({ message: 'Dealer ID is required' });
         }
-        const distributor = await updateDistributorToDealerService(dealer_id);
+        const distributor = await customerServices.updateDistributorToDealerService(dealer_id);
         return res.json({
             success: true,
             message: `${distributor.business_name} updated to Distributor`,
@@ -128,14 +153,17 @@ export const updateDistributorToDealerController = async (req, res) => {
         res.status(500).json({ message: 'Unable to update dealer info', error: error.message });
     }
 };
-// Permanently delete a dealer
+/**
+ * Permanently delete a dealer
+ * @route DELETE /dealers/:dealer_id
+ */
 export const deleteDealerController = async (req, res) => {
     try {
         const { dealer_id } = req.params;
         if (!dealer_id) {
             return res.status(404).json({ success: false, error: 'Dealer ID is required' });
         }
-        const dealer = await deleteDealerService(dealer_id);
+        const dealer = await customerServices.deleteDealerService(dealer_id);
         return res.status(200).json({
             success: true,
             message: `${dealer.first_name} ${dealer.last_name} deleted successfully`,
@@ -150,10 +178,13 @@ export const deleteDealerController = async (req, res) => {
  *       TECHNICIANS
  * =========================
  */
-// Fetch all technicians
+/**
+ * Fetch all technicians
+ * @route GET /technicians
+ */
 export const getAllTechniciansController = async (req, res) => {
     try {
-        const technicians = await getAllTechniciansService();
+        const technicians = await customerServices.getAllTechniciansService();
         if (!technicians) {
             return res.status(400).json({ success: false, error: 'Failed fetching all the technicians' });
         }
@@ -163,7 +194,10 @@ export const getAllTechniciansController = async (req, res) => {
         return res.status(400).json({ success: false, error: error.message });
     }
 };
-// Update technician details (profile, pass status)
+/**
+ * Update technician details
+ * @route PUT /technicians/:tech_id
+ */
 export const updateTechnicianController = async (req, res) => {
     try {
         const { tech_id } = req.params;
@@ -171,21 +205,24 @@ export const updateTechnicianController = async (req, res) => {
         if (!tech_id) {
             res.status(400).json({ message: 'Technician ID is required' });
         }
-        const technician = await updateTechnicianService(tech_id, first_name, last_name, profile_pic, isPassed);
+        const technician = await customerServices.updateTechnicianService(tech_id, first_name, last_name, profile_pic, isPassed);
         return res.json({ success: true, data: technician });
     }
     catch (error) {
         res.status(500).json({ message: 'Unable to update technician info', error: error.message });
     }
 };
-// Delete a technician account
+/**
+ * Delete a technician
+ * @route DELETE /technicians/:tech_id
+ */
 export const deleteTechnicianController = async (req, res) => {
     try {
         const { tech_id } = req.params;
         if (!tech_id) {
             return res.status(404).json({ success: false, error: 'Technician ID is required' });
         }
-        const technician = await deleteTechnicianService(tech_id);
+        const technician = await customerServices.deleteTechnicianService(tech_id);
         return res.status(200).json({
             success: true,
             message: `${technician.first_name} ${technician.last_name} deleted successfully`,
@@ -200,10 +237,13 @@ export const deleteTechnicianController = async (req, res) => {
  *       BACK OFFICE
  * =========================
  */
-// Fetch all back office users
+/**
+ * Fetch all back office users
+ * @route GET /back-office
+ */
 export const getAllBackOfficeController = async (req, res) => {
     try {
-        const backOffice = await getAllBackOfficeService();
+        const backOffice = await customerServices.getAllBackOfficeService();
         if (!backOffice) {
             return res.status(400).json({ success: false, error: 'Failed fetching all the back office' });
         }
@@ -213,7 +253,10 @@ export const getAllBackOfficeController = async (req, res) => {
         return res.status(400).json({ success: false, error: error.message });
     }
 };
-// Update back office user profile
+/**
+ * Update back office user details
+ * @route PUT /back-office/:backoffice_id
+ */
 export const updateBackOfficeController = async (req, res) => {
     try {
         const { backoffice_id } = req.params;
@@ -221,21 +264,24 @@ export const updateBackOfficeController = async (req, res) => {
         if (!backoffice_id) {
             res.status(400).json({ message: 'Back Office ID is required' });
         }
-        const backOffice = await updateBackOfficeService(backoffice_id, first_name, last_name, profile_pic);
+        const backOffice = await customerServices.updateBackOfficeService(backoffice_id, first_name, last_name, profile_pic);
         return res.json({ success: true, data: backOffice });
     }
     catch (error) {
         res.status(500).json({ message: 'Unable to update backOffice info', error: error.message });
     }
 };
-// Delete a back office user
+/**
+ * Delete a back office user
+ * @route DELETE /back-office/:backoffice_id
+ */
 export const deleteBackOfficeController = async (req, res) => {
     try {
         const { backoffice_id } = req.params;
         if (!backoffice_id) {
             return res.status(404).json({ success: false, error: 'Back Office ID is required' });
         }
-        const backOffice = await deleteBackOfficeService(backoffice_id);
+        const backOffice = await customerServices.deleteBackOfficeService(backoffice_id);
         return res.status(200).json({
             success: true,
             message: `${backOffice.first_name} ${backOffice.last_name} deleted successfully`,
@@ -250,10 +296,13 @@ export const deleteBackOfficeController = async (req, res) => {
  *       DISTRIBUTORS
  * =========================
  */
-// Fetch all dealers marked as distributors
+/**
+ * Fetch all distributors
+ * @route GET /distributor
+ */
 export const getAllDistributorCustomerController = async (_req, res) => {
     try {
-        const distributors = await getAllDistributorCustomerService();
+        const distributors = await customerServices.getAllDistributorCustomerService();
         if (!distributors) {
             return res.status(400).json({ success: false, error: 'Failed fetching all the distributors' });
         }
@@ -268,10 +317,13 @@ export const getAllDistributorCustomerController = async (_req, res) => {
  *       CUSTOMERS
  * =========================
  */
-// Fetch all sorts of customers controller
+/**
+ * Fetch all types of customers (dealers, technicians, back offices)
+ * @route GET /all
+ */
 export const fetchAllCustomersController = async (_req, res) => {
     try {
-        const customers = await fetchAllCustomersService();
+        const customers = await customerServices.fetchAllCustomersService();
         if (!customers.dealers) {
             return res.status(404).json({ success: true, error: 'There was an error fetching dealers' });
         }

@@ -1,27 +1,36 @@
 // src/controllers/technician.controller.ts
-import { approveTechnicianService, isTechnicianSignedIn, registerTechinicianService, getAllApprovedTechniciansService, getAllDisapprovedTechniciansService, disapproveTechnicianService, getAllTechniciansForDealer, } from '../services/technician.service.js';
-// Controller to register Techinician
+import { TechinianService } from '../services/technician.service.js';
+const techinicianServices = new TechinianService();
+/**
+ * @desc    Register a new technician
+ * @route   POST /register
+ * @method  POST
+ */
 export const registerTechinicianController = async (req, res) => {
     try {
         const { phone, email, first_name, last_name, usertype, dealerId, otp } = req.body;
         if (usertype != 'TECHNICIAN') {
             return res.status(404).json({ success: false, message: 'Select proper type: TECHNICIAN' });
         }
-        const technician = await registerTechinicianService(phone, email, first_name, last_name, usertype, dealerId, otp);
+        const technician = await techinicianServices.registerTechinicianService(phone, email, first_name, last_name, usertype, dealerId, otp);
         return res.status(201).json({ success: true, data: technician });
     }
     catch (error) {
-        return res.status(500).json({ success: false, message: error.message }); // Throw error with message
+        return res.status(500).json({ success: false, message: error.message });
     }
 };
-// Controller to check if technician is logged in
+/**
+ * @desc    Check if technician is logged in
+ * @route   GET /check
+ * @method  GET
+ */
 export const isTechnicianSignedInController = async (req, res) => {
     try {
         if (!req.user) {
             res.status(401).json({ message: 'Unauthorized: No user found' });
             return;
         }
-        const technician = await isTechnicianSignedIn(req.user.userid);
+        const technician = await techinicianServices.isTechnicianSignedIn(req.user.userid);
         if (!technician) {
             res.status(404).json({ message: 'Technician not found' });
             return;
@@ -29,76 +38,96 @@ export const isTechnicianSignedInController = async (req, res) => {
         res.status(200).json(technician);
     }
     catch (error) {
-        res.status(500).json({ success: false, message: error.message }); // Throw error with message
+        res.status(500).json({ success: false, message: error.message });
     }
 };
-// Controller to approve a technician
+/**
+ * @desc    Approve a technician for a dealer
+ * @route   PUT /approve/:dealer_id/:tech_id
+ * @method  PUT
+ */
 export const approveTechnicianController = async (req, res) => {
     try {
         const { dealer_id, tech_id } = req.params;
         if (!dealer_id || !tech_id) {
             res.status(404).json({ message: 'Technician or Dealer not found' });
         }
-        const technician = await approveTechnicianService(dealer_id, tech_id);
+        const technician = await techinicianServices.approveTechnicianService(dealer_id, tech_id);
         return res.status(200).json({ success: true, data: technician });
     }
     catch (error) {
-        res.status(500).json({ success: false, message: error.message }); // Throw error with message
+        res.status(500).json({ success: false, message: error.message });
     }
 };
-// Controller to fetch all approved technicians
+/**
+ * @desc    Get all approved technicians for a dealer
+ * @route   GET /approved/:dealer_id
+ * @method  GET
+ */
 export const getAllApprovedTechniciansController = async (req, res) => {
     try {
         const { dealer_id } = req.params;
         if (!dealer_id) {
             return res.status(404).json({ message: 'Dealer with this ID do not exist' });
         }
-        const techinicians = await getAllApprovedTechniciansService(dealer_id);
+        const techinicians = await techinicianServices.getAllApprovedTechniciansService(dealer_id);
         return res.status(200).json({ success: true, total: techinicians.length, data: techinicians });
     }
     catch (error) {
-        res.status(404).json({ success: false, message: error.message }); // Throw error with message
+        res.status(404).json({ success: false, message: error.message });
     }
 };
-// Controller to fetch all not-approved technicians
+/**
+ * @desc    Get all disapproved technicians for a dealer
+ * @route   GET /disapproved/:dealer_id
+ * @method  GET
+ */
 export const getAllDisapprovedTechniciansController = async (req, res) => {
     try {
         const { dealer_id } = req.params;
         if (!dealer_id) {
             return res.status(404).json({ message: 'Dealer with this ID do not exist' });
         }
-        const techinicians = await getAllDisapprovedTechniciansService(dealer_id);
+        const techinicians = await techinicianServices.getAllDisapprovedTechniciansService(dealer_id);
         return res.status(200).json({ success: true, total: techinicians.length, data: techinicians });
     }
     catch (error) {
-        res.status(404).json({ success: false, message: error.message }); // Throw error with message
+        res.status(404).json({ success: false, message: error.message });
     }
 };
-// Controller to disapprove a technician
+/**
+ * @desc    Disapprove a technician for a dealer
+ * @route   PUT /disapprove/:dealer_id/:tech_id
+ * @method  PUT
+ */
 export const disapproveTechnicianController = async (req, res) => {
     try {
         const { dealer_id, tech_id } = req.params;
         if (!dealer_id || !tech_id) {
             res.status(404).json({ message: 'Technician or Dealer not found' });
         }
-        const technician = await disapproveTechnicianService(dealer_id, tech_id);
+        const technician = await techinicianServices.disapproveTechnicianService(dealer_id, tech_id);
         return res.status(200).json({ success: true, data: technician });
     }
     catch (error) {
-        res.status(500).json({ success: false, message: error.message }); // Throw error with message
+        res.status(500).json({ success: false, message: error.message });
     }
 };
-// Controller to get all technicians for a dealer
+/**
+ * @desc    Get all technicians associated with a dealer
+ * @route   GET /approvals/:dealer_id
+ * @method  GET
+ */
 export const getAllTechniciansForDealerController = async (req, res) => {
     try {
         const { dealer_id } = req.params;
         if (!dealer_id) {
-            res.status(404).json({ success: false, message: 'Dealer ID invalid' }); // Throw error with message
+            return res.status(404).json({ success: false, message: 'Dealer ID invalid' });
         }
-        const technicians = await getAllTechniciansForDealer(dealer_id);
+        const technicians = await techinicianServices.getAllTechniciansForDealer(dealer_id);
         return res.status(200).json({ success: true, total: technicians.length, data: technicians });
     }
     catch (error) {
-        return res.status(400).json({ success: false, message: error.message }); // Throw error with message
+        return res.status(400).json({ success: false, message: error.message });
     }
 };

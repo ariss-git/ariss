@@ -1,5 +1,6 @@
 // src/controllers/product.controller.ts
-import { addCategoryService, addProductService, addSubcategoryService, deleteCategoryService, deleteProductService, deleteSubcategoryService, getAllCategoriesService, getAllCategoryNameService, getAllProductsByCategoryService, getAllProductsBySubcategoryService, getAllProductsService, getAllSubcategoriesService, getAllSubcategoriesUnderCategoryService, getSingleCategoryService, getSingleProductService, getSingleSubcategoryService, updateCategoryService, updateProductService, updateSubcategoryService, } from '../services/product.service.js';
+import { ProductService } from '../services/product.service.js';
+const productServices = new ProductService();
 // Controller to add a product
 export const addProductController = async (req, res) => {
     try {
@@ -18,7 +19,7 @@ export const addProductController = async (req, res) => {
             !category_name) {
             return res.status(400).json({ success: false, message: 'Fields cannot be left null' });
         }
-        const product = await addProductService(product_title, product_sku, product_type, product_description, product_image, product_warranty, product_quantity, product_label, product_visibility, product_usps, product_keywords, product_price, subcategory_name, category_name);
+        const product = await productServices.addProductService(product_title, product_sku, product_type, product_description, product_image, product_warranty, product_quantity, product_label, product_visibility, product_usps, product_keywords, product_price, subcategory_name, category_name);
         return res.status(201).json({ success: true, data: product });
     }
     catch (error) {
@@ -28,7 +29,7 @@ export const addProductController = async (req, res) => {
 // Controller to get all the products
 export const getAllProductsController = async (req, res) => {
     try {
-        const products = await getAllProductsService();
+        const products = await productServices.getAllProductsService();
         return res.status(200).json({ success: true, total: products.length, data: products });
     }
     catch (error) {
@@ -39,7 +40,7 @@ export const getAllProductsController = async (req, res) => {
 export const getSingleProductController = async (req, res) => {
     try {
         const { product_id } = req.params;
-        const product = await getSingleProductService(product_id);
+        const product = await productServices.getSingleProductService(product_id);
         return res.status(200).json({ success: true, data: product });
     }
     catch (error) {
@@ -53,7 +54,7 @@ export const getProductsController = async (req, res) => {
         if (!product_id) {
             return res.status(400).json({ success: false, message: 'Product ID is required' });
         }
-        const product = await getSingleProductService(product_id);
+        const product = await productServices.getSingleProductService(product_id);
         return res.status(200).json({ success: true, data: product });
     }
     catch (error) {
@@ -67,7 +68,7 @@ export const getProductsByCategoryController = async (req, res) => {
         if (!category_id) {
             return res.status(400).json({ success: false, message: 'Category ID is required' });
         }
-        const products = await getAllProductsByCategoryService(category_id);
+        const products = await productServices.getAllProductsByCategoryService(category_id);
         return res.status(200).json({
             success: true,
             totalSubcategories: products.subcategory.length,
@@ -87,7 +88,7 @@ export const getProductsBySubcategoryController = async (req, res) => {
         if (!subcategory_id) {
             return res.status(400).json({ success: false, message: 'Category ID is required' });
         }
-        const products = await getAllProductsBySubcategoryService(subcategory_id);
+        const products = await productServices.getAllProductsBySubcategoryService(subcategory_id);
         return res.status(200).json({
             success: true,
             totalProducts: products.length,
@@ -103,7 +104,7 @@ export const updateProductController = async (req, res) => {
     try {
         const { product_id } = req.params;
         const { product_title, product_sku, product_type, product_description, product_image, product_warranty, product_quantity, product_label, product_visibility, product_usps, product_keywords, } = req.body;
-        const product = await updateProductService(product_id, product_title, product_sku, product_type, product_description, product_image, product_warranty, product_quantity, product_label, product_visibility, product_usps, product_keywords);
+        const product = await productServices.updateProductService(product_id, product_title, product_sku, product_type, product_description, product_image, product_warranty, product_quantity, product_label, product_visibility, product_usps, product_keywords);
         return res.status(200).json({ success: true, data: product });
     }
     catch (error) {
@@ -117,7 +118,7 @@ export const deleteProductController = async (req, res) => {
         if (!product_id) {
             return res.status(400).json({ success: false, message: 'Product ID is required' });
         }
-        const product = await deleteProductService(product_id);
+        const product = await productServices.deleteProductService(product_id);
         return res
             .status(200)
             .json({ success: true, message: `${product.product_title} deleted successfully` });
@@ -133,7 +134,7 @@ export const addSubcategoryController = async (req, res) => {
         if (!subcategory_name || !subcategory_image || !category_name) {
             return res.status(400).json({ success: false, message: 'Fields cannot be left null' });
         }
-        const subcategory = await addSubcategoryService(subcategory_name, subcategory_image, category_name);
+        const subcategory = await productServices.addSubcategoryService(subcategory_name, subcategory_image, category_name);
         return res.status(201).json({ success: true, data: subcategory });
     }
     catch (error) {
@@ -143,7 +144,7 @@ export const addSubcategoryController = async (req, res) => {
 // Controller to get all subcategories for a product
 export const getAllSubcategoriesController = async (_req, res) => {
     try {
-        const categories = await getAllSubcategoriesService();
+        const categories = await productServices.getAllSubcategoriesService();
         if (!categories) {
             return res.status(404).json({ success: false, message: 'Subcategory table is empty' });
         }
@@ -160,7 +161,7 @@ export const getSingleSubcategoryController = async (req, res) => {
         if (!subcategory_id) {
             return res.status(400).json({ success: false, message: 'Category name field is required' });
         }
-        const subcategory = await getSingleSubcategoryService(subcategory_id);
+        const subcategory = await productServices.getSingleSubcategoryService(subcategory_id);
         return res.status(201).json({ success: true, total: subcategory.length, data: subcategory });
     }
     catch (error) {
@@ -174,7 +175,7 @@ export const getAllSubcategoriesUnderCategoryController = async (req, res) => {
         if (!category_id) {
             return res.status(400).json({ success: false, message: 'Category ID is required' });
         }
-        const subcategories = await getAllSubcategoriesUnderCategoryService(category_id);
+        const subcategories = await productServices.getAllSubcategoriesUnderCategoryService(category_id);
         return res.status(200).json({ success: true, total: subcategories.length, data: subcategories });
     }
     catch (error) {
@@ -192,7 +193,7 @@ export const updateSubcategoryController = async (req, res) => {
         if (!subcategory_name || !subcategory_image) {
             return res.status(404).json({ success: false, message: 'Subcategory name and image not found' });
         }
-        const subcategory = await updateSubcategoryService(subcategory_id, subcategory_name, subcategory_image);
+        const subcategory = await productServices.updateSubcategoryService(subcategory_id, subcategory_name, subcategory_image);
         return res.status(201).json({ success: true, data: subcategory });
     }
     catch (error) {
@@ -206,7 +207,7 @@ export const deleteSubcategoryController = async (req, res) => {
         if (!category_id) {
             return res.status(400).json({ success: false, message: 'Category name field is required' });
         }
-        const subcategory = await deleteSubcategoryService(category_id);
+        const subcategory = await productServices.deleteSubcategoryService(category_id);
         return res
             .status(201)
             .json({ success: true, message: `Subcategory: ${subcategory.subcategory_name} deleted` });
@@ -222,7 +223,7 @@ export const addCategoryController = async (req, res) => {
         if (!category_name || !category_image) {
             return res.status(400).json({ success: false, message: 'Name and Image fields cannot be null' });
         }
-        const category = await addCategoryService(category_name, category_image);
+        const category = await productServices.addCategoryService(category_name, category_image);
         return res.status(201).json({ success: true, data: category });
     }
     catch (error) {
@@ -232,7 +233,7 @@ export const addCategoryController = async (req, res) => {
 // Controller to get all categories for a product
 export const getAllCategoriesController = async (_req, res) => {
     try {
-        const categories = await getAllCategoriesService();
+        const categories = await productServices.getAllCategoriesService();
         if (!categories) {
             return res.status(404).json({ success: false, message: 'Category table is empty' });
         }
@@ -245,7 +246,7 @@ export const getAllCategoriesController = async (_req, res) => {
 // Controller to get all category names for a product
 export const getAllCategoryNameController = async (_req, res) => {
     try {
-        const categories = await getAllCategoryNameService();
+        const categories = await productServices.getAllCategoryNameService();
         if (!categories) {
             return res.status(404).json({ success: false, message: 'Category table is empty' });
         }
@@ -259,7 +260,7 @@ export const getAllCategoryNameController = async (_req, res) => {
 export const getSingleCategoryController = async (req, res) => {
     try {
         const { category_id } = req.params;
-        const category = await getSingleCategoryService(category_id);
+        const category = await productServices.getSingleCategoryService(category_id);
         return res.status(200).json({ success: true, data: category });
     }
     catch (error) {
@@ -273,7 +274,7 @@ export const updateCategoryController = async (req, res) => {
         if (!category_id) {
             return res.status(404).json({ success: false, message: 'Category ID not found' });
         }
-        const category = await updateCategoryService(category_id, category_name, category_image);
+        const category = await productServices.updateCategoryService(category_id, category_name, category_image);
         return res.status(200).json({ success: true, data: category });
     }
     catch (error) {
@@ -284,7 +285,7 @@ export const updateCategoryController = async (req, res) => {
 export const deleteCategoryController = async (req, res) => {
     try {
         const { category_id } = req.params;
-        const category = await deleteCategoryService(category_id);
+        const category = await productServices.deleteCategoryService(category_id);
         return res
             .status(200)
             .json({ success: true, message: `Category: ${category.category_id} deleted successfully` });

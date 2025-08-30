@@ -1,53 +1,80 @@
 // src/routes/product.routes.ts
 
-import {
-    addCategoryController,
-    addProductController,
-    addSubcategoryController,
-    deleteCategoryController,
-    deleteProductController,
-    deleteSubcategoryController,
-    getAllCategoriesController,
-    getAllCategoryNameController,
-    getAllProductsController,
-    getAllSubcategoriesController,
-    getAllSubcategoriesUnderCategoryController,
-    getProductsByCategoryController,
-    getProductsBySubcategoryController,
-    getSingleCategoryController,
-    getSingleProductController,
-    getSingleSubcategoryController,
-    updateCategoryController,
-    updateProductController,
-    updateSubcategoryController,
-} from '../controllers/product.controller.js';
+import * as productControllers from '../controllers/product.controller.js';
 import { Router } from 'express';
 
 const productRoutes = Router();
 
-// Category routes
-productRoutes.post('/category', addCategoryController);
-productRoutes.get('/category', getAllCategoriesController);
-productRoutes.get('/category/names', getAllCategoryNameController);
-productRoutes.get('/category/:category_id', getSingleCategoryController);
-productRoutes.put('/category/:category_id', updateCategoryController);
-productRoutes.delete('/category/:category_id', deleteCategoryController);
+// =============================
+// Category Routes
+// =============================
 
-//Subcategory routes
-productRoutes.post('/category/sub', addSubcategoryController);
-productRoutes.get('/category/sub/all', getAllSubcategoriesController);
-productRoutes.get('/category/sub/:subcategory_id', getSingleSubcategoryController);
-productRoutes.get('/category/sub/filter/:category_id', getAllSubcategoriesUnderCategoryController);
-productRoutes.put('/category/sub/:subcategory_id', updateSubcategoryController);
-productRoutes.delete('/category/sub/:category_id', deleteSubcategoryController);
+// Create a new category
+productRoutes.post('/category', productControllers.addCategoryController);
 
-// Product routes
-productRoutes.post('/', addProductController);
-productRoutes.get('/', getAllProductsController);
-productRoutes.get('/:product_id', getSingleProductController);
-productRoutes.get('/cat-pro/:category_id', getProductsByCategoryController);
-productRoutes.get('/sub-pro/:subcategory_id', getProductsBySubcategoryController);
-productRoutes.put('/:product_id', updateProductController);
-productRoutes.delete('/:product_id', deleteProductController);
+// Fetch all categories
+productRoutes.get('/category', productControllers.getAllCategoriesController);
+
+// Fetch only category names
+productRoutes.get('/category/names', productControllers.getAllCategoryNameController);
+
+// Fetch single category by ID
+productRoutes.get('/category/:category_id', productControllers.getSingleCategoryController);
+
+// Update category by ID
+productRoutes.put('/category/:category_id', productControllers.updateCategoryController);
+
+// Delete category by ID
+productRoutes.delete('/category/:category_id', productControllers.deleteCategoryController);
+
+// =============================
+// Subcategory Routes
+// =============================
+
+// Create a new subcategory
+productRoutes.post('/category/sub', productControllers.addSubcategoryController);
+
+// Fetch all subcategories
+productRoutes.get('/category/sub/all', productControllers.getAllSubcategoriesController);
+
+// Fetch single subcategory by ID
+productRoutes.get('/category/sub/:subcategory_id', productControllers.getSingleSubcategoryController);
+
+// Fetch all subcategories under a specific category
+productRoutes.get(
+    '/category/sub/filter/:category_id',
+    productControllers.getAllSubcategoriesUnderCategoryController
+);
+
+// Update subcategory by ID
+productRoutes.put('/category/sub/:subcategory_id', productControllers.updateSubcategoryController);
+
+// Delete subcategory by category ID
+productRoutes.delete('/category/sub/:category_id', productControllers.deleteSubcategoryController);
+
+// =============================
+// Product Routes
+// =============================
+
+// Create a new product
+productRoutes.post('/', productControllers.addProductController);
+
+// Fetch all products
+productRoutes.get('/', productControllers.getAllProductsController);
+
+// Fetch single product by ID
+productRoutes.get('/:product_id', productControllers.getSingleProductController);
+
+// Fetch products by category ID
+productRoutes.get('/cat-pro/:category_id', productControllers.getProductsByCategoryController);
+
+// Fetch products by subcategory ID
+productRoutes.get('/sub-pro/:subcategory_id', productControllers.getProductsBySubcategoryController);
+
+// Update product by ID
+productRoutes.put('/:product_id', productControllers.updateProductController);
+
+// Delete product by ID
+productRoutes.delete('/:product_id', productControllers.deleteProductController);
 
 export default productRoutes;

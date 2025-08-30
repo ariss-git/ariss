@@ -1,12 +1,18 @@
-import { Request, Response } from 'express';
-import { verifyPaymentService } from '../services/payment.service.js';
+// src/controllers/payment.controller.ts
 
+import { Request, Response } from 'express';
+import { PaymentService } from '../services/payment.service.js';
+
+const paymentServices = new PaymentService();
+
+// @desc    Controller to verify Razorpay payment details sent from the client
+// @route   POST /verify
 export const verifyPaymentController = async (req: Request, res: Response) => {
     try {
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
-        // Call the verifyPaymentService to verify the payment
-        const result = await verifyPaymentService({
+        // Call the service layer to handle payment verification
+        const result = await paymentServices.verifyPaymentService({
             razorpay_order_id,
             razorpay_payment_id,
             razorpay_signature,

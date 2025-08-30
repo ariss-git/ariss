@@ -4,121 +4,135 @@ import { couponCodeNotify } from '../lib/couponCodeNotify.js';
 import { prisma } from '../db/prismaSingleton.js';
 import { DiscountType } from '@prisma/client';
 
-export const assignDiscountService = async (
-    dealer_id: string,
-    product_id: string,
-    discount_type: string,
-    expiry_date: string, // changed to string since you're sending it from the controller
-    amount: number | null, // amount can now be null
-    percentage: number | null // percentage can now be null
-) => {
-    // Get dealer information
-    const dealer = await prisma.dealers.findUnique({
-        where: { dealer_id },
-        select: { first_name: true, last_name: true, email: true, phone: true },
-    });
+/**
+ * This service layer handles all business logic related to discount management.
+ * It interacts with the database to assign discounts, fetch discounts, delete expired
+ * discounts, and notify dealers. Controllers call these methods to perform operations
+ * without handling database logic directly.
+ */
+export class DiscountService {
+    private prismaClient;
 
-    if (!dealer) throw new Error('Dealer does not exist'); // Throw if dealer is invalid
+    constructor(prismaClient = prisma) {
+        this.prismaClient = prismaClient;
+    }
 
-    // Get product name
-    const product = await prisma.product.findUnique({
-        where: { product_id },
-        select: { product_title: true },
-    });
+    /**
+     * @desc      Assign a discount to a dealer for a specific product
+     * @param     dealer_id  string - ID of the dealer
+     * @param     product_id string - ID of the product
+     * @param     discount_type string - Type of discount (AMOUNT/PERCENTAGE)
+     * @param     expiry_date string - Expiry date of the discount
+     * @param     amount number | null - Discount amount (if type is AMOUNT)
+     * @param     percentage number | null - Discount percentage (if type is PERCENTAGE)
+     * @returns   Promise of the created discount record
+     */
+    async assignDiscountService(
+        dealer_id: string,
+        product_id: string,
+        discount_type: string,
+        expiry_date: string,
+        amount: number | null,
+        percentage: number | null
+    ) {
+        const dealer = await this.prismaClient.dealers.findUnique({
+            where: { dealer_id },
+            select: { first_name: true, last_name: true, email: true, phone: true },
+        });
 
-    if (!product) throw new Error('Product does not exist'); // Throw if product is invalid
+        if (!dealer) throw new Error('Dealer does not exist');
 
-    // Generate unique Coupon code
-    const coupon_code = `ARS-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+        const product = await this.prismaClient.product.findUnique({
+            where: { product_id },
+            select: { product_title: true },
+        });
 
-    // Ensure the expiry date is properly formatted
-    const formattedExpiryDate = new Date(`${expiry_date}T00:00:00.000Z`);
+        if (!product) throw new Error('Product does not exist');
 
-    // Convert discount type to Enum
-    const discountTypeEnum = discount_type.toUpperCase() as keyof typeof DiscountType;
-    if (!DiscountType[discountTypeEnum]) throw new Error('Invalid discount type');
+        const coupon_code = `ARS-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
-    // Full name of dealer
-    const dealerName = `${dealer.first_name} ${dealer.last_name}`;
+        const formattedExpiryDate = new Date(`${expiry_date}T00:00:00.000Z`);
 
-    // Notify dealer on mail and WhatsApp
-    await couponCodeNotify(dealer.phone, dealer.email, dealerName, product.product_title, coupon_code);
+        const discountTypeEnum = discount_type.toUpperCase() as keyof typeof DiscountType;
+        if (!DiscountType[discountTypeEnum]) throw new Error('Invalid discount type');
 
-    // Create discount for the dealer
-    return await prisma.discount.create({
-        data: {
-            dealer_id,
-            product_id,
-            discount_type: discountTypeEnum,
-            expiry_date: formattedExpiryDate,
-            coupon_code,
-            amount, // Could be null
-            percentage, // Could be null
-        },
-    });
-};
+        const dealerName = `${dealer.first_name} ${dealer.last_name}`;
 
-// Service to fetch all discount
-export const getAllDiscountsService = async () => {
-    return await prisma.discount.findMany();
-};
+        await couponCodeNotify(dealer.phone, dealer.email, dealerName, product.product_title, coupon_code);
 
-// Service to delete single discount
-export const getSingleDiscount = async (discount_id: string) => {
-    const existingDiscount = await prisma.discount.findUnique({
-        where: {
-            discount_id,
-        },
-    });
-
-    if (!existingDiscount) throw new Error('Discount ID not found');
-
-    return await prisma.discount.delete({
-        where: {
-            discount_id,
-        },
-    });
-};
-
-// Service to delete expired discount coupons
-export const deleteExpiredDiscountsService = async () => {
-    // Current time
-    const now = new Date();
-
-    // Expire coupon when validity ends
-    return await prisma.discount.deleteMany({
-        where: { expiry_date: { lt: now } },
-    });
-};
-
-// Service to get all discounts for a dealer
-export const getAllDiscountsForDealerService = async (dealer_id: string) => {
-    const discounts = await prisma.discount.findMany({
-        where: {
-            dealer_id,
-        },
-        select: {
-            coupon_code: true,
-            expiry_date: true,
-            percentage: true,
-            amount: true,
-            isActive: true,
-            dealer_id: true,
-            product_id: true,
-            dealer: {
-                select: {
-                    business_name: true,
-                },
+        return await this.prismaClient.discount.create({
+            data: {
+                dealer_id,
+                product_id,
+                discount_type: discountTypeEnum,
+                expiry_date: formattedExpiryDate,
+                coupon_code,
+                amount,
+                percentage,
             },
-            Product: {
-                select: {
-                    product_title: true,
-                },
+        });
+    }
+
+    /**
+     * @desc      Fetch all discounts from the system
+     * @returns   Promise of an array of all discount records
+     */
+    async getAllDiscountsService() {
+        return await this.prismaClient.discount.findMany();
+    }
+
+    /**
+     * @desc      Delete a single discount by ID
+     * @param     discount_id string - ID of the discount
+     * @returns   Promise of the deleted discount record
+     */
+    async getSingleDiscount(discount_id: string) {
+        const existingDiscount = await this.prismaClient.discount.findUnique({
+            where: { discount_id },
+        });
+
+        if (!existingDiscount) throw new Error('Discount ID not found');
+
+        return await this.prismaClient.discount.delete({
+            where: { discount_id },
+        });
+    }
+
+    /**
+     * @desc      Delete all expired discount coupons
+     * @returns   Promise of the result of deleteMany operation
+     */
+    async deleteExpiredDiscountsService() {
+        const now = new Date();
+
+        return await this.prismaClient.discount.deleteMany({
+            where: { expiry_date: { lt: now } },
+        });
+    }
+
+    /**
+     * @desc      Fetch all discounts assigned to a specific dealer
+     * @param     dealer_id string - ID of the dealer
+     * @returns   Promise of an array of discounts for that dealer
+     */
+    async getAllDiscountsForDealerService(dealer_id: string) {
+        const discounts = await this.prismaClient.discount.findMany({
+            where: { dealer_id },
+            select: {
+                coupon_code: true,
+                expiry_date: true,
+                percentage: true,
+                amount: true,
+                isActive: true,
+                dealer_id: true,
+                product_id: true,
+                dealer: { select: { business_name: true } },
+                Product: { select: { product_title: true } },
             },
-        },
-    });
+        });
 
-    if (!discounts) throw new Error('Cannot find discount for the dealer');
+        if (!discounts) throw new Error('Cannot find discount for the dealer');
 
-    return discounts;
-};
+        return discounts;
+    }
+}

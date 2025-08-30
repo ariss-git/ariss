@@ -1,5 +1,6 @@
 // src/controllers/rma.controller.ts
-import { deleteRMARequestService, getAllRMAService, getSingleRMAService, rmaRequestAcceptedService, rmaRequestFormService, rmaRequestRejectedService, rmaRequestResolvedService, } from '../services/rma.service.js';
+import { RMAService } from '../services/rma.service.js';
+const rmaServices = new RMAService();
 /**
  * @desc Handles RMA form submission
  * @route POST /rma
@@ -25,7 +26,7 @@ export const rmaRequestFormController = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Missing required fields' });
         }
         // Create new RMA request
-        const rma = await rmaRequestFormService(rmaData);
+        const rma = await rmaServices.rmaRequestFormService(rmaData);
         return res.status(201).json({ success: true, data: rma });
     }
     catch (error) {
@@ -42,7 +43,7 @@ export const rmaRequestAcceptedController = async (req, res) => {
         if (!rma_id) {
             return res.status(404).json({ success: false, message: 'Invalid or Incorrect RMA ID' });
         }
-        const rma = await rmaRequestAcceptedService(rma_id);
+        const rma = await rmaServices.rmaRequestAcceptedService(rma_id);
         return res.status(200).json({ success: true, message: 'Updated RMA Status: Accepted', data: rma });
     }
     catch (error) {
@@ -59,7 +60,7 @@ export const rmaRequestRejectedController = async (req, res) => {
         if (!rma_id) {
             return res.status(404).json({ success: false, message: 'Invalid or Incorrect RMA ID' });
         }
-        const rma = await rmaRequestRejectedService(rma_id);
+        const rma = await rmaServices.rmaRequestRejectedService(rma_id);
         return res.status(200).json({ success: true, message: 'Updated RMA Status: Rejected', data: rma });
     }
     catch (error) {
@@ -76,7 +77,7 @@ export const rmaRequestResolvedController = async (req, res) => {
         if (!rma_id) {
             return res.status(404).json({ success: false, message: 'Invalid or Incorrect RMA ID' });
         }
-        const rma = await rmaRequestResolvedService(rma_id);
+        const rma = await rmaServices.rmaRequestResolvedService(rma_id);
         return res.status(200).json({ success: true, message: 'Updated RMA Status: Resolved', data: rma });
     }
     catch (error) {
@@ -89,7 +90,7 @@ export const rmaRequestResolvedController = async (req, res) => {
  */
 export const getAllRMAController = async (_req, res) => {
     try {
-        const rma = await getAllRMAService();
+        const rma = await rmaServices.getAllRMAService();
         return res.status(200).json({ success: true, total: rma.length, data: rma });
     }
     catch (error) {
@@ -106,7 +107,7 @@ export const getSingleRMAController = async (req, res) => {
         if (!rma_id) {
             return res.status(404).json({ success: false, message: 'Invalid or Incorrect RMA ID' });
         }
-        const rma = await getSingleRMAService(rma_id);
+        const rma = await rmaServices.getSingleRMAService(rma_id);
         return res.status(200).json({ success: true, data: rma });
     }
     catch (error) {
@@ -123,7 +124,7 @@ export const deleteRMARequestController = async (req, res) => {
         if (!rma_id) {
             return res.status(404).json({ success: false, message: 'Invalid or Incorrect RMA ID' });
         }
-        const rma = await deleteRMARequestService(rma_id);
+        const rma = await rmaServices.deleteRMARequestService(rma_id);
         return res.status(200).json({ success: true, message: 'RMA request deleted', data: rma });
     }
     catch (error) {

@@ -1,6 +1,11 @@
 // src/controllers/ledger.controller.ts
-import * as ledgerServices from '../services/ledger.service.js';
-// Controller to create a ledger order
+import { LedgerService } from '../services/ledger.service.js';
+const ledgerServices = new LedgerService();
+/**
+ * @desc      Controller to create a new ledger order
+ * @route     POST /ledger
+ * @access    Public (or auth-protected if middleware is applied)
+ */
 export const createLedgerController = async (req, res) => {
     const { product_id, total, balance_due, quantity, user_id, username, usertype, business_name, shipping_address, } = req.body;
     if (!product_id ||
@@ -22,7 +27,11 @@ export const createLedgerController = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 };
-// Controller to fetch all ledger orders
+/**
+ * @desc      Controller to fetch all ledger orders
+ * @route     GET /ledger
+ * @access    Public
+ */
 export const fetchAllLedgerController = async (req, res) => {
     try {
         const ledger = await ledgerServices.fetchAllLedgerService();
@@ -32,7 +41,11 @@ export const fetchAllLedgerController = async (req, res) => {
         return res.status(400).json({ success: false, message: error.message });
     }
 };
-// Controller to fetch single ledger orders
+/**
+ * @desc      Controller to fetch a single ledger order by ID
+ * @route     GET /ledger/:ledger_id
+ * @access    Public
+ */
 export const fetchSingleLedgerController = async (req, res) => {
     const { ledger_id } = req.params;
     if (!ledger_id) {
@@ -48,7 +61,11 @@ export const fetchSingleLedgerController = async (req, res) => {
         return res.status(400).json({ success: false, message: error.message });
     }
 };
-// Controller to fetch single ledger orders for a user
+/**
+ * @desc      Controller to fetch all ledger orders for a specific user
+ * @route     GET /ledger/user/:user_id
+ * @access    Public
+ */
 export const fetchUserLedgerController = async (req, res) => {
     const { user_id } = req.params;
     if (!user_id) {
@@ -64,7 +81,11 @@ export const fetchUserLedgerController = async (req, res) => {
         return res.status(400).json({ success: false, message: error.message });
     }
 };
-// Controller to set due date of ledger orders
+/**
+ * @desc      Controller to set the due date for a ledger order
+ * @route     PATCH /ledger/:ledger_id/due-date
+ * @access    Public
+ */
 export const setDueDateController = async (req, res) => {
     const { ledger_id } = req.params;
     const { due_date } = req.body;
@@ -84,7 +105,11 @@ export const setDueDateController = async (req, res) => {
         return res.status(400).json({ success: false, message: error.message });
     }
 };
-// Controller to update amount
+/**
+ * @desc      Controller to update the amount paid on a ledger order
+ * @route     PATCH /ledger/:ledger_id/amount
+ * @access    Public
+ */
 export const updateAmountsController = async (req, res) => {
     const { ledger_id } = req.params;
     const { amount_paid } = req.body;
@@ -104,7 +129,11 @@ export const updateAmountsController = async (req, res) => {
         return res.status(400).json({ success: false, message: error.message });
     }
 };
-// Controller to cancel ledger order
+/**
+ * @desc      Controller to cancel a ledger order
+ * @route     DELETE /ledger/:ledger_id
+ * @access    Public
+ */
 export const cancelLedgerOrderController = async (req, res) => {
     const { ledger_id } = req.params;
     if (!ledger_id) {

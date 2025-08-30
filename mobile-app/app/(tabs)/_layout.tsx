@@ -6,7 +6,7 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { backgroundColor: 'black', height: 60, paddingTop: 6 },
+        tabBarStyle: { backgroundColor: 'black', height: 65, paddingTop: 6 },
         tabBarActiveTintColor: 'white',
         tabBarInactiveTintColor: 'gray',
         tabBarLabelStyle: { fontSize: 12, marginTop: 2, fontFamily: 'WorkSans' },
