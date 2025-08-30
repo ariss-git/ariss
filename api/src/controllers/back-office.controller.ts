@@ -1,16 +1,10 @@
 // src/controllers/back-office.controller.ts
 
 import { AuthRequest } from '../middleware/auth.middleware.js';
-import {
-    registerBackOfficeService,
-    isBackOfficeSignedIn,
-    approveBackOfficeService,
-    getAllApprovedBackOfficesService,
-    getAllDisapprovedBackOfficesService,
-    disapproveBackOfficeService,
-    getAllBackofficesForDealer,
-} from '../services/back-office.service.js';
+import { BackOfficeService } from '../services/back-office.service.js';
 import { Request, Response } from 'express';
+
+const backOfficeServices = new BackOfficeService();
 
 // Controller to register Back Office
 export const registerBackOfficeController = async (req: Request, res: Response) => {
@@ -21,7 +15,7 @@ export const registerBackOfficeController = async (req: Request, res: Response) 
             return res.status(404).json({ success: false, message: 'Select proper type: BACKOFFICE' });
         }
 
-        const backOffice = await registerBackOfficeService(
+        const backOffice = await backOfficeServices.registerBackOfficeService(
             phone,
             email,
             first_name,
@@ -45,7 +39,7 @@ export const isBackOfficeSignedInController = async (req: AuthRequest, res: Resp
             return;
         }
 
-        const backOffice = await isBackOfficeSignedIn(req.user.userid);
+        const backOffice = await backOfficeServices.isBackOfficeSignedIn(req.user.userid);
         if (!backOffice) {
             res.status(404).json({ message: 'Back Office not found' });
             return;
@@ -66,7 +60,7 @@ export const approveBackOfficeController = async (req: Request, res: Response) =
             res.status(404).json({ message: 'Back office or Dealer not found' });
         }
 
-        const backOffice = await approveBackOfficeService(dealer_id, backoffice_id);
+        const backOffice = await backOfficeServices.approveBackOfficeService(dealer_id, backoffice_id);
 
         return res.status(200).json({ success: true, data: backOffice });
     } catch (error: any) {
@@ -83,7 +77,7 @@ export const getAllApprovedBackOfficesController = async (req: Request, res: Res
             return res.status(404).json({ message: 'Dealer with this ID do not exist' });
         }
 
-        const backOffices = await getAllApprovedBackOfficesService(dealer_id);
+        const backOffices = await backOfficeServices.getAllApprovedBackOfficesService(dealer_id);
 
         return res.status(200).json({ success: true, total: backOffices.length, data: backOffices });
     } catch (error: any) {
@@ -100,7 +94,7 @@ export const getAllDisapprovedBackOfficesController = async (req: Request, res: 
             return res.status(404).json({ message: 'Dealer with this ID do not exist' });
         }
 
-        const backOffices = await getAllDisapprovedBackOfficesService(dealer_id);
+        const backOffices = await backOfficeServices.getAllDisapprovedBackOfficesService(dealer_id);
 
         return res.status(200).json({ success: true, total: backOffices.length, data: backOffices });
     } catch (error: any) {
@@ -117,7 +111,7 @@ export const disapproveBackOfficeController = async (req: Request, res: Response
             res.status(404).json({ message: 'Back office or Dealer not found' });
         }
 
-        const backOffice = await disapproveBackOfficeService(dealer_id, backoffice_id);
+        const backOffice = await backOfficeServices.disapproveBackOfficeService(dealer_id, backoffice_id);
 
         return res.status(200).json({ success: true, data: backOffice });
     } catch (error: any) {
@@ -134,7 +128,7 @@ export const getAllBackofficesForDealerController = async (req: Request, res: Re
             res.status(404).json({ success: false, message: 'Dealer ID invalid' }); // Throw error with message
         }
 
-        const backoffices = await getAllBackofficesForDealer(dealer_id);
+        const backoffices = await backOfficeServices.getAllBackofficesForDealer(dealer_id);
         return res.status(200).json({ success: true, total: backoffices.length, data: backoffices });
     } catch (error: any) {
         return res.status(400).json({ success: false, message: error.message }); // Throw error with message

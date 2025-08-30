@@ -138,7 +138,7 @@ export class BackOfficeService {
     }
 
     // Service method to disapprove a back office user
-    async disapproveBackOfficeServicea(dealer_id: string, backoffice_id: string) {
+    async disapproveBackOfficeService(dealer_id: string, backoffice_id: string) {
         const existingBackOffice = await this.prismaClient.backOffice.findUnique({
             where: { backoffice_id, dealerid: dealer_id },
         });
