@@ -3,6 +3,17 @@
 import { prisma } from '../db/prismaSingleton.js';
 import { approveDealerOnWhatsapp } from '../lib/approveDealerOnWhatsapp.js';
 
+/**
+ * Customer Service Layer
+ * ----------------------
+ * Handles all business logic and database interactions related to:
+ *  - Dealers
+ *  - Technicians
+ *  - Back Office Users
+ *  - Customers (aggregate)
+ *
+ * Uses Prisma ORM for database access and external libraries for notifications.
+ */
 export class CustomerService {
     private prismaClient;
 
@@ -11,10 +22,13 @@ export class CustomerService {
     }
 
     /* =============================
-   Dealers
-============================= */
+       DEALERS
+    ============================= */
 
-    // Fetch all approved dealers
+    /**
+     * Fetch all dealers who are approved.
+     * @returns List of approved dealer records
+     */
     async getAllApprovedCustomerService() {
         const dealers = await this.prismaClient.dealers.findMany({
             where: { isApproved: true },
@@ -24,7 +38,11 @@ export class CustomerService {
         return dealers;
     }
 
-    // Fetch single dealer
+    /**
+     * Fetch a single dealer by dealer_id.
+     * @param dealer_id - Unique dealer identifier
+     * @returns Dealer record
+     */
     async getSingleDealerService(dealer_id: string) {
         const dealer = await this.prismaClient.dealers.findUnique({
             where: { dealer_id },
@@ -35,7 +53,10 @@ export class CustomerService {
         return dealer;
     }
 
-    // Fetch all approved dealers who are also distributors
+    /**
+     * Fetch all dealers who are also distributors.
+     * @returns List of distributor dealers
+     */
     async getAllDistributorCustomerService() {
         const dealers = await this.prismaClient.dealers.findMany({
             where: { isDistributor: true },
@@ -45,7 +66,10 @@ export class CustomerService {
         return dealers;
     }
 
-    // Fetch all dealers who are still waiting for approval
+    /**
+     * Fetch all dealers who are not approved yet.
+     * @returns List of unapproved dealers
+     */
     async getAllNotApprovedCustomerService() {
         const dealers = await this.prismaClient.dealers.findMany({
             where: { isApproved: false },
@@ -55,7 +79,12 @@ export class CustomerService {
         return dealers;
     }
 
-    // Approve a dealer by ID and send them a WhatsApp + Email notification
+    /**
+     * Approve a dealer by ID.
+     * Also sends a WhatsApp + Email notification to the dealer.
+     * @param dealer_id - Dealer identifier
+     * @returns Updated dealer record
+     */
     async approveDealerService(dealer_id: string) {
         const dealer = await this.prismaClient.dealers.update({
             where: { dealer_id },
@@ -68,7 +97,11 @@ export class CustomerService {
         return dealer;
     }
 
-    // Disapprove a dealer by ID
+    /**
+     * Disapprove a dealer by ID.
+     * @param dealer_id - Dealer identifier
+     * @returns Updated dealer record
+     */
     async disapproveDealerService(dealer_id: string) {
         const dealer = await this.prismaClient.dealers.update({
             where: { dealer_id },
@@ -79,7 +112,11 @@ export class CustomerService {
         return dealer;
     }
 
-    // Assign a dealer to distributor status
+    /**
+     * Promote a dealer to distributor role.
+     * @param dealer_id - Dealer identifier
+     * @returns Updated dealer record with distributor flag
+     */
     async updateToDistributorService(dealer_id: string) {
         const existingDealer = await this.prismaClient.dealers.findUnique({ where: { dealer_id } });
 
@@ -91,7 +128,11 @@ export class CustomerService {
         });
     }
 
-    // Assign a distributor to dealer status
+    /**
+     * Demote a distributor to regular dealer role.
+     * @param dealer_id - Dealer identifier
+     * @returns Updated dealer record with distributor flag removed
+     */
     async updateDistributorToDealerService(dealer_id: string) {
         const existingDealer = await this.prismaClient.dealers.findUnique({ where: { dealer_id } });
 
@@ -103,7 +144,15 @@ export class CustomerService {
         });
     }
 
-    // Update a dealer’s profile details
+    /**
+     * Update a dealer’s profile information.
+     * @param dealer_id - Dealer identifier
+     * @param first_name - Dealer's first name
+     * @param last_name - Dealer's last name
+     * @param profile_pic - Dealer's profile picture URL
+     * @param isApproved - Dealer's approval status
+     * @returns Updated dealer record
+     */
     async updateDealerService(
         dealer_id: string,
         first_name: string,
@@ -125,7 +174,11 @@ export class CustomerService {
         return dealer;
     }
 
-    // Remove a dealer from the system
+    /**
+     * Permanently delete a dealer from the system.
+     * @param dealer_id - Dealer identifier
+     * @returns Deleted dealer record
+     */
     async deleteDealerService(dealer_id: string) {
         const dealer = await this.prismaClient.dealers.delete({
             where: { dealer_id },
@@ -136,10 +189,13 @@ export class CustomerService {
     }
 
     /* =============================
-   Technicians
-============================= */
+       TECHNICIANS
+    ============================= */
 
-    // Fetch all technicians
+    /**
+     * Fetch all technicians along with their associated dealer details.
+     * @returns List of technicians with dealer info
+     */
     async getAllTechniciansService() {
         const technicians = await this.prismaClient.technicians.findMany({
             select: {
@@ -171,7 +227,15 @@ export class CustomerService {
         return technicians;
     }
 
-    // Update a technician’s profile details and pass status
+    /**
+     * Update a technician’s profile and test pass status.
+     * @param tech_id - Technician identifier
+     * @param first_name - Technician's first name
+     * @param last_name - Technician's last name
+     * @param profile_pic - Technician's profile picture URL
+     * @param isPassed - Test pass status
+     * @returns Updated technician record
+     */
     async updateTechnicianService(
         tech_id: string,
         first_name: string,
@@ -193,7 +257,11 @@ export class CustomerService {
         return technician;
     }
 
-    // Remove a technician from the system
+    /**
+     * Permanently delete a technician from the system.
+     * @param tech_id - Technician identifier
+     * @returns Deleted technician record
+     */
     async deleteTechnicianService(tech_id: string) {
         const technician = await this.prismaClient.technicians.delete({
             where: { tech_id },
@@ -204,10 +272,13 @@ export class CustomerService {
     }
 
     /* =============================
-   Back Office
-============================= */
+       BACK OFFICE USERS
+    ============================= */
 
-    // Fetch all back office users
+    /**
+     * Fetch all back office users along with their associated dealer details.
+     * @returns List of back office users
+     */
     async getAllBackOfficeService() {
         const backOffice = await this.prismaClient.backOffice.findMany({
             select: {
@@ -238,7 +309,14 @@ export class CustomerService {
         return backOffice;
     }
 
-    // Update a back office user’s profile details
+    /**
+     * Update a back office user’s profile information.
+     * @param backoffice_id - Back office identifier
+     * @param first_name - User's first name
+     * @param last_name - User's last name
+     * @param profile_pic - Profile picture URL
+     * @returns Updated back office record
+     */
     async updateBackOfficeService(
         backoffice_id: string,
         first_name: string,
@@ -258,7 +336,11 @@ export class CustomerService {
         return backOffice;
     }
 
-    // Remove a back office user from the system
+    /**
+     * Permanently delete a back office user from the system.
+     * @param backoffice_id - Back office identifier
+     * @returns Deleted back office record
+     */
     async deleteBackOfficeService(backoffice_id: string) {
         const backOffice = await this.prismaClient.backOffice.delete({
             where: { backoffice_id },
@@ -268,13 +350,18 @@ export class CustomerService {
         return backOffice;
     }
 
-    /**
-     * =========================
-     *       CUSTOMERS
-     * =========================
-     */
+    /* =============================
+       CUSTOMERS (AGGREGATE VIEW)
+    ============================= */
 
-    // Fetch all sorts of customers
+    /**
+     * Fetch all types of customers:
+     *  - Dealers
+     *  - Technicians
+     *  - Back Office users
+     *
+     * @returns Aggregated object containing all customer types
+     */
     async fetchAllCustomersService() {
         const dealers = await this.prismaClient.dealers.findMany({
             select: {

@@ -7,29 +7,50 @@ const customerRoutes = Router();
 
 /**
  * =====================
- *        DEALER
+ *        DEALERS
  * =====================
  */
 
-// Get all dealers who are approved
+/**
+ * @route GET /dealers/approved
+ * @desc Get all approved dealers
+ */
 customerRoutes.get('/dealers/approved', customerControllers.getAllApprovedCustomerController);
 
-// Get all dealers who are not yet approved
+/**
+ * @route GET /dealers/not-approved
+ * @desc Get all dealers who are not approved
+ */
 customerRoutes.get('/dealers/not-approved', customerControllers.getAllNotApprovedCustomerController);
 
-// Approve a dealer (promotes dealer to active user)
+/**
+ * @route PUT /dealers/approved/:dealer_id
+ * @desc Approve a dealer (promote to active user)
+ */
 customerRoutes.put('/dealers/approved/:dealer_id', customerControllers.approveDealerController);
 
-// Disapprove a dealer (revokes access/login ability)
+/**
+ * @route PUT /dealers/not-approved/:dealer_id
+ * @desc Disapprove a dealer (revoke access)
+ */
 customerRoutes.put('/dealers/not-approved/:dealer_id', customerControllers.disapproveDealerController);
 
-// Update dealer profile or information
+/**
+ * @route PUT /dealers/edit/:dealer_id
+ * @desc Update dealer profile information
+ */
 customerRoutes.put('/dealers/edit/:dealer_id', customerControllers.updateDealerController);
 
-// Delete a dealer account permanently
+/**
+ * @route DELETE /dealers/:dealer_id
+ * @desc Permanently delete a dealer
+ */
 customerRoutes.delete('/dealers/:dealer_id', customerControllers.deleteDealerController);
 
-// Fetch single dealer
+/**
+ * @route GET /dealers/view-edit/:dealer_id
+ * @desc Fetch a single dealer by ID
+ */
 customerRoutes.get('/dealers/view-edit/:dealer_id', customerControllers.getSingleDealerController);
 
 /**
@@ -38,13 +59,22 @@ customerRoutes.get('/dealers/view-edit/:dealer_id', customerControllers.getSingl
  * =====================
  */
 
-// Get list of all technicians
+/**
+ * @route GET /technicians
+ * @desc Get all technicians
+ */
 customerRoutes.get('/technicians', customerControllers.getAllTechniciansController);
 
-// Update a technician's profile or role
+/**
+ * @route PUT /technicians/:tech_id
+ * @desc Update a technician's profile or role
+ */
 customerRoutes.put('/technicians/:tech_id', customerControllers.updateTechnicianController);
 
-// Delete a technician from the system
+/**
+ * @route DELETE /technicians/:tech_id
+ * @desc Delete a technician
+ */
 customerRoutes.delete('/technicians/:tech_id', customerControllers.deleteTechnicianController);
 
 /**
@@ -53,13 +83,22 @@ customerRoutes.delete('/technicians/:tech_id', customerControllers.deleteTechnic
  * =====================
  */
 
-// Get all back office users
+/**
+ * @route GET /back-office
+ * @desc Get all back-office users
+ */
 customerRoutes.get('/back-office', customerControllers.getAllBackOfficeController);
 
-// Update back office user information
+/**
+ * @route PUT /back-office/:backoffice_id
+ * @desc Update a back-office user's information
+ */
 customerRoutes.put('/back-office/:backoffice_id', customerControllers.updateBackOfficeController);
 
-// Delete a back office user
+/**
+ * @route DELETE /back-office/:backoffice_id
+ * @desc Delete a back-office user
+ */
 customerRoutes.delete('/back-office/:backoffice_id', customerControllers.deleteBackOfficeController);
 
 /**
@@ -68,13 +107,22 @@ customerRoutes.delete('/back-office/:backoffice_id', customerControllers.deleteB
  * =====================
  */
 
-// Get all dealers who are marked as distributors
+/**
+ * @route GET /distributor
+ * @desc Get all dealers marked as distributors
+ */
 customerRoutes.get('/distributor', customerControllers.getAllDistributorCustomerController);
 
-// Assign a dealer to distributor role
+/**
+ * @route PUT /distributor/:dealer_id
+ * @desc Assign distributor role to a dealer
+ */
 customerRoutes.put('/distributor/:dealer_id', customerControllers.updateToDistributorController);
 
-// Assign a distributor to dealer role
+/**
+ * @route PUT /distributor-dealer/:dealer_id
+ * @desc Reassign distributor back to dealer role
+ */
 customerRoutes.put('/distributor-dealer/:dealer_id', customerControllers.updateDistributorToDealerController);
 
 /**
@@ -83,6 +131,10 @@ customerRoutes.put('/distributor-dealer/:dealer_id', customerControllers.updateD
  * =====================
  */
 
-customerRoutes.get(`/all`, customerControllers.fetchAllCustomersController);
+/**
+ * @route GET /all
+ * @desc Fetch all customers
+ */
+customerRoutes.get('/all', customerControllers.fetchAllCustomersController);
 
 export default customerRoutes;

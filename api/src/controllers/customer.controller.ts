@@ -11,7 +11,10 @@ const customerServices = new CustomerService();
  * =========================
  */
 
-// Fetch all approved dealers
+/**
+ * Fetch all approved dealers
+ * @route GET /dealers/approved
+ */
 export const getAllApprovedCustomerController = async (req: Request, res: Response) => {
     try {
         const dealers = await customerServices.getAllApprovedCustomerService();
@@ -28,7 +31,10 @@ export const getAllApprovedCustomerController = async (req: Request, res: Respon
     }
 };
 
-// Fetch single dealer controller
+/**
+ * Fetch single dealer by ID
+ * @route GET /dealers/view-edit/:dealer_id
+ */
 export const getSingleDealerController = async (req: Request, res: Response) => {
     try {
         const { dealer_id } = req.params;
@@ -44,7 +50,10 @@ export const getSingleDealerController = async (req: Request, res: Response) => 
     }
 };
 
-// Fetch all non-approved dealers
+/**
+ * Fetch all non-approved dealers
+ * @route GET /dealers/not-approved
+ */
 export const getAllNotApprovedCustomerController = async (_req: Request, res: Response) => {
     try {
         const dealers = await customerServices.getAllNotApprovedCustomerService();
@@ -61,7 +70,10 @@ export const getAllNotApprovedCustomerController = async (_req: Request, res: Re
     }
 };
 
-// Approve a dealer account
+/**
+ * Approve a dealer account
+ * @route PUT /dealers/approved/:dealer_id
+ */
 export const approveDealerController = async (req: Request, res: Response) => {
     try {
         const { dealer_id } = req.params;
@@ -78,7 +90,10 @@ export const approveDealerController = async (req: Request, res: Response) => {
     }
 };
 
-// Disapprove a dealer account
+/**
+ * Disapprove a dealer account
+ * @route PUT /dealers/not-approved/:dealer_id
+ */
 export const disapproveDealerController = async (req: Request, res: Response) => {
     try {
         const { dealer_id } = req.params;
@@ -95,7 +110,10 @@ export const disapproveDealerController = async (req: Request, res: Response) =>
     }
 };
 
-// Update dealer details (profile, status)
+/**
+ * Update dealer details (profile, status)
+ * @route PUT /dealers/edit/:dealer_id
+ */
 export const updateDealerController = async (req: Request, res: Response) => {
     try {
         const { dealer_id } = req.params;
@@ -119,7 +137,10 @@ export const updateDealerController = async (req: Request, res: Response) => {
     }
 };
 
-// Promote a dealer to distributor
+/**
+ * Promote a dealer to distributor
+ * @route PUT /distributor/:dealer_id
+ */
 export const updateToDistributorController = async (req: Request, res: Response) => {
     try {
         const { dealer_id } = req.params;
@@ -140,7 +161,10 @@ export const updateToDistributorController = async (req: Request, res: Response)
     }
 };
 
-// Assign a distributor to dealer
+/**
+ * Convert distributor back to dealer
+ * @route PUT /distributor-dealer/:dealer_id
+ */
 export const updateDistributorToDealerController = async (req: Request, res: Response) => {
     try {
         const { dealer_id } = req.params;
@@ -161,7 +185,10 @@ export const updateDistributorToDealerController = async (req: Request, res: Res
     }
 };
 
-// Permanently delete a dealer
+/**
+ * Permanently delete a dealer
+ * @route DELETE /dealers/:dealer_id
+ */
 export const deleteDealerController = async (req: Request, res: Response) => {
     try {
         const { dealer_id } = req.params;
@@ -187,7 +214,10 @@ export const deleteDealerController = async (req: Request, res: Response) => {
  * =========================
  */
 
-// Fetch all technicians
+/**
+ * Fetch all technicians
+ * @route GET /technicians
+ */
 export const getAllTechniciansController = async (req: Request, res: Response) => {
     try {
         const technicians = await customerServices.getAllTechniciansService();
@@ -202,7 +232,10 @@ export const getAllTechniciansController = async (req: Request, res: Response) =
     }
 };
 
-// Update technician details (profile, pass status)
+/**
+ * Update technician details
+ * @route PUT /technicians/:tech_id
+ */
 export const updateTechnicianController = async (req: Request, res: Response) => {
     try {
         const { tech_id } = req.params;
@@ -226,7 +259,10 @@ export const updateTechnicianController = async (req: Request, res: Response) =>
     }
 };
 
-// Delete a technician account
+/**
+ * Delete a technician
+ * @route DELETE /technicians/:tech_id
+ */
 export const deleteTechnicianController = async (req: Request, res: Response) => {
     try {
         const { tech_id } = req.params;
@@ -252,7 +288,10 @@ export const deleteTechnicianController = async (req: Request, res: Response) =>
  * =========================
  */
 
-// Fetch all back office users
+/**
+ * Fetch all back office users
+ * @route GET /back-office
+ */
 export const getAllBackOfficeController = async (req: Request, res: Response) => {
     try {
         const backOffice = await customerServices.getAllBackOfficeService();
@@ -267,7 +306,10 @@ export const getAllBackOfficeController = async (req: Request, res: Response) =>
     }
 };
 
-// Update back office user profile
+/**
+ * Update back office user details
+ * @route PUT /back-office/:backoffice_id
+ */
 export const updateBackOfficeController = async (req: Request, res: Response) => {
     try {
         const { backoffice_id } = req.params;
@@ -290,7 +332,10 @@ export const updateBackOfficeController = async (req: Request, res: Response) =>
     }
 };
 
-// Delete a back office user
+/**
+ * Delete a back office user
+ * @route DELETE /back-office/:backoffice_id
+ */
 export const deleteBackOfficeController = async (req: Request, res: Response) => {
     try {
         const { backoffice_id } = req.params;
@@ -316,7 +361,10 @@ export const deleteBackOfficeController = async (req: Request, res: Response) =>
  * =========================
  */
 
-// Fetch all dealers marked as distributors
+/**
+ * Fetch all distributors
+ * @route GET /distributor
+ */
 export const getAllDistributorCustomerController = async (_req: Request, res: Response) => {
     try {
         const distributors = await customerServices.getAllDistributorCustomerService();
@@ -337,7 +385,10 @@ export const getAllDistributorCustomerController = async (_req: Request, res: Re
  * =========================
  */
 
-// Fetch all sorts of customers controller
+/**
+ * Fetch all types of customers (dealers, technicians, back offices)
+ * @route GET /all
+ */
 export const fetchAllCustomersController = async (_req: Request, res: Response) => {
     try {
         const customers = await customerServices.fetchAllCustomersService();
