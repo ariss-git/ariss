@@ -230,7 +230,7 @@ export default function FetchAllDiscounts() {
                         </Button>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="ml-auto rounded font-work">
-                                Filter
+                                Sort By
                                 <ChevronDown className="mr-2 h-4 w-4" />
                             </Button>
                         </DropdownMenuTrigger>

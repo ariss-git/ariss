@@ -393,7 +393,7 @@ const FetchAllDistributors = () => {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="rounded flex items-center gap-2">
-                            Filter <ChevronDown size={16} />
+                            Sort By <ChevronDown size={16} />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-[200px] rounded font-work">

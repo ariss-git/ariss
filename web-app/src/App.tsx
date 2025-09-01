@@ -28,7 +28,6 @@ import Courses from './pages/Courses/Index';
 import AddCourse from './pages/Courses/AddCouse';
 import FetchSingleCourse from './pages/Courses/FetchSingleCourse';
 import Login from './pages/Admin/Login';
-import Wishlists from './pages/Wishlist/Index';
 import AddBackOffice from './pages/Back-Office/AddBackOffice';
 import AddTechnician from './pages/Technician/AddTechnician';
 import AddDealer from './pages/Customer/ApprovedDealers/AddDealer';
@@ -38,7 +37,7 @@ import AddQuestionsToCourse from './pages/Courses/AddQuestions';
 
 function App() {
     return (
-        <ThemeProvider>
+        <ThemeProvider defaultTheme="light">
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<AdminLayout />}>
@@ -86,8 +85,6 @@ function App() {
                         <Route path="orders" element={<Orders />} />
 
                         <Route path="invoices" element={<Invoices />} />
-
-                        <Route path="wishlists" element={<Wishlists />} />
                     </Route>
 
                     <Route path="/login" element={<Login />}>

@@ -293,7 +293,7 @@ export default function FetchAllRMARequests() {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="rounded">
-                            Filter <ChevronDown className="ml-2 h-4 w-4" />
+                            Sort By <ChevronDown className="ml-2 h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="rounded font-work">
