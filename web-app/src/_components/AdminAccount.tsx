@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { adminLogout, getAdminProfile } from '../api/authURL';
 import { toast } from '../hooks/use-toast';
 import { useEffect, useState } from 'react';
+import { SignOutButton } from '@clerk/clerk-react';
 
 interface AdminPfp {
     fullname: string;
@@ -102,7 +103,7 @@ export default function AdminAccount() {
                 <DropdownMenuItem disabled>API</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-500">
-                    Log out
+                    <SignOutButton>Log out</SignOutButton>
                     <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
                 </DropdownMenuItem>
             </DropdownMenuContent>

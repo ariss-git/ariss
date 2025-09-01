@@ -2,18 +2,12 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from '../_components/Navbar';
 import Sidebar from '../_components/Sidebar';
-import {
-    SignedIn,
-    SignedOut,
-    SignInButton,
-    SignOutButton,
-    useOrganization,
-    useUser,
-} from '@clerk/clerk-react';
+import { SignedIn, SignedOut, SignIn, SignOutButton, useOrganization, useUser } from '@clerk/clerk-react';
 
 const AdminLayout = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const toggleSidebar = () => setSidebarOpen((prev) => !prev);
+
     const { user } = useUser();
     const { organization } = useOrganization();
 
@@ -49,14 +43,21 @@ const AdminLayout = () => {
                         <Outlet />
                         <div className="flex justify-start items-start flex-col">
                             <h6>{user?.emailAddresses[0].emailAddress}</h6>
+                            <h6>{user?.firstName}</h6>
+                            <h6>{user?.lastName}</h6>
+                            <img src={user?.imageUrl} width={20} height={20} alt="123" />
                             {userRole && <h6>Role: {userRole}</h6>} {/* Display the user's role */}
-                            <SignOutButton />
+                            <SignOutButton redirectUrl="/" />
                         </div>
                     </main>
                 </div>
             </SignedIn>
             <SignedOut>
-                <SignInButton />
+                <SignIn
+                    appearance={{
+                        elements: { footerAction: 'none' },
+                    }}
+                />
             </SignedOut>
         </div>
     );
