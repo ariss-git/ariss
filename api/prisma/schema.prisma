@@ -7,6 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model PanelUsers {
+  panel_id    String        @id
+  email       String        @unique
+  name        String
+  profile_pic String?
+  panel_type  PanelUserType
+  createdAt   DateTime      @default(now())
+}
+
 model Dealers {
   dealer_id        String        @id @default(uuid())
   phone            String        @unique
@@ -222,4 +231,9 @@ enum RMAStatus {
   ACCEPTED
   REJECTED
   RESOLVED
+}
+
+enum PanelUserType {
+  ADMIN
+  EMPLOYEE
 }
