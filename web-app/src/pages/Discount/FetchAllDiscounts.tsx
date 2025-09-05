@@ -35,6 +35,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { toast } from '../../hooks/use-toast';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useOrganization, useUser } from '@clerk/clerk-react';
 
 const apiURL = 'http://localhost:5000/api';
 
@@ -58,6 +59,17 @@ export default function FetchAllDiscounts() {
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
+    const { user } = useUser();
+    const { organization } = useOrganization();
+
+    // Find the user's membership in the current organization
+    const userMembership = user?.organizationMemberships.find(
+        (membership) => membership.organization.id === organization?.id
+    );
+
+    // Get the role key string from the membership
+    const userRole = userMembership?.role;
 
     const load = async () => {
         setLoading(true);
@@ -225,9 +237,11 @@ export default function FetchAllDiscounts() {
 
                 <DropdownMenu>
                     <div className="flex justify-center items-center gap-x-4">
-                        <Button onClick={() => navigate('/discounts/add')} className="shadow rounded">
-                            Add Discounts <PlusCircleIcon />
-                        </Button>
+                        {userRole === 'org:admin' && (
+                            <Button onClick={() => navigate('/discounts/add')} className="shadow rounded">
+                                Add Discounts <PlusCircleIcon />
+                            </Button>
+                        )}
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="ml-auto rounded font-work">
                                 Sort By

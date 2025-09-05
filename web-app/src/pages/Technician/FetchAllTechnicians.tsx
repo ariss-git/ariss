@@ -47,6 +47,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '../../components/ui/dialog';
+import { useOrganization, useUser } from '@clerk/clerk-react';
 
 interface Technician {
     tech_id: string;
@@ -81,6 +82,17 @@ const FetchAllTechnicians = () => {
         dealerEmail: false,
         dealerID: false,
     });
+
+    const { user } = useUser();
+    const { organization } = useOrganization();
+
+    // Find the user's membership in the current organization
+    const userMembership = user?.organizationMemberships.find(
+        (membership) => membership.organization.id === organization?.id
+    );
+
+    // Get the role key string from the membership
+    const userRole = userMembership?.role;
 
     const [showModal, setShowModal] = useState(false);
     const [confirmText, setConfirmText] = useState('');
@@ -281,59 +293,72 @@ const FetchAllTechnicians = () => {
             header: 'Date',
             cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString(),
         },
-        {
-            id: 'actions',
-            header: 'Actions',
-            cell: ({ row }) => {
-                const tech = row.original;
-                return (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-                                <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="rounded font-work">
-                            <DropdownMenuItem className="flex justify-between items-center cursor-pointer">
-                                <Link to={`/customers/technicians/${tech.tech_id}`}>View</Link>
-                                <Eye className="mr-2 h-4 w-4" />
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() =>
-                                    handleApproval(tech.dealerid, tech.tech_id, tech.dealer.business_name)
-                                }
-                                className="flex justify-between items-center cursor-pointer"
-                            >
-                                Approve
-                                <ShieldPlus className="mr-2 h-4 w-4" />
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() =>
-                                    handleDisapproval(tech.dealerid, tech.tech_id, tech.dealer.business_name)
-                                }
-                                className="flex justify-between items-center cursor-pointer"
-                            >
-                                Disapprove
-                                <ShieldX className="mr-2 h-4 w-4" />
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="flex justify-between items-center cursor-pointer">
-                                Edit
-                                <Pencil className="mr-2 h-4 w-4" />
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                className="flex justify-between items-center cursor-pointer text-red-500"
-                                onClick={() => openDeleteModal(tech.tech_id)}
-                            >
-                                Delete
-                                <Trash className="mr-2 h-4 w-4 text-red-500" />
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                );
-            },
-            enableSorting: false,
-            enableHiding: false,
-        },
+        userRole === 'org:admin'
+            ? {
+                  id: 'actions',
+                  header: 'Actions',
+                  cell: ({ row }) => {
+                      const tech = row.original;
+                      return (
+                          <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                                      <MoreHorizontal className="h-4 w-4" />
+                                  </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="rounded font-work">
+                                  <DropdownMenuItem className="flex justify-between items-center cursor-pointer">
+                                      <Link to={`/customers/technicians/${tech.tech_id}`}>View</Link>
+                                      <Eye className="mr-2 h-4 w-4" />
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                      onClick={() =>
+                                          handleApproval(
+                                              tech.dealerid,
+                                              tech.tech_id,
+                                              tech.dealer.business_name
+                                          )
+                                      }
+                                      className="flex justify-between items-center cursor-pointer"
+                                  >
+                                      Approve
+                                      <ShieldPlus className="mr-2 h-4 w-4" />
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                      onClick={() =>
+                                          handleDisapproval(
+                                              tech.dealerid,
+                                              tech.tech_id,
+                                              tech.dealer.business_name
+                                          )
+                                      }
+                                      className="flex justify-between items-center cursor-pointer"
+                                  >
+                                      Disapprove
+                                      <ShieldX className="mr-2 h-4 w-4" />
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem className="flex justify-between items-center cursor-pointer">
+                                      Edit
+                                      <Pencil className="mr-2 h-4 w-4" />
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                      className="flex justify-between items-center cursor-pointer text-red-500"
+                                      onClick={() => openDeleteModal(tech.tech_id)}
+                                  >
+                                      Delete
+                                      <Trash className="mr-2 h-4 w-4 text-red-500" />
+                                  </DropdownMenuItem>
+                              </DropdownMenuContent>
+                          </DropdownMenu>
+                      );
+                  },
+                  enableSorting: false,
+                  enableHiding: false,
+              }
+            : {
+                  id: '-',
+                  header: '',
+              },
     ];
 
     const table = useReactTable({

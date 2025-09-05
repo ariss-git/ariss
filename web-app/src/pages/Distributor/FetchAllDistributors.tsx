@@ -25,6 +25,7 @@ import { ChevronDown, Eye, Trash, MoreHorizontal, Loader2, UserRoundX } from 'lu
 import { useNavigate } from 'react-router-dom';
 import { toast } from '../../hooks/use-toast';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../../components/ui/dialog';
+import { useOrganization, useUser } from '@clerk/clerk-react';
 
 interface Address {
     adr: string;
@@ -62,6 +63,17 @@ const FetchAllDistributors = () => {
         first_name: false,
         last_name: false,
     });
+
+    const { user } = useUser();
+    const { organization } = useOrganization();
+
+    // Find the user's membership in the current organization
+    const userMembership = user?.organizationMemberships.find(
+        (membership) => membership.organization.id === organization?.id
+    );
+
+    // Get the role key string from the membership
+    const userRole = userMembership?.role;
 
     const [modalOpen, setModalOpen] = useState(false);
     const [confirmText, setConfirmText] = useState('');
@@ -273,53 +285,61 @@ const FetchAllDistributors = () => {
             header: 'Date',
             cell: ({ row }) => new Date(row.getValue('createdAt')).toLocaleDateString(),
         },
-        {
-            id: 'actions',
-            header: 'Actions',
-            cell: ({ row }) => {
-                const dealer = row.original;
-                return (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-                                <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="rounded font-work">
-                            <DropdownMenuItem asChild>
-                                <h6
-                                    onClick={() =>
-                                        navigate(`/customers/dealers/view-edit/${dealer.dealer_id}`)
-                                    }
-                                    className="flex items-center justify-between w-full cursor-pointer"
-                                >
-                                    View & Edit
-                                    <Eye className="ml-2 h-4 w-4" />
-                                </h6>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() =>
-                                    handleAssignDistributorToDealer(dealer.dealer_id, dealer.business_name)
-                                }
-                                className="flex justify-between items-center cursor-pointer"
-                            >
-                                Remove Distributor
-                                <UserRoundX className="ml-2 h-4 w-4" />
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                className="flex justify-between items-center text-red-500 cursor-pointer"
-                                onClick={() => openConfirmModal(dealer.dealer_id, dealer.business_name)}
-                            >
-                                Delete
-                                <Trash className="ml-2 h-4 w-4" />
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                );
-            },
-            enableSorting: false,
-            enableHiding: false,
-        },
+        userRole === 'org:admin'
+            ? {
+                  id: 'actions',
+                  header: 'Actions',
+                  cell: ({ row }) => {
+                      const dealer = row.original;
+                      return (
+                          <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                                      <MoreHorizontal className="h-4 w-4" />
+                                  </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="rounded font-work">
+                                  <DropdownMenuItem asChild>
+                                      <h6
+                                          onClick={() =>
+                                              navigate(`/customers/dealers/view-edit/${dealer.dealer_id}`)
+                                          }
+                                          className="flex items-center justify-between w-full cursor-pointer"
+                                      >
+                                          View & Edit
+                                          <Eye className="ml-2 h-4 w-4" />
+                                      </h6>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                      onClick={() =>
+                                          handleAssignDistributorToDealer(
+                                              dealer.dealer_id,
+                                              dealer.business_name
+                                          )
+                                      }
+                                      className="flex justify-between items-center cursor-pointer"
+                                  >
+                                      Remove Distributor
+                                      <UserRoundX className="ml-2 h-4 w-4" />
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                      className="flex justify-between items-center text-red-500 cursor-pointer"
+                                      onClick={() => openConfirmModal(dealer.dealer_id, dealer.business_name)}
+                                  >
+                                      Delete
+                                      <Trash className="ml-2 h-4 w-4" />
+                                  </DropdownMenuItem>
+                              </DropdownMenuContent>
+                          </DropdownMenu>
+                      );
+                  },
+                  enableSorting: false,
+                  enableHiding: false,
+              }
+            : {
+                  id: '-',
+                  header: '',
+              },
     ];
 
     const table = useReactTable({
