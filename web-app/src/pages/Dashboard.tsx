@@ -9,6 +9,7 @@ import FetchDealersOnDashboard from '../_components/Dashboard/DealerDashboard';
 import CurvyLinear from '../_components/Dashboard/CurvyLinear';
 import { Button } from '../components/ui/button';
 import { Link } from 'react-router-dom';
+import { useUser } from '@clerk/clerk-react';
 const chartData = [
     { month: 'January', desktop: 186, mobile: 80 },
     { month: 'February', desktop: 305, mobile: 200 },
@@ -30,10 +31,12 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export default function Dashboard() {
+    const { user } = useUser();
+
     return (
         <div className="flex justify-start items-start w-full lg:p-10 font-work flex-col lg:gap-y-10">
             <div className="flex justify-between items-center capitalize lg:text-lg w-full">
-                <h4>Welcome back, Mujahid Patel</h4>
+                <h4>Welcome {user?.fullName}</h4>
                 <Link to="/products/add">
                     <Button variant="default" className="rounded">
                         Add Product <PlusCircle className="ml-2 h-4 w-4" />
