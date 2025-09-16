@@ -27,6 +27,14 @@ import { toast } from '../../hooks/use-toast';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { useOrganization, useUser } from '@clerk/clerk-react';
 
+const filterContent = [
+    { name: 'All Customers', link: '/customers' },
+    { name: 'Approved Dealers', link: '/customers/dealers/approved' },
+    { name: 'Disapproved Dealers', link: '/customers/dealers/not-approved' },
+    { name: 'Technicians', link: '/customers/technicians' },
+    { name: 'Back Offices', link: '/customers/backoffices' },
+];
+
 interface Address {
     adr: string;
     dst: string;
@@ -362,12 +370,12 @@ const FetchAllDistributors = () => {
             <div className="flex items-center justify-between">
                 <div className="flex justify-start items-start flex-col gap-y-4">
                     <Input
-                        placeholder="Search distributors..."
+                        placeholder="Search all distributors..."
                         value={globalFilter}
                         onChange={(e) => setGlobalFilter(e.target.value)}
-                        className="w-[250px] rounded"
+                        className="w-[300px] rounded"
                     />
-                    <div className="flex justify-start items-center gap-x-6">
+                    {/* <div className="flex justify-start items-center gap-x-6">
                         <Button
                             onClick={() => navigate('/customers')}
                             size="sm"
@@ -408,32 +416,48 @@ const FetchAllDistributors = () => {
                         >
                             Back Offices
                         </Button>
-                    </div>
+                    </div> */}
                 </div>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="rounded flex items-center gap-2">
-                            Sort By <ChevronDown size={16} />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-[200px] rounded font-work">
-                        {table
-                            .getAllColumns()
-                            .filter((column) => column.getCanHide())
-                            .map((column) => (
-                                <DropdownMenuCheckboxItem
-                                    key={column.id}
-                                    className="capitalize"
-                                    checked={column.getIsVisible()}
-                                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                                >
-                                    {typeof column.columnDef.header === 'string'
-                                        ? column.columnDef.header
-                                        : column.id.replace(/_/g, ' ')}
-                                </DropdownMenuCheckboxItem>
+                <div className="flex justify-center items-center lg:gap-x-6">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="default" className="rounded flex items-center gap-2">
+                                Filter By <ChevronDown size={16} />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-[200px] rounded font-work">
+                            {filterContent.map((content, idx) => (
+                                <Button variant="link" onClick={() => navigate(content.link)} key={idx}>
+                                    {content.name}
+                                </Button>
                             ))}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" className="rounded flex items-center gap-2">
+                                Sort By <ChevronDown size={16} />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-[200px] rounded font-work">
+                            {table
+                                .getAllColumns()
+                                .filter((column) => column.getCanHide())
+                                .map((column) => (
+                                    <DropdownMenuCheckboxItem
+                                        key={column.id}
+                                        className="capitalize"
+                                        checked={column.getIsVisible()}
+                                        onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                                    >
+                                        {typeof column.columnDef.header === 'string'
+                                            ? column.columnDef.header
+                                            : column.id.replace(/_/g, ' ')}
+                                    </DropdownMenuCheckboxItem>
+                                ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </div>
 
             <div className="overflow-auto rounded border">
