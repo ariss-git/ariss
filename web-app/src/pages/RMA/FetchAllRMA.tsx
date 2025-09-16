@@ -288,7 +288,7 @@ export default function FetchAllRMARequests() {
                 <Input
                     placeholder="Search RMA ID..."
                     onChange={(e) => table.getColumn('business_name')?.setFilterValue(e.target.value)}
-                    className="max-w-sm rounded"
+                    className="w-[300px] rounded"
                 />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

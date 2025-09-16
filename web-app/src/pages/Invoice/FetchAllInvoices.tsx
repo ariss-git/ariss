@@ -263,9 +263,9 @@ export default function FetchAllInvoices() {
         <div className="w-full font-work space-y-4">
             <div className="flex items-center justify-between gap-2 flex-wrap">
                 <Input
-                    placeholder="Search Order"
+                    placeholder="Search all orders..."
                     onChange={(e) => table.getColumn('business_name')?.setFilterValue(e.target.value)}
-                    className="max-w-sm rounded"
+                    className="w-[300px] rounded"
                 />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

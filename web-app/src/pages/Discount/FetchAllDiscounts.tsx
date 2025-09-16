@@ -230,9 +230,9 @@ export default function FetchAllDiscounts() {
         <div className="w-full">
             <div className="flex items-center justify-between py-4">
                 <Input
-                    placeholder="Search businesses..."
+                    placeholder="Search all businesses..."
                     onChange={(e) => table.getColumn('coupon_code')?.setFilterValue(e.target.value)}
-                    className="max-w-sm rounded font-work"
+                    className="w-[300px] rounded font-work"
                 />
 
                 <DropdownMenu>

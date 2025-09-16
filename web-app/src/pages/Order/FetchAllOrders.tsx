@@ -25,8 +25,7 @@ import axios from 'axios';
 import { acceptRMA, deleteRMA, rejectRMA, resolvedRMA } from '../../api/rmaAPI';
 import { Link } from 'react-router-dom';
 import { Badge } from '../../components/ui/badge';
-
-const apiURL = `${import.meta.env.VITE_API_URL}/api`;
+import { apiURL } from '../../api/apiURL';
 
 type RMA = {
     rma_id: string;
@@ -280,9 +279,9 @@ export default function FetchAllOrders() {
         <div className="w-full font-work space-y-4">
             <div className="flex items-center justify-between gap-2 flex-wrap">
                 <Input
-                    placeholder="Search Order"
+                    placeholder="Search all orders..."
                     onChange={(e) => table.getColumn('business_name')?.setFilterValue(e.target.value)}
-                    className="max-w-sm rounded"
+                    className="w-[300px] rounded"
                 />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
