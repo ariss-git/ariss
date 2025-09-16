@@ -26,7 +26,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
             )}
         >
             <button className="bg-transparent text-stone-100 dark:text-stone-100 w-full shadow-none flex justify-between items-center lg:px-1.5 lg:py-2 text-base font-normal hover:bg-gray-500/30 rounded-sm">
-                <Link to="/dashboard">
+                <Link to="/">
                     <span className="flex items-center gap-x-2 text-[15px] text-[#ABB9E8] hover:text-stone-50 transition duration-300 font-work">
                         <LayoutDashboard size={20} className="min-w-[20px] min-h-[20px] stroke-[1.5] mr-2" />
                         Dashboard
