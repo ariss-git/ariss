@@ -241,9 +241,9 @@ export default function FetchAllSubcategories() {
             <div className="flex items-center justify-between py-4">
                 <div className="flex justify-start items-center flex-col gap-y-4">
                     <Input
-                        placeholder="Search subcategories..."
+                        placeholder="Search all subcategories..."
                         onChange={(e) => table.getColumn('subcategory_name')?.setFilterValue(e.target.value)}
-                        className="max-w-sm rounded font-work min-w-[300px]"
+                        className="rounded font-work w-[300px]"
                     />
                     {/* <div className="flex justify-start items-center gap-x-6 w-full">
                         <Button
