@@ -9,7 +9,7 @@ import {
     useReactTable,
     VisibilityState,
 } from '@tanstack/react-table';
-import { Clipboard, Trash, Loader2, ChevronDown, MoreHorizontal, PlusCircleIcon } from 'lucide-react';
+import { Clipboard, Trash, Loader2, ChevronDown, MoreHorizontal } from 'lucide-react';
 
 import { Button } from '../../components/ui/button';
 import {
@@ -34,10 +34,17 @@ import { Label } from '../../components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
 import { toast } from '../../hooks/use-toast';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { useOrganization, useUser } from '@clerk/clerk-react';
+import AddDiscount from './AddDiscount';
+import { apiURL } from '../../api/apiURL';
 
-const apiURL = 'http://localhost:5000/api';
+type Dealer = {
+    business_name: string;
+};
+
+type Product = {
+    product_title: string;
+};
 
 type Discount = {
     discount_id: string;
@@ -48,6 +55,8 @@ type Discount = {
     amount: number | null;
     percentage: number | null;
     coupon_code: string;
+    dealer: Dealer;
+    Product: Product;
 };
 
 export default function FetchAllDiscounts() {
@@ -58,7 +67,6 @@ export default function FetchAllDiscounts() {
     const [confirmInput, setConfirmInput] = useState('');
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
 
     const { user } = useUser();
     const { organization } = useOrganization();
@@ -76,6 +84,7 @@ export default function FetchAllDiscounts() {
         try {
             const res = await axios.get(`${apiURL}/discount`);
             setData(res.data.data);
+            console.log(res.data);
         } catch (error) {
             console.error(error);
             toast({
@@ -134,19 +143,23 @@ export default function FetchAllDiscounts() {
             cell: ({ row }) => <div className="font-work">{row.getValue('coupon_code')}</div>,
         },
         {
-            accessorKey: 'discount_type',
-            header: 'Type',
-            cell: ({ row }) => <div className="capitalize font-work">{row.getValue('discount_type')}</div>,
-        },
-        {
-            accessorKey: 'business_name',
+            accessorKey: 'dealer_name',
             header: 'Business',
-            cell: ({ row }) => <div className="capitalize font-work">{row.getValue('business_name')}</div>,
+            cell: ({ row }) => (
+                <div className="capitalize font-work">{row.original.dealer.business_name}</div>
+            ),
         },
         {
             accessorKey: 'product_title',
             header: 'Product',
-            cell: ({ row }) => <div className="capitalize font-work">{row.getValue('product_title')}</div>,
+            cell: ({ row }) => (
+                <div className="capitalize font-work">{row.original.Product.product_title}</div>
+            ),
+        },
+        {
+            accessorKey: 'discount_type',
+            header: 'Type',
+            cell: ({ row }) => <div className="capitalize font-work">{row.getValue('discount_type')}</div>,
         },
         {
             accessorKey: 'assignedAt',
@@ -237,11 +250,7 @@ export default function FetchAllDiscounts() {
 
                 <DropdownMenu>
                     <div className="flex justify-center items-center gap-x-4">
-                        {userRole === 'org:admin' && (
-                            <Button onClick={() => navigate('/discounts/add')} className="shadow rounded">
-                                Add Discounts <PlusCircleIcon />
-                            </Button>
-                        )}
+                        {userRole === 'org:admin' && <AddDiscount onSuccess={load} />}
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="ml-auto rounded font-work">
                                 Sort By

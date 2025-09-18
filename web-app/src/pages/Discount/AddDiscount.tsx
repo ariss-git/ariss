@@ -1,14 +1,12 @@
-// src/pages/SubCategory/AddSubCategory.tsx
-
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { Loader2, PlusCircleIcon } from 'lucide-react';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Button } from '../../components/ui/button';
 import { useEffect, useState } from 'react';
 import { useToast } from '../../hooks/use-toast';
-import { Link, useNavigate } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { dealerNamesDiscount, productNamesDiscount, assignDiscount } from '../../api/discountAPI';
+import { Dialog, DialogContent, DialogTrigger } from '../../components/ui/dialog';
 
 type Product = {
     product_id: string;
@@ -22,7 +20,11 @@ type Dealer = {
     last_name: string;
 };
 
-const AddDiscount = () => {
+type FetchDiscounts = {
+    onSuccess?: () => void;
+};
+
+const AddDiscount = ({ onSuccess }: FetchDiscounts) => {
     const [dealers, setDealers] = useState<Dealer[]>([]);
     const [selectedDealerId, setSelectedDealerId] = useState('');
     const [products, setProducts] = useState<Product[]>([]);
@@ -35,7 +37,6 @@ const AddDiscount = () => {
     const [dateError, setDateError] = useState('');
 
     const { toast } = useToast();
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchDealers = async () => {
@@ -155,7 +156,7 @@ const AddDiscount = () => {
                 description: 'Discount assigned successfully!',
             });
 
-            navigate('/discounts');
+            onSuccess?.();
         } catch (error) {
             console.error(error);
             toast({
@@ -170,127 +171,131 @@ const AddDiscount = () => {
 
     return (
         <div className="flex flex-col lg:gap-y-6 justify-start w-full h-full lg:p-12 bg-transparent lg:px-4 lg:py-8">
-            <h1 className="font-work text-left text-[16px] font-semibold capitalize dark:text-stone-100 text-[#495057] flex items-center">
-                <Link to="/discounts">
-                    <ArrowLeft className="w-4 h-4 mr-2 " />
-                </Link>
-                Assign Discount:
-            </h1>
+            <Dialog>
+                <DialogTrigger asChild>
+                    <Button className="shadow rounded">
+                        Add Discounts <PlusCircleIcon />
+                    </Button>
+                </DialogTrigger>
 
-            <form onSubmit={handleSubmit} className="flex flex-col lg:gap-y-6 lg:mt-4">
-                {/* Dealer Select */}
-                <div className="flex justify-start items-center w-full lg:gap-x-52">
-                    <div className="flex flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
-                        <Label>
-                            Dealers <sup className="opacity-50">*</sup>
-                        </Label>
-                        <Select value={selectedDealerId} onValueChange={setSelectedDealerId}>
-                            <SelectTrigger className="lg:w-[250px] rounded">
-                                <SelectValue placeholder="Select dealer" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {dealers.map((dealer) => (
-                                    <SelectItem key={dealer.dealer_id} value={dealer.dealer_id}>
-                                        {dealer.first_name} {dealer.last_name} - {dealer.business_name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
+                <DialogContent className="max-h-[80%] overflow-y-auto min-w-max">
+                    <form onSubmit={handleSubmit} className="flex flex-col lg:gap-y-6 lg:mt-4">
+                        {/* Dealer Select */}
+                        <div className="flex justify-start items-center w-full lg:gap-x-52">
+                            <div className="flex flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                                <Label>
+                                    Dealers <sup className="opacity-50">*</sup>
+                                </Label>
+                                <Select value={selectedDealerId} onValueChange={setSelectedDealerId}>
+                                    <SelectTrigger className="lg:w-[250px] rounded">
+                                        <SelectValue placeholder="Select dealer" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {dealers.map((dealer) => (
+                                            <SelectItem key={dealer.dealer_id} value={dealer.dealer_id}>
+                                                {dealer.first_name} {dealer.last_name} -{' '}
+                                                {dealer.business_name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
 
-                    {/* Product Select */}
-                    <div className="flex flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
-                        <Label>
-                            Products <sup className="opacity-50">*</sup>
-                        </Label>
-                        <Select value={selectedProductId} onValueChange={setSelectedProductId}>
-                            <SelectTrigger className="lg:w-[250px] rounded">
-                                <SelectValue placeholder="Select product" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {products.map((product) => (
-                                    <SelectItem key={product.product_id} value={product.product_id}>
-                                        {product.product_title}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                </div>
+                            {/* Product Select */}
+                            <div className="flex flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                                <Label>
+                                    Products <sup className="opacity-50">*</sup>
+                                </Label>
+                                <Select value={selectedProductId} onValueChange={setSelectedProductId}>
+                                    <SelectTrigger className="lg:w-[250px] rounded">
+                                        <SelectValue placeholder="Select product" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {products.map((product) => (
+                                            <SelectItem key={product.product_id} value={product.product_id}>
+                                                {product.product_title}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
 
-                <div className="flex justify-start items-center w-full lg:gap-x-52">
-                    {/* Discount Type Select */}
-                    <div className="flex flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
-                        <Label>
-                            Discount Type <sup className="opacity-50">*</sup>
-                        </Label>
-                        <Select value={discountType} onValueChange={setDiscountType}>
-                            <SelectTrigger className="lg:w-[250px] rounded">
-                                <SelectValue placeholder="Select discount type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="PERCENTAGE">% Percentage</SelectItem>
-                                <SelectItem value="AMOUNT">₹ Amount</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
+                        <div className="flex justify-start items-center w-full lg:gap-x-52">
+                            {/* Discount Type Select */}
+                            <div className="flex flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                                <Label>
+                                    Discount Type <sup className="opacity-50">*</sup>
+                                </Label>
+                                <Select value={discountType} onValueChange={setDiscountType}>
+                                    <SelectTrigger className="lg:w-[250px] rounded">
+                                        <SelectValue placeholder="Select discount type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="PERCENTAGE">% Percentage</SelectItem>
+                                        <SelectItem value="AMOUNT">₹ Amount</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
 
-                    {/* Conditional Fields */}
-                    {discountType === 'PERCENTAGE' && (
+                            {/* Conditional Fields */}
+                            {discountType === 'PERCENTAGE' && (
+                                <div className="flex flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                                    <Label>
+                                        Percentage <sup className="opacity-50">*</sup>
+                                    </Label>
+                                    <Input
+                                        type="number"
+                                        step="0.01"
+                                        value={percentage}
+                                        onChange={(e) => setPercentage(e.target.value)}
+                                        placeholder="Enter percentage"
+                                        className="rounded lg:w-[250px]"
+                                    />
+                                </div>
+                            )}
+                            {discountType === 'AMOUNT' && (
+                                <div className="flex flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                                    <Label>
+                                        Amount <sup className="opacity-50">*</sup>
+                                    </Label>
+                                    <Input
+                                        type="number"
+                                        value={amount}
+                                        onChange={(e) => setAmount(e.target.value)}
+                                        placeholder="Enter amount"
+                                        className="rounded lg:w-[250px]"
+                                    />
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Expiry Date */}
                         <div className="flex flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
                             <Label>
-                                Percentage <sup className="opacity-50">*</sup>
+                                Expiry Date <sup className="opacity-50">*</sup>
                             </Label>
                             <Input
-                                type="number"
-                                step="0.01"
-                                value={percentage}
-                                onChange={(e) => setPercentage(e.target.value)}
-                                placeholder="Enter percentage"
+                                type="text"
+                                value={expiryDate}
+                                onChange={handleDateChange}
+                                onBlur={handleDateBlur}
+                                placeholder="YYYY-MM-DD"
                                 className="rounded lg:w-[250px]"
                             />
+                            {dateError && <p className="text-sm text-red-500 mt-1">{dateError}</p>}
                         </div>
-                    )}
-                    {discountType === 'AMOUNT' && (
-                        <div className="flex flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
-                            <Label>
-                                Amount <sup className="opacity-50">*</sup>
-                            </Label>
-                            <Input
-                                type="number"
-                                value={amount}
-                                onChange={(e) => setAmount(e.target.value)}
-                                placeholder="Enter amount"
-                                className="rounded lg:w-[250px]"
-                            />
-                        </div>
-                    )}
-                </div>
 
-                {/* Expiry Date */}
-                <div className="flex flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
-                    <Label>
-                        Expiry Date <sup className="opacity-50">*</sup>
-                    </Label>
-                    <Input
-                        type="text"
-                        value={expiryDate}
-                        onChange={handleDateChange}
-                        onBlur={handleDateBlur}
-                        placeholder="YYYY-MM-DD"
-                        className="rounded lg:w-[250px]"
-                    />
-                    {dateError && <p className="text-sm text-red-500 mt-1">{dateError}</p>}
-                </div>
-
-                <Button
-                    type="submit"
-                    className="lg:px-6 lg:py-2 rounded font-work lg:max-w-[250px]"
-                    disabled={loading}
-                >
-                    {loading ? <Loader2 className="animate-spin" /> : 'Submit'}
-                </Button>
-            </form>
+                        <Button
+                            type="submit"
+                            className="lg:px-6 lg:py-2 rounded font-work lg:max-w-[250px]"
+                            disabled={loading}
+                        >
+                            {loading ? <Loader2 className="animate-spin" /> : 'Submit'}
+                        </Button>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };
