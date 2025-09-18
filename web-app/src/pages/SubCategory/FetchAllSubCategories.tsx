@@ -9,16 +9,7 @@ import {
     useReactTable,
     VisibilityState,
 } from '@tanstack/react-table';
-import {
-    ArrowUpDown,
-    Clipboard,
-    Eye,
-    MoreHorizontal,
-    Trash,
-    Loader2,
-    ChevronDown,
-    PlusCircle,
-} from 'lucide-react';
+import { ArrowUpDown, Clipboard, Eye, MoreHorizontal, Trash, Loader2, ChevronDown } from 'lucide-react';
 
 import { Button } from '../../components/ui/button';
 import {
@@ -45,6 +36,7 @@ import { toast } from '../../hooks/use-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { apiURL } from '../../api/apiURL';
+import AddSubcategory from './AddSubCategory';
 
 const filterContent = [
     {
@@ -266,13 +258,7 @@ export default function FetchAllSubcategories() {
                 </div>
 
                 <div className="flex justify-center items-center lg:gap-x-6">
-                    <Button
-                        variant="default"
-                        className="rounded"
-                        onClick={() => navigate('/subcategories/add')}
-                    >
-                        Add Subcategories <PlusCircle className="ml-2 h-4 w-4" />
-                    </Button>
+                    <AddSubcategory onSuccess={load} />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="default" className="rounded flex items-center gap-2">

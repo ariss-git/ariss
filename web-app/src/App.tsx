@@ -6,7 +6,6 @@ import { ThemeProvider } from './components/theme-provider';
 import { Toaster } from './components/ui/toaster';
 import CategoryDetails from './pages/Category/CategoryDetails';
 import Subcategory from './pages/SubCategory/Index';
-import AddSubcategory from './pages/SubCategory/AddSubCategory';
 import SubcategoryDetails from './pages/SubCategory/SubcategoryDetails';
 import Customer from './pages/Customer/Index';
 import ApprovedDealers from './pages/Customer/ApprovedDealers/Index';
@@ -50,7 +49,6 @@ function App() {
                         <Route path="categories/:category_id" element={<CategoryDetails />} />
 
                         <Route path="subcategories" element={<Subcategory />} />
-                        <Route path="subcategories/add" element={<AddSubcategory />} />
                         <Route path="subcategories/:subcategory_id" element={<SubcategoryDetails />} />
 
                         <Route path="customers" element={<Customer />} />
