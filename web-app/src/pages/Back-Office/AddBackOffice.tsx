@@ -4,8 +4,9 @@ import { Button } from '../../components/ui/button';
 import { addBackOffice, sendOTP } from '../../api/authURL';
 import { useState } from 'react';
 import { toast } from '../../hooks/use-toast';
-import { Loader2, ClipboardPaste } from 'lucide-react'; // Imported ClipboardPaste icon
+import { Loader2, ClipboardPaste, PlusCircle } from 'lucide-react'; // Imported ClipboardPaste icon
 import { useNavigate } from 'react-router-dom';
+import { Dialog, DialogContent, DialogTrigger } from '../../components/ui/dialog';
 
 const AddBackOffice = () => {
     const [loading, setLoading] = useState(false);
@@ -121,124 +122,137 @@ const AddBackOffice = () => {
     };
 
     return (
-        <div className="flex justify-start items-start w-full lg:p-10 font-work">
-            <form
-                className="flex justify-start items-start w-full flex-col lg:gap-y-8"
-                onSubmit={(e) => e.preventDefault()}
-            >
-                <div className="flex flex-col lg:gap-y-2 w-full">
-                    <Label>Dealer ID</Label>
-                    <div className="flex items-center gap-2">
-                        <Input
-                            placeholder="Approved Dealer ID"
-                            value={dealerID}
-                            onChange={(e) => setDealerID(e.target.value)}
-                            className="shadow rounded max-w-[280px] border"
-                            disabled={otpSent}
-                        />
-                        <Button
-                            type="button"
-                            size="icon"
-                            variant="outline"
-                            className="shadow rounded"
-                            onClick={handlePasteDealerID}
-                            disabled={otpSent}
-                        >
-                            <ClipboardPaste className="w-4 h-4 text-stone-600" />
-                        </Button>
-                    </div>
-                </div>
-
-                <div className="flex justify-start items-start flex-col lg:gap-y-2 w-full">
-                    <Label>Mobile</Label>
-                    <Input
-                        value={mobile}
-                        placeholder="Enter Mobile Number"
-                        onChange={(e) => {
-                            const input = e.target.value;
-                            // Allow only numbers and limit to 10 digits
-                            if (/^\d{0,10}$/.test(input)) {
-                                setMobile(input);
-                            }
-                        }}
-                        className="shadow rounded max-w-[280px] border"
-                        disabled={otpSent}
-                    />
-                </div>
-
-                <div className="flex justify-start items-start flex-col lg:gap-y-2 w-full">
-                    <Label>Email</Label>
-                    <Input
-                        value={email}
-                        placeholder="Enter Email Address"
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="shadow rounded max-w-[280px] border"
-                        disabled={otpSent}
-                    />
-                </div>
-                <div className="flex justify-start items-start flex-col lg:gap-y-2 w-full">
-                    <Label>First Name</Label>
-                    <Input
-                        value={firstName}
-                        placeholder="Enter First Name"
-                        onChange={(e) => setFirstName(e.target.value)}
-                        className="shadow rounded max-w-[280px] border"
-                        disabled={otpSent}
-                    />
-                </div>
-                <div className="flex justify-start items-start flex-col lg:gap-y-2 w-full">
-                    <Label>Last Name</Label>
-                    <Input
-                        value={lastName}
-                        placeholder="Enter Last Name"
-                        onChange={(e) => setLastName(e.target.value)}
-                        className="shadow rounded max-w-[280px] border"
-                        disabled={otpSent}
-                    />
-                </div>
-                <div className="flex justify-start items-start flex-col lg:gap-y-2 w-full">
-                    <Label>Usertype</Label>
-                    <Input
-                        value={usertype}
-                        placeholder="BACKOFFICE"
-                        disabled
-                        className="shadow rounded max-w-[280px] border"
-                    />
-                </div>
-
-                {!otpSent ? (
-                    <Button className="px-6 py-2 shadow rounded" onClick={handleSendOTP} disabled={loading}>
-                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Send OTP'}
+        <div className="flex justify-start items-start w-full font-work">
+            <Dialog>
+                <DialogTrigger asChild>
+                    <Button variant="default" className="rounded">
+                        Add Customer <PlusCircle className="ml-2 h-4 w-4" />
                     </Button>
-                ) : (
-                    <>
+                </DialogTrigger>
+                <DialogContent className="rounded-md shadow max-h-[80%] overflow-y-auto">
+                    <form
+                        className="flex justify-start items-start w-full flex-col lg:gap-y-8"
+                        onSubmit={(e) => e.preventDefault()}
+                    >
+                        <div className="flex flex-col lg:gap-y-2 w-full">
+                            <Label>Dealer ID</Label>
+                            <div className="flex items-center gap-2">
+                                <Input
+                                    placeholder="Approved Dealer ID"
+                                    value={dealerID}
+                                    onChange={(e) => setDealerID(e.target.value)}
+                                    className="shadow rounded max-w-[280px] border"
+                                    disabled={otpSent}
+                                />
+                                <Button
+                                    type="button"
+                                    size="icon"
+                                    variant="outline"
+                                    className="shadow rounded"
+                                    onClick={handlePasteDealerID}
+                                    disabled={otpSent}
+                                >
+                                    <ClipboardPaste className="w-4 h-4 text-stone-600" />
+                                </Button>
+                            </div>
+                        </div>
+
                         <div className="flex justify-start items-start flex-col lg:gap-y-2 w-full">
-                            <Label>OTP</Label>
+                            <Label>Mobile</Label>
                             <Input
-                                placeholder="6 Digit OTP"
-                                value={otp}
-                                onChange={(e) => setOtp(e.target.value)}
+                                value={mobile}
+                                placeholder="Enter Mobile Number"
+                                onChange={(e) => {
+                                    const input = e.target.value;
+                                    // Allow only numbers and limit to 10 digits
+                                    if (/^\d{0,10}$/.test(input)) {
+                                        setMobile(input);
+                                    }
+                                }}
+                                className="shadow rounded max-w-[280px] border"
+                                disabled={otpSent}
+                            />
+                        </div>
+
+                        <div className="flex justify-start items-start flex-col lg:gap-y-2 w-full">
+                            <Label>Email</Label>
+                            <Input
+                                value={email}
+                                placeholder="Enter Email Address"
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="shadow rounded max-w-[280px] border"
+                                disabled={otpSent}
+                            />
+                        </div>
+                        <div className="flex justify-start items-start flex-col lg:gap-y-2 w-full">
+                            <Label>First Name</Label>
+                            <Input
+                                value={firstName}
+                                placeholder="Enter First Name"
+                                onChange={(e) => setFirstName(e.target.value)}
+                                className="shadow rounded max-w-[280px] border"
+                                disabled={otpSent}
+                            />
+                        </div>
+                        <div className="flex justify-start items-start flex-col lg:gap-y-2 w-full">
+                            <Label>Last Name</Label>
+                            <Input
+                                value={lastName}
+                                placeholder="Enter Last Name"
+                                onChange={(e) => setLastName(e.target.value)}
+                                className="shadow rounded max-w-[280px] border"
+                                disabled={otpSent}
+                            />
+                        </div>
+                        <div className="flex justify-start items-start flex-col lg:gap-y-2 w-full">
+                            <Label>Usertype</Label>
+                            <Input
+                                value={usertype}
+                                placeholder="BACKOFFICE"
+                                disabled
                                 className="shadow rounded max-w-[280px] border"
                             />
                         </div>
-                        <div className="flex justify-start items-center lg:gap-x-10 w-full">
+
+                        {!otpSent ? (
                             <Button
                                 className="px-6 py-2 shadow rounded"
-                                onClick={handleRegistration}
+                                onClick={handleSendOTP}
                                 disabled={loading}
                             >
-                                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Submit'}
+                                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Send OTP'}
                             </Button>
-                            <h6
-                                className="text-sm underline text-orange-500 underline-offset-4 cursor-pointer"
-                                onClick={handleResendOTP}
-                            >
-                                Resend OTP
-                            </h6>
-                        </div>
-                    </>
-                )}
-            </form>
+                        ) : (
+                            <>
+                                <div className="flex justify-start items-start flex-col lg:gap-y-2 w-full">
+                                    <Label>OTP</Label>
+                                    <Input
+                                        placeholder="6 Digit OTP"
+                                        value={otp}
+                                        onChange={(e) => setOtp(e.target.value)}
+                                        className="shadow rounded max-w-[280px] border"
+                                    />
+                                </div>
+                                <div className="flex justify-start items-center lg:gap-x-10 w-full">
+                                    <Button
+                                        className="px-6 py-2 shadow rounded"
+                                        onClick={handleRegistration}
+                                        disabled={loading}
+                                    >
+                                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Submit'}
+                                    </Button>
+                                    <h6
+                                        className="text-sm underline text-orange-500 underline-offset-4 cursor-pointer"
+                                        onClick={handleResendOTP}
+                                    >
+                                        Resend OTP
+                                    </h6>
+                                </div>
+                            </>
+                        )}
+                    </form>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

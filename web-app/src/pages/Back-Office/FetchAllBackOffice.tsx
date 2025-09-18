@@ -26,18 +26,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Input } from '../../components/ui/input';
 import { Checkbox } from '../../components/ui/checkbox';
 import { Badge } from '../../components/ui/badge';
-import {
-    ChevronDown,
-    Eye,
-    Trash,
-    MoreHorizontal,
-    ShieldX,
-    ShieldPlus,
-    Pencil,
-    Loader2,
-    PlusCircle,
-} from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { ChevronDown, Trash, MoreHorizontal, ShieldX, ShieldPlus, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from '../../hooks/use-toast';
 import {
     Dialog,
@@ -48,6 +38,7 @@ import {
     DialogTitle,
 } from '../../components/ui/dialog';
 import { useOrganization, useUser } from '@clerk/clerk-react';
+import AddBackOffice from './AddBackOffice';
 
 const filterContent = [
     { name: 'All Customers', link: '/customers' },
@@ -313,12 +304,6 @@ const FetchAllBackOffices = () => {
                                   </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end" className="rounded font-work">
-                                  <DropdownMenuItem className="flex justify-between items-center cursor-pointer">
-                                      <Link to={`/customers/backoffices/${backoffice.backoffice_id}`}>
-                                          View
-                                      </Link>
-                                      <Eye className="mr-2 h-4 w-4" />
-                                  </DropdownMenuItem>
                                   <DropdownMenuItem
                                       onClick={() =>
                                           handleApproval(
@@ -344,10 +329,6 @@ const FetchAllBackOffices = () => {
                                   >
                                       Disapprove
                                       <ShieldX className="mr-2 h-4 w-4" />
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem className="flex justify-between items-center cursor-pointer">
-                                      Edit
-                                      <Pencil className="mr-2 h-4 w-4" />
                                   </DropdownMenuItem>
                                   <DropdownMenuItem
                                       onClick={() => {
@@ -441,13 +422,7 @@ const FetchAllBackOffices = () => {
                     </div> */}
                 </div>
                 <div className="flex justify-center items-center lg:gap-x-6">
-                    <Button
-                        variant="default"
-                        className="rounded"
-                        onClick={() => navigate('/customers/backoffices/add')}
-                    >
-                        Add Customer <PlusCircle className="ml-2 h-4 w-4" />
-                    </Button>
+                    <AddBackOffice />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="default" className="rounded flex items-center gap-2">
