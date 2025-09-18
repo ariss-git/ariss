@@ -1,13 +1,17 @@
-import { ArrowLeft, Clipboard, Loader2 } from 'lucide-react';
+import { Clipboard, Loader2, PlusCircle } from 'lucide-react';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Button } from '../../components/ui/button';
 import { useState } from 'react';
 import { useToast } from '../../hooks/use-toast';
 import { addCategoryAPI } from '../../api/categoryAPI';
-import { Link } from 'react-router-dom';
+import { Dialog, DialogContent, DialogTrigger } from '../../components/ui/dialog';
 
-const AddCategory = () => {
+type AddCategoryProps = {
+    onSuccess?: () => void;
+};
+
+const AddCategory = ({ onSuccess }: AddCategoryProps) => {
     const [name, setName] = useState<string>('');
     const [image, setImage] = useState<File | null>(null);
     const [pasteImage, setPasteImage] = useState<string>('');
@@ -93,10 +97,11 @@ const AddCategory = () => {
 
             await addCategoryAPI(name, categoryImage);
             toast({
-                className: 'rounded font-work shadow bg-green-500',
+                className: 'rounded font-work shadow bg-green-500 text-white',
                 title: 'Category added successfully',
                 description: 'Make sure to add subcategories as well...',
             });
+            onSuccess?.();
         } catch (error) {
             console.error(error);
             toast({
@@ -110,64 +115,70 @@ const AddCategory = () => {
     };
 
     return (
-        <div className="flex flex-col lg:gap-y-6 justify-start w-full h-full lg:p-12 bg-transparent lg:px-4 lg:py-8">
-            <h1 className="font-work text-left text-[16px] font-semibold capitalize dark:text-stone-100 text-[#495057] flex items-center">
-                <Link to="/categories">
-                    <ArrowLeft className="w-4 h-4 mr-2 " />
-                </Link>
-                Add Category:
-            </h1>
-            <form
-                onSubmit={handleSubmit}
-                className="flex justify-start items-start flex-col lg:gap-y-6 lg:mt-4"
-            >
-                <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
-                    <Label>
-                        Category name<sup className="opacity-50">*</sup>
-                    </Label>
-                    <Input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Enter Category"
-                        className="rounded lg:w-[250px]"
-                    />
-                </div>
+        <div className="flex flex-col lg:gap-y-6 justify-start w-full h-full bg-transparent">
+            <Dialog>
+                <DialogTrigger asChild>
+                    <Button variant="default" className="rounded">
+                        Add Categories <PlusCircle className="ml-2 h-4 w-4" />
+                    </Button>
+                </DialogTrigger>
+                <DialogContent className="rounded-md shadow max-h-[80%] overflow-y-auto">
+                    <form
+                        onSubmit={handleSubmit}
+                        className="flex justify-start items-start flex-col lg:gap-y-6 lg:mt-4"
+                    >
+                        <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                            <Label>
+                                Category name<sup className="opacity-50">*</sup>
+                            </Label>
+                            <Input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="Enter Category"
+                                className="rounded lg:w-[250px]"
+                            />
+                        </div>
 
-                <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
-                    <Label>
-                        Category Image<sup className="opacity-50">*</sup>
-                    </Label>
-                    <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => setImage(e.target.files?.[0] || null)}
-                        className="cursor-pointer rounded lg:w-[250px]"
-                    />
+                        <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                            <Label>
+                                Category Image<sup className="opacity-50">*</sup>
+                            </Label>
+                            <Input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => setImage(e.target.files?.[0] || null)}
+                                className="cursor-pointer rounded lg:w-[250px]"
+                            />
 
-                    <div className="flex justify-start items-center lg:gap-x-2 font-work capitalize dark:text-stone-100 text-stone-800 mt-2">
-                        <Input
-                            type="text"
-                            value={pasteImage}
-                            onChange={(e) => setPasteImage(e.target.value)}
-                            placeholder="Paste image URL here (Optional)"
-                            className="placeholder:capitalize rounded lg:w-[250px]"
-                        />
-                        <Button
-                            type="button"
-                            onClick={handleClipboardPaste}
-                            variant="outline"
-                            className="rounded p-2"
-                        >
-                            <Clipboard size={18} className="text-stone-500 dark:text-stone-100 stroke-[1]" />
+                            <div className="flex justify-start items-center lg:gap-x-2 font-work capitalize dark:text-stone-100 text-stone-800 mt-2">
+                                <Input
+                                    type="text"
+                                    value={pasteImage}
+                                    onChange={(e) => setPasteImage(e.target.value)}
+                                    placeholder="Paste image URL here (Optional)"
+                                    className="placeholder:capitalize rounded lg:w-[250px]"
+                                />
+                                <Button
+                                    type="button"
+                                    onClick={handleClipboardPaste}
+                                    variant="outline"
+                                    className="rounded p-2"
+                                >
+                                    <Clipboard
+                                        size={18}
+                                        className="text-stone-500 dark:text-stone-100 stroke-[1]"
+                                    />
+                                </Button>
+                            </div>
+                        </div>
+
+                        <Button type="submit" className="lg:px-6 lg:py-2 rounded font-work">
+                            {loading ? <Loader2 className="animate-spin" /> : 'Submit'}
                         </Button>
-                    </div>
-                </div>
-
-                <Button type="submit" className="lg:px-6 lg:py-2 rounded font-work">
-                    {loading ? <Loader2 className="animate-spin" /> : 'Submit'}
-                </Button>
-            </form>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

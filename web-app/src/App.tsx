@@ -3,7 +3,6 @@ import Dashboard from './pages/Dashboard';
 import Category from './pages/Category/Index';
 import AdminLayout from './layouts/MainLayout';
 import { ThemeProvider } from './components/theme-provider';
-import AddCategory from './pages/Category/AddCategory';
 import { Toaster } from './components/ui/toaster';
 import CategoryDetails from './pages/Category/CategoryDetails';
 import Subcategory from './pages/SubCategory/Index';
@@ -48,7 +47,6 @@ function App() {
                         <Route path="products/:product_id" element={<FetchSingleProduct />} />
 
                         <Route path="categories" element={<Category />} />
-                        <Route path="categories/add" element={<AddCategory />} />
                         <Route path="categories/:category_id" element={<CategoryDetails />} />
 
                         <Route path="subcategories" element={<Subcategory />} />

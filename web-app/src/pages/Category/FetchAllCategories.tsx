@@ -11,16 +11,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from '@tanstack/react-table';
-import {
-    ArrowUpDown,
-    ChevronDown,
-    Clipboard,
-    Eye,
-    MoreHorizontal,
-    Trash,
-    Loader2,
-    PlusCircle,
-} from 'lucide-react';
+import { ArrowUpDown, ChevronDown, Clipboard, Eye, MoreHorizontal, Trash, Loader2 } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { Checkbox } from '../../components/ui/checkbox';
 import {
@@ -48,6 +39,7 @@ import { deleteCategory } from '../../api/categoryAPI';
 import { toast } from '../../hooks/use-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiURL } from '../../api/apiURL';
+import AddCategory from './AddCategory';
 
 const filterContent = [
     {
@@ -278,9 +270,7 @@ export default function FetchAllCategories() {
                     />
                 </div>
                 <div className="flex justify-center items-center lg:gap-x-6">
-                    <Button variant="default" className="rounded" onClick={() => navigate('/categories/add')}>
-                        Add Categories <PlusCircle className="ml-2 h-4 w-4" />
-                    </Button>
+                    <AddCategory onSuccess={fetchData} />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="default" className="rounded flex items-center gap-2">
