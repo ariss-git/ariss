@@ -29,7 +29,7 @@ import AddCourse from './pages/Courses/AddCouse';
 import FetchSingleCourse from './pages/Courses/FetchSingleCourse';
 import Login from './pages/Admin/Login';
 import AddBackOffice from './pages/Back-Office/AddBackOffice';
-import AddTechnician from './pages/Technician/AddTechnician';
+
 import AddDealer from './pages/Customer/ApprovedDealers/AddDealer';
 import Orders from './pages/Order/Index';
 import Invoices from './pages/Invoice/Index';
@@ -64,7 +64,6 @@ function App() {
                         <Route path="customers/dealers/add" element={<AddDealer />} />
 
                         <Route path="customers/technicians" element={<Technicians />} />
-                        <Route path="customers/technicians/add" element={<AddTechnician />} />
 
                         <Route path="customers/backoffices" element={<BackOffices />} />
                         <Route path="customers/backoffices/add" element={<AddBackOffice />} />

@@ -26,18 +26,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Input } from '../../components/ui/input';
 import { Checkbox } from '../../components/ui/checkbox';
 import { Badge } from '../../components/ui/badge';
-import {
-    ChevronDown,
-    Eye,
-    Trash,
-    MoreHorizontal,
-    ShieldX,
-    ShieldPlus,
-    Pencil,
-    Loader2,
-    PlusCircle,
-} from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { ChevronDown, Trash, MoreHorizontal, ShieldX, ShieldPlus, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from '../../hooks/use-toast';
 import {
     Dialog,
@@ -48,6 +38,7 @@ import {
     DialogTitle,
 } from '../../components/ui/dialog';
 import { useOrganization, useUser } from '@clerk/clerk-react';
+import AddTechnician from './AddTechnician';
 
 const filterContent = [
     { name: 'All Customers', link: '/customers' },
@@ -315,10 +306,6 @@ const FetchAllTechnicians = () => {
                                   </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end" className="rounded font-work">
-                                  <DropdownMenuItem className="flex justify-between items-center cursor-pointer">
-                                      <Link to={`/customers/technicians/${tech.tech_id}`}>View</Link>
-                                      <Eye className="mr-2 h-4 w-4" />
-                                  </DropdownMenuItem>
                                   <DropdownMenuItem
                                       onClick={() =>
                                           handleApproval(
@@ -344,10 +331,6 @@ const FetchAllTechnicians = () => {
                                   >
                                       Disapprove
                                       <ShieldX className="mr-2 h-4 w-4" />
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem className="flex justify-between items-center cursor-pointer">
-                                      Edit
-                                      <Pencil className="mr-2 h-4 w-4" />
                                   </DropdownMenuItem>
                                   <DropdownMenuItem
                                       className="flex justify-between items-center cursor-pointer text-red-500"
@@ -438,13 +421,7 @@ const FetchAllTechnicians = () => {
                     </div> */}
                 </div>
                 <div className="flex justify-center items-center lg:gap-x-6">
-                    <Button
-                        variant="default"
-                        className="rounded"
-                        onClick={() => navigate('/customers/technicians/add')}
-                    >
-                        Add Customer <PlusCircle className="ml-2 h-4 w-4" />
-                    </Button>
+                    <AddTechnician />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="default" className="rounded flex items-center gap-2">
