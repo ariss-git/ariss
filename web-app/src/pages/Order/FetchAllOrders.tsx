@@ -281,11 +281,11 @@ export default function FetchAllOrders() {
                 <Input
                     placeholder="Search all orders..."
                     onChange={(e) => table.getColumn('business_name')?.setFilterValue(e.target.value)}
-                    className="w-[300px] rounded"
+                    className="w-[300px] rounded lg:mt-0 mt-10"
                 />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="rounded">
+                        <Button variant="outline" className="rounded lg:flex hidden">
                             Filter <ChevronDown className="ml-2 h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>

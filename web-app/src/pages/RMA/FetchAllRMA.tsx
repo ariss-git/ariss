@@ -292,7 +292,7 @@ export default function FetchAllRMARequests() {
                 />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="rounded lg:block hidden">
+                        <Button variant="outline" className="rounded lg:flex hidden">
                             Sort By <ChevronDown className="ml-2 h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
