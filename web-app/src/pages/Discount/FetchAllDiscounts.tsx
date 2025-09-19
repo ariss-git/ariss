@@ -249,7 +249,7 @@ export default function FetchAllDiscounts() {
                 />
 
                 <DropdownMenu>
-                    <div className="flex justify-center items-center gap-x-4">
+                    <div className="lg:flex hidden justify-center items-center gap-x-4">
                         {userRole === 'org:admin' && <AddDiscount onSuccess={load} />}
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="ml-auto rounded font-work">
