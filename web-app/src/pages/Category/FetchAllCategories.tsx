@@ -269,7 +269,7 @@ export default function FetchAllCategories() {
                         className="w-[300px] rounded font-work"
                     />
                 </div>
-                <div className="flex justify-center items-center lg:gap-x-6">
+                <div className="lg:flex hidden justify-center items-center lg:gap-x-6">
                     <AddCategory onSuccess={fetchData} />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>

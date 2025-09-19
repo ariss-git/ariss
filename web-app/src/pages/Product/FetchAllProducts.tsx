@@ -240,7 +240,7 @@ const FetchAllProducts = () => {
                         </Button>
                     </div> */}
                 </div>
-                <div className="flex justify-center items-center lg:gap-x-6">
+                <div className="lg:flex hidden justify-center items-center lg:gap-x-6">
                     <Button variant="default" className="rounded" onClick={() => navigate('/products/add')}>
                         Add Products <PlusCircle className="ml-2 h-4 w-4" />
                     </Button>
