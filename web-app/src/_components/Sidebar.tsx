@@ -20,7 +20,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
     return (
         <aside
             className={clsx(
-                'dark:bg-black bg-black text-stone-100 dark:text-stone-100 h-full transition-all duration-300 border-r border-stone-500 flex justify-start items-center flex-col lg:gap-y-1 lg:px-1.5 lg:py-2',
+                'dark:bg-black bg-black text-stone-100 dark:text-stone-100 h-full transition-all duration-300 border-r border-stone-500 hidden lg:flex justify-start items-center flex-col lg:gap-y-1 lg:px-1.5 lg:py-2',
                 isOpen ? 'w-48' : 'w-12 px-1',
                 'overflow-hidden'
             )}

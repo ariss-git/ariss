@@ -21,7 +21,7 @@ const AdminLayout = () => {
                     {/* Sidebar */}
                     <div
                         className={`transition-all duration-300 ease-in-out h-full ${
-                            sidebarOpen ? 'w-48' : 'w-16'
+                            sidebarOpen ? 'lg:w-48' : 'lg:w-16'
                         }`}
                     >
                         <Sidebar isOpen={sidebarOpen} />
