@@ -240,7 +240,7 @@ const FetchAllNotApprovedDealers = () => {
             id: 'profile_pic',
             cell: ({ row }) => {
                 const pfp = row.getValue('profile_pic');
-                return <img src={pfp as string} alt="Logo" className="object-contain lg:w-10 lg:h-10" />;
+                return <img src={pfp as string} alt="Logo" className="object-contain w-10 h-10" />;
             },
         },
         {
@@ -459,7 +459,7 @@ const FetchAllNotApprovedDealers = () => {
                         </Button>
                     </div> */}
                 </div>
-                <div className="flex justify-center items-center lg:gap-x-6">
+                <div className="lg:flex hidden justify-center items-center lg:gap-x-6">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="default" className="rounded flex items-center gap-2">

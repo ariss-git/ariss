@@ -421,7 +421,7 @@ const FetchAllBackOffices = () => {
                         </Button>
                     </div> */}
                 </div>
-                <div className="flex justify-center items-center lg:gap-x-6">
+                <div className="lg:flex hidden justify-center items-center lg:gap-x-6">
                     <AddBackOffice />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
