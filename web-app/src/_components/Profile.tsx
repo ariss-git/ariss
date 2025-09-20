@@ -17,7 +17,7 @@ const Profile = () => {
             <h1>ID: {user?.id}</h1>
             <h1>Email: {user?.emailAddresses[0].emailAddress}</h1>
             <h1>Name: {user?.fullName}</h1>
-            <h1 className="truncate max-w-[300px]">Profile Pic: {user?.imageUrl}</h1>
+            <h1 className="overflow-x-auto w-[300px]">Profile Pic: {user?.imageUrl}</h1>
             {userRole === 'org:admin' ? <h1>Role: ADMIN</h1> : <h1>Role: Employee</h1>}
         </div>
     );

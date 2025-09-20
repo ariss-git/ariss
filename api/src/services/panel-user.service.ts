@@ -15,6 +15,7 @@ export class PanelUserService {
         this.prismaClient = prismaClient;
     }
 
+    // Service to create panel user
     async createPanelUserService(
         panelId: string,
         email: string,
@@ -41,5 +42,10 @@ export class PanelUserService {
                 panel_type: panelType,
             },
         });
+    }
+
+    // Service to fetch all users
+    async getAllPanelUsersService() {
+        return await this.prismaClient.panelUsers.findMany();
     }
 }
