@@ -31,7 +31,7 @@ export const getAllPanelUserController = async (_req: Request, res: Response) =>
     try {
         const panelUser = await panelUserServices.getAllPanelUsersService();
 
-        return res.status(200).json({ success: true, data: panelUser });
+        return res.status(200).json({ success: true, total: panelUser.length, data: panelUser });
     } catch (error: any) {
         return res.status(400).json({ success: false, message: error.message });
     }
