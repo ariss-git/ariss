@@ -1,9 +1,9 @@
-import { Bell, Loader2 } from 'lucide-react';
+import { Bell } from 'lucide-react';
 import { Dialog, DialogContent, DialogTrigger } from '../components/ui/dialog';
 import { Button } from '../components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getAllUnreadNotifications } from '../api/notificationAPI';
+import { getAllUnreadNotifications, readAllNotification } from '../api/notificationAPI';
 
 interface Notifications {
     notification_id: string;
@@ -15,7 +15,7 @@ interface Notifications {
 const Notification = () => {
     const navigate = useNavigate();
     const [data, setData] = useState<Notifications[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [_loading, setLoading] = useState(false);
 
     useEffect(() => {
         const loadNotifications = async () => {
@@ -36,6 +36,15 @@ const Notification = () => {
         return () => clearInterval(interval);
     }, []);
 
+    const handleRead = async () => {
+        try {
+            await readAllNotification();
+            console.log('Read all the notifications');
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -51,9 +60,11 @@ const Notification = () => {
             </DialogTrigger>
 
             <DialogContent className="lg:w-[80%] w-[90%] h-[60%] lg:h-[400px] rounded-lg shadow-md overflow-y-auto z-50 flex justify-start items-start flex-col gap-y-2 font-work">
-                {loading && (
-                    <div className="px-6 py-2.5 border border-muted-foreground/50 flex justify-center items-center flex-col w-full mt-6 shadow rounded">
-                        <Loader2 className="animate-spin w-4 h-4" />
+                {data.length === 0 && (
+                    <div className="flex justify-center items-center w-full h-full">
+                        <h6 className="text-lg font-semibold text-center">
+                            No Notifications in inbox right now.
+                        </h6>
                     </div>
                 )}
                 {data.slice(0, 5).map((notify) => (
@@ -71,7 +82,7 @@ const Notification = () => {
                 ))}
                 {data.length >= 3 && (
                     <div className="flex justify-between items-center w-full mt-6">
-                        <Button>Mark As Read</Button>
+                        <Button onClick={handleRead}>Mark As Read</Button>
                         <Button variant="link" onClick={() => navigate('/notifications')}>
                             View All
                         </Button>
