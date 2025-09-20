@@ -60,7 +60,12 @@ export class DiscountService {
      * @returns   Promise of an array of all discount records
      */
     async getAllDiscountsService() {
-        return await this.prismaClient.discount.findMany();
+        return await this.prismaClient.discount.findMany({
+            include: {
+                dealer: true,
+                Product: true,
+            },
+        });
     }
     /**
      * @desc      Delete a single discount by ID

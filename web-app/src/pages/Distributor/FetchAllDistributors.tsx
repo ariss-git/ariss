@@ -25,6 +25,15 @@ import { ChevronDown, Eye, Trash, MoreHorizontal, Loader2, UserRoundX } from 'lu
 import { useNavigate } from 'react-router-dom';
 import { toast } from '../../hooks/use-toast';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../../components/ui/dialog';
+import { useOrganization, useUser } from '@clerk/clerk-react';
+
+const filterContent = [
+    { name: 'All Customers', link: '/customers' },
+    { name: 'Approved Dealers', link: '/customers/dealers/approved' },
+    { name: 'Disapproved Dealers', link: '/customers/dealers/not-approved' },
+    { name: 'Technicians', link: '/customers/technicians' },
+    { name: 'Back Offices', link: '/customers/backoffices' },
+];
 
 interface Address {
     adr: string;
@@ -62,6 +71,17 @@ const FetchAllDistributors = () => {
         first_name: false,
         last_name: false,
     });
+
+    const { user } = useUser();
+    const { organization } = useOrganization();
+
+    // Find the user's membership in the current organization
+    const userMembership = user?.organizationMemberships.find(
+        (membership) => membership.organization.id === organization?.id
+    );
+
+    // Get the role key string from the membership
+    const userRole = userMembership?.role;
 
     const [modalOpen, setModalOpen] = useState(false);
     const [confirmText, setConfirmText] = useState('');
@@ -273,53 +293,61 @@ const FetchAllDistributors = () => {
             header: 'Date',
             cell: ({ row }) => new Date(row.getValue('createdAt')).toLocaleDateString(),
         },
-        {
-            id: 'actions',
-            header: 'Actions',
-            cell: ({ row }) => {
-                const dealer = row.original;
-                return (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-                                <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="rounded font-work">
-                            <DropdownMenuItem asChild>
-                                <h6
-                                    onClick={() =>
-                                        navigate(`/customers/dealers/view-edit/${dealer.dealer_id}`)
-                                    }
-                                    className="flex items-center justify-between w-full cursor-pointer"
-                                >
-                                    View & Edit
-                                    <Eye className="ml-2 h-4 w-4" />
-                                </h6>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() =>
-                                    handleAssignDistributorToDealer(dealer.dealer_id, dealer.business_name)
-                                }
-                                className="flex justify-between items-center cursor-pointer"
-                            >
-                                Remove Distributor
-                                <UserRoundX className="ml-2 h-4 w-4" />
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                className="flex justify-between items-center text-red-500 cursor-pointer"
-                                onClick={() => openConfirmModal(dealer.dealer_id, dealer.business_name)}
-                            >
-                                Delete
-                                <Trash className="ml-2 h-4 w-4" />
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                );
-            },
-            enableSorting: false,
-            enableHiding: false,
-        },
+        userRole === 'org:admin'
+            ? {
+                  id: 'actions',
+                  header: 'Actions',
+                  cell: ({ row }) => {
+                      const dealer = row.original;
+                      return (
+                          <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                                      <MoreHorizontal className="h-4 w-4" />
+                                  </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="rounded font-work">
+                                  <DropdownMenuItem asChild>
+                                      <h6
+                                          onClick={() =>
+                                              navigate(`/customers/dealers/view-edit/${dealer.dealer_id}`)
+                                          }
+                                          className="flex items-center justify-between w-full cursor-pointer"
+                                      >
+                                          View & Edit
+                                          <Eye className="ml-2 h-4 w-4" />
+                                      </h6>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                      onClick={() =>
+                                          handleAssignDistributorToDealer(
+                                              dealer.dealer_id,
+                                              dealer.business_name
+                                          )
+                                      }
+                                      className="flex justify-between items-center cursor-pointer"
+                                  >
+                                      Remove Distributor
+                                      <UserRoundX className="ml-2 h-4 w-4" />
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                      className="flex justify-between items-center text-red-500 cursor-pointer"
+                                      onClick={() => openConfirmModal(dealer.dealer_id, dealer.business_name)}
+                                  >
+                                      Delete
+                                      <Trash className="ml-2 h-4 w-4" />
+                                  </DropdownMenuItem>
+                              </DropdownMenuContent>
+                          </DropdownMenu>
+                      );
+                  },
+                  enableSorting: false,
+                  enableHiding: false,
+              }
+            : {
+                  id: '-',
+                  header: '',
+              },
     ];
 
     const table = useReactTable({
@@ -342,12 +370,12 @@ const FetchAllDistributors = () => {
             <div className="flex items-center justify-between">
                 <div className="flex justify-start items-start flex-col gap-y-4">
                     <Input
-                        placeholder="Search distributors..."
+                        placeholder="Search all distributors..."
                         value={globalFilter}
                         onChange={(e) => setGlobalFilter(e.target.value)}
-                        className="w-[250px] rounded"
+                        className="w-[300px] rounded"
                     />
-                    <div className="flex justify-start items-center gap-x-6">
+                    {/* <div className="flex justify-start items-center gap-x-6">
                         <Button
                             onClick={() => navigate('/customers')}
                             size="sm"
@@ -388,32 +416,48 @@ const FetchAllDistributors = () => {
                         >
                             Back Offices
                         </Button>
-                    </div>
+                    </div> */}
                 </div>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="rounded flex items-center gap-2">
-                            Filter <ChevronDown size={16} />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-[200px] rounded font-work">
-                        {table
-                            .getAllColumns()
-                            .filter((column) => column.getCanHide())
-                            .map((column) => (
-                                <DropdownMenuCheckboxItem
-                                    key={column.id}
-                                    className="capitalize"
-                                    checked={column.getIsVisible()}
-                                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                                >
-                                    {typeof column.columnDef.header === 'string'
-                                        ? column.columnDef.header
-                                        : column.id.replace(/_/g, ' ')}
-                                </DropdownMenuCheckboxItem>
+                <div className="lg:flex hidden justify-center items-center lg:gap-x-6">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="default" className="rounded flex items-center gap-2">
+                                Filter By <ChevronDown size={16} />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-[200px] rounded font-work">
+                            {filterContent.map((content, idx) => (
+                                <Button variant="link" onClick={() => navigate(content.link)} key={idx}>
+                                    {content.name}
+                                </Button>
                             ))}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" className="rounded flex items-center gap-2">
+                                Sort By <ChevronDown size={16} />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-[200px] rounded font-work">
+                            {table
+                                .getAllColumns()
+                                .filter((column) => column.getCanHide())
+                                .map((column) => (
+                                    <DropdownMenuCheckboxItem
+                                        key={column.id}
+                                        className="capitalize"
+                                        checked={column.getIsVisible()}
+                                        onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                                    >
+                                        {typeof column.columnDef.header === 'string'
+                                            ? column.columnDef.header
+                                            : column.id.replace(/_/g, ' ')}
+                                    </DropdownMenuCheckboxItem>
+                                ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </div>
 
             <div className="overflow-auto rounded border">

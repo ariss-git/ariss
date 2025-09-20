@@ -9,6 +9,9 @@ import FetchDealersOnDashboard from '../_components/Dashboard/DealerDashboard';
 import CurvyLinear from '../_components/Dashboard/CurvyLinear';
 import { Button } from '../components/ui/button';
 import { Link } from 'react-router-dom';
+import { useOrganization, useUser } from '@clerk/clerk-react';
+import { useEffect } from 'react';
+import { addPanelUser } from '../api/panelUser';
 const chartData = [
     { month: 'January', desktop: 186, mobile: 80 },
     { month: 'February', desktop: 305, mobile: 200 },
@@ -30,17 +33,49 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export default function Dashboard() {
+    const { user } = useUser();
+    const { organization } = useOrganization();
+
+    // Find the user's membership in the current organization
+    const userMembership = user?.organizationMemberships.find(
+        (membership) => membership.organization.id === organization?.id
+    );
+
+    // Get the role key string from the membership
+    const userRole = userMembership?.role;
+
+    useEffect(() => {
+        const handleAddUser = async () => {
+            const data = {
+                panelId: user?.id!,
+                email: user?.emailAddresses[0].emailAddress!,
+                name: user?.fullName!,
+                profilePic: user?.imageUrl!,
+                panelType: userRole === 'org:admin' ? 'ADMIN' : 'EMPLOYEE',
+            };
+
+            try {
+                await addPanelUser(data);
+                console.log('Added panel user to DB');
+            } catch (error) {
+                console.log('User already exists');
+            }
+        };
+
+        handleAddUser();
+    }, []);
+
     return (
-        <div className="flex justify-start items-start w-full lg:p-10 font-work flex-col lg:gap-y-10">
-            <div className="flex justify-between items-center capitalize lg:text-lg w-full">
-                <h4>Welcome back, Mujahid Patel</h4>
+        <div className="flex justify-start items-start w-full lg:p-10 p-6 font-work flex-col lg:gap-y-10 gap-y-6">
+            <div className="lg:flex hidden justify-between items-center capitalize lg:text-lg w-full">
+                <h4>Welcome {user?.fullName}</h4>
                 <Link to="/products/add">
                     <Button variant="default" className="rounded">
                         Add Product <PlusCircle className="ml-2 h-4 w-4" />
                     </Button>
                 </Link>
             </div>
-            <div className="flex justify-start items-center lg:gap-x-10">
+            <div className="flex lg:flex-row flex-col gap-y-6 justify-start items-center lg:gap-x-10">
                 <div className="max-w-[450px] max-h-[450px] min-w-[300px] min-h-[300px] duration-300 transition">
                     <GradientChartComponent />
                 </div>
@@ -51,11 +86,11 @@ export default function Dashboard() {
                     <BarChartComponent />
                 </div>
             </div>
-            <div className="flex justify-start items-center lg:gap-x-4">
+            <div className="flex justify-start items-start lg:gap-x-10">
                 <div className="max-w-[450px] max-h-[450px] min-w-[300px] min-h-[300px]">
                     <CurvyLinear />
                 </div>
-                <div className="flex justify-center items-center overflow-x-hidden">
+                <div className="lg:flex hidden justify-center items-center overflow-x-hidden">
                     <FetchDealersOnDashboard />
                 </div>
             </div>

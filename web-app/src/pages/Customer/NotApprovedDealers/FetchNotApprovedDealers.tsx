@@ -26,16 +26,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Input } from '../../../components/ui/input';
 import { Checkbox } from '../../../components/ui/checkbox';
 import { Badge } from '../../../components/ui/badge';
-import {
-    ChevronDown,
-    Eye,
-    Trash,
-    MoreHorizontal,
-    ShieldPlus,
-    Loader2,
-    UserRoundCheck,
-    PlusCircle,
-} from 'lucide-react';
+import { ChevronDown, Eye, Trash, MoreHorizontal, ShieldPlus, Loader2, UserRoundCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '../../../hooks/use-toast';
 import {
@@ -45,6 +36,15 @@ import {
     DialogHeader,
     DialogTitle,
 } from '../../../components/ui/dialog';
+import { useOrganization, useUser } from '@clerk/clerk-react';
+
+const filterContent = [
+    { name: 'All Customers', link: '/customers' },
+    { name: 'Distributors', link: '/customers/distributors' },
+    { name: 'Approved Dealers', link: '/customers/dealers/approved' },
+    { name: 'Technicians', link: '/customers/technicians' },
+    { name: 'Back Offices', link: '/customers/backoffices' },
+];
 
 interface Address {
     adr: string;
@@ -81,6 +81,17 @@ const FetchAllNotApprovedDealers = () => {
         first_name: false,
         last_name: false,
     });
+
+    const { user } = useUser();
+    const { organization } = useOrganization();
+
+    // Find the user's membership in the current organization
+    const userMembership = user?.organizationMemberships.find(
+        (membership) => membership.organization.id === organization?.id
+    );
+
+    // Get the role key string from the membership
+    const userRole = userMembership?.role;
 
     const [modalOpen, setModalOpen] = useState(false);
     const [confirmText, setConfirmText] = useState('');
@@ -229,7 +240,7 @@ const FetchAllNotApprovedDealers = () => {
             id: 'profile_pic',
             cell: ({ row }) => {
                 const pfp = row.getValue('profile_pic');
-                return <img src={pfp as string} alt="Logo" className="object-contain lg:w-10 lg:h-10" />;
+                return <img src={pfp as string} alt="Logo" className="object-contain w-10 h-10" />;
             },
         },
         {
@@ -314,65 +325,70 @@ const FetchAllNotApprovedDealers = () => {
             header: 'Date',
             cell: ({ row }) => new Date(row.getValue('createdAt')).toLocaleDateString(),
         },
-        {
-            id: 'actions',
-            header: 'Actions',
-            cell: ({ row }) => {
-                const dealer = row.original;
-                return (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-                                <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="rounded font-work">
-                            <DropdownMenuItem asChild>
-                                <h6
-                                    onClick={() =>
-                                        navigate(`/customers/dealers/view-edit/${dealer.dealer_id}`)
-                                    }
-                                    className="flex items-center justify-between w-full cursor-pointer"
-                                >
-                                    View & Edit
-                                    <Eye className="ml-2 h-4 w-4" />
-                                </h6>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => handleApproval(dealer.dealer_id, dealer.business_name)}
-                                className="flex justify-between items-center cursor-pointer"
-                            >
-                                Approve
-                                <ShieldPlus className="ml-2 h-4 w-4" />
-                            </DropdownMenuItem>
+        userRole === 'org:admin'
+            ? {
+                  id: 'actions',
+                  header: 'Actions',
+                  cell: ({ row }) => {
+                      const dealer = row.original;
+                      return (
+                          <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                                      <MoreHorizontal className="h-4 w-4" />
+                                  </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="rounded font-work">
+                                  <DropdownMenuItem asChild>
+                                      <h6
+                                          onClick={() =>
+                                              navigate(`/customers/dealers/view-edit/${dealer.dealer_id}`)
+                                          }
+                                          className="flex items-center justify-between w-full cursor-pointer"
+                                      >
+                                          View & Edit
+                                          <Eye className="ml-2 h-4 w-4" />
+                                      </h6>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                      onClick={() => handleApproval(dealer.dealer_id, dealer.business_name)}
+                                      className="flex justify-between items-center cursor-pointer"
+                                  >
+                                      Approve
+                                      <ShieldPlus className="ml-2 h-4 w-4" />
+                                  </DropdownMenuItem>
 
-                            <DropdownMenuItem
-                                onClick={() =>
-                                    handleAssignDistributor(
-                                        dealer.dealer_id,
-                                        dealer.business_name,
-                                        dealer.billing_address.stcd
-                                    )
-                                }
-                                className="flex justify-between items-center cursor-pointer"
-                            >
-                                Make Distributor
-                                <UserRoundCheck className="ml-2 h-4 w-4" />
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                className="flex justify-between items-center text-red-500 cursor-pointer"
-                                onClick={() => openConfirmModal(dealer.dealer_id, dealer.business_name)}
-                            >
-                                Delete
-                                <Trash className="ml-2 h-4 w-4" />
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                );
-            },
-            enableSorting: false,
-            enableHiding: false,
-        },
+                                  <DropdownMenuItem
+                                      onClick={() =>
+                                          handleAssignDistributor(
+                                              dealer.dealer_id,
+                                              dealer.business_name,
+                                              dealer.billing_address.stcd
+                                          )
+                                      }
+                                      className="flex justify-between items-center cursor-pointer"
+                                  >
+                                      Make Distributor
+                                      <UserRoundCheck className="ml-2 h-4 w-4" />
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                      className="flex justify-between items-center text-red-500 cursor-pointer"
+                                      onClick={() => openConfirmModal(dealer.dealer_id, dealer.business_name)}
+                                  >
+                                      Delete
+                                      <Trash className="ml-2 h-4 w-4" />
+                                  </DropdownMenuItem>
+                              </DropdownMenuContent>
+                          </DropdownMenu>
+                      );
+                  },
+                  enableSorting: false,
+                  enableHiding: false,
+              }
+            : {
+                  id: '-',
+                  header: '',
+              },
     ];
 
     const table = useReactTable({
@@ -395,12 +411,12 @@ const FetchAllNotApprovedDealers = () => {
             <div className="flex items-center justify-between">
                 <div className="flex justify-start items-start flex-col gap-y-4">
                     <Input
-                        placeholder="Search dealers..."
+                        placeholder="Search all dealers..."
                         value={globalFilter}
                         onChange={(e) => setGlobalFilter(e.target.value)}
-                        className="w-[250px] rounded"
+                        className="w-[300px] rounded"
                     />
-                    <div className="flex justify-start items-center gap-x-6">
+                    {/* <div className="flex justify-start items-center gap-x-6">
                         <Button
                             onClick={() => navigate('/customers')}
                             size="sm"
@@ -441,41 +457,49 @@ const FetchAllNotApprovedDealers = () => {
                         >
                             Back Offices
                         </Button>
-                    </div>
+                    </div> */}
                 </div>
-                <DropdownMenu>
-                    <div className="flex justify-center items-center gap-x-4">
-                        <Button
-                            variant="default"
-                            className="rounded"
-                            onClick={() => navigate('/customers/dealers/add')}
-                        >
-                            Add Customer <PlusCircle className="ml-2 h-4 w-4" />
-                        </Button>
+                <div className="lg:flex hidden justify-center items-center lg:gap-x-6">
+                    <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="outline" className="rounded flex items-center gap-2">
-                                Filter <ChevronDown size={16} />
+                            <Button variant="default" className="rounded flex items-center gap-2">
+                                Filter By <ChevronDown size={16} />
                             </Button>
                         </DropdownMenuTrigger>
-                    </div>
-                    <DropdownMenuContent align="end" className="w-[200px] rounded font-work">
-                        {table
-                            .getAllColumns()
-                            .filter((column) => column.getCanHide())
-                            .map((column) => (
-                                <DropdownMenuCheckboxItem
-                                    key={column.id}
-                                    className="capitalize"
-                                    checked={column.getIsVisible()}
-                                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                                >
-                                    {typeof column.columnDef.header === 'string'
-                                        ? column.columnDef.header
-                                        : column.id.replace(/_/g, ' ')}
-                                </DropdownMenuCheckboxItem>
+                        <DropdownMenuContent align="end" className="w-[200px] rounded font-work">
+                            {filterContent.map((content, idx) => (
+                                <Button variant="link" onClick={() => navigate(content.link)} key={idx}>
+                                    {content.name}
+                                </Button>
                             ))}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" className="rounded flex items-center gap-2">
+                                Sort By <ChevronDown size={16} />
+                            </Button>
+                        </DropdownMenuTrigger>
+
+                        <DropdownMenuContent align="end" className="w-[200px] rounded font-work">
+                            {table
+                                .getAllColumns()
+                                .filter((column) => column.getCanHide())
+                                .map((column) => (
+                                    <DropdownMenuCheckboxItem
+                                        key={column.id}
+                                        className="capitalize"
+                                        checked={column.getIsVisible()}
+                                        onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                                    >
+                                        {typeof column.columnDef.header === 'string'
+                                            ? column.columnDef.header
+                                            : column.id.replace(/_/g, ' ')}
+                                    </DropdownMenuCheckboxItem>
+                                ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </div>
 
             <div className="overflow-auto rounded border">

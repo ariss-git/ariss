@@ -7,53 +7,67 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model PanelUsers {
+  panel_id    String        @id
+  email       String        @unique
+  name        String
+  profile_pic String?
+  panel_type  PanelUserType
+  createdAt   DateTime      @default(now())
+
+  notification Notification[]
+}
+
 model Dealers {
-  dealer_id        String        @id @default(uuid())
-  phone            String        @unique
-  email            String        @unique
-  gstin            String        @unique
+  dealer_id        String         @id @default(uuid())
+  phone            String         @unique
+  email            String         @unique
+  gstin            String         @unique
   business_name    String?
   first_name       String
   last_name        String
   shipping_address Json?
   billing_address  Json?
-  profile_pic      String        @default("https://static.thenounproject.com/png/5034901-200.png")
-  isApproved       Boolean       @default(false)
+  profile_pic      String         @default("https://static.thenounproject.com/png/5034901-200.png")
+  isApproved       Boolean        @default(false)
   usertype         UserType
-  isDistributor    Boolean       @default(false)
-  createdAt        DateTime      @default(now())
+  isDistributor    Boolean        @default(false)
+  createdAt        DateTime       @default(now())
   BackOffice       BackOffice[]
   Discount         Discount[]
   Technicians      Technicians[]
+  notification     Notification[]
 }
 
 model Technicians {
-  tech_id     String   @id @default(uuid())
-  phone       String
-  email       String
-  first_name  String
-  last_name   String
-  isPassed    Boolean  @default(false)
-  profile_pic String?
-  usertype    UserType
-  isApproved  Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  dealerid    String
-  dealer      Dealers  @relation(fields: [dealerid], references: [dealer_id], onDelete: Cascade)
+  tech_id      String         @id @default(uuid())
+  phone        String
+  email        String
+  first_name   String
+  last_name    String
+  isPassed     Boolean        @default(false)
+  profile_pic  String?
+  usertype     UserType
+  isApproved   Boolean        @default(false)
+  createdAt    DateTime       @default(now())
+  dealerid     String
+  dealer       Dealers        @relation(fields: [dealerid], references: [dealer_id], onDelete: Cascade)
+  notification Notification[]
 }
 
 model BackOffice {
-  backoffice_id String   @id @default(uuid())
+  backoffice_id String         @id @default(uuid())
   phone         String
   email         String
   first_name    String
   last_name     String
   profile_pic   String?
   usertype      UserType
-  isApproved    Boolean  @default(false)
-  createdAt     DateTime @default(now())
+  isApproved    Boolean        @default(false)
+  createdAt     DateTime       @default(now())
   dealerid      String
-  dealer        Dealers  @relation(fields: [dealerid], references: [dealer_id], onDelete: Cascade)
+  dealer        Dealers        @relation(fields: [dealerid], references: [dealer_id], onDelete: Cascade)
+  notification  Notification[]
 }
 
 model Product {
@@ -187,6 +201,24 @@ model RMA {
   createdAt DateTime @default(now())
 }
 
+model Notification {
+  notification_id    String  @id @default(uuid())
+  title              String
+  description        String
+  is_read            Boolean @default(false)
+  panel_user_id      String?
+  dealer_user_id     String?
+  technician_user_id String?
+  backoffice_user_id String?
+
+  panelUsers  PanelUsers?  @relation(fields: [panel_user_id], references: [panel_id], onDelete: Cascade)
+  dealers     Dealers?     @relation(fields: [dealer_user_id], references: [dealer_id], onDelete: Cascade)
+  technicians Technicians? @relation(fields: [technician_user_id], references: [tech_id], onDelete: Cascade)
+  backOffice  BackOffice?  @relation(fields: [backoffice_user_id], references: [backoffice_id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
 enum UserType {
   DEALER
   TECHNICIAN
@@ -222,4 +254,9 @@ enum RMAStatus {
   ACCEPTED
   REJECTED
   RESOLVED
+}
+
+enum PanelUserType {
+  ADMIN
+  EMPLOYEE
 }

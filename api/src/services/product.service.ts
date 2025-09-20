@@ -1,6 +1,9 @@
 // src/services/product.service.ts
 
 import { prisma } from '../db/prismaSingleton.js';
+import { NotificationService } from './notification.service.js';
+
+const notification = new NotificationService();
 
 export class ProductService {
     private prismaClient;
@@ -43,7 +46,7 @@ export class ProductService {
         if (!category) throw new Error('Provided category is invalid or unavailable');
         if (!subcategory) throw new Error('Provided subcategory is invalid or unavailable');
 
-        return await this.prismaClient.product.create({
+        const product = await this.prismaClient.product.create({
             data: {
                 product_title,
                 product_sku,
@@ -62,6 +65,15 @@ export class ProductService {
                 subcategory_id: subcategory.subcategory_id,
             },
         });
+
+        const payload = {
+            title: 'Product',
+            description: `New ${product_title} has been added`,
+        };
+
+        notification.createNotificationService(payload);
+
+        return product;
     }
 
     // Service to fetch all products
@@ -177,7 +189,7 @@ export class ProductService {
         if (!exisitingProduct) throw new Error(`Provided product-id is incorrect`); // Throw if product id is wrong
 
         // Update the selected product
-        return await this.prismaClient.product.update({
+        const product = await this.prismaClient.product.update({
             where: {
                 product_id,
             },
@@ -195,6 +207,14 @@ export class ProductService {
                 product_keywords,
             },
         });
+        const payload = {
+            title: 'Product',
+            description: `${product_title} has updated`,
+        };
+
+        notification.createNotificationService(payload);
+
+        return product;
     }
 
     // Service to delete a product
@@ -207,11 +227,13 @@ export class ProductService {
         if (!exisitingProduct) throw new Error(`Provided product-id is incorrect`); // Throw if product id is wrong
 
         // Delete product
-        return await this.prismaClient.product.delete({
+        const product = await this.prismaClient.product.delete({
             where: {
                 product_id,
             },
         });
+
+        return product;
     }
 
     // Service to add subcategory for a category
@@ -232,13 +254,22 @@ export class ProductService {
 
         if (!category) throw new Error('Provided category is invalid or unavailable');
 
-        return await this.prismaClient.subcategory.create({
+        const subcategory = await this.prismaClient.subcategory.create({
             data: {
                 subcategory_name,
                 subcategory_image,
                 category_id: category.category_id,
             },
         });
+
+        const payload = {
+            title: 'Subcategory',
+            description: `New ${subcategory_name} has been added`,
+        };
+
+        notification.createNotificationService(payload);
+
+        return subcategory;
     }
 
     // Service to fetch all subcategories
@@ -298,7 +329,7 @@ export class ProductService {
 
         if (!subcategory) throw new Error('Invalid subcategory');
 
-        return await this.prismaClient.subcategory.update({
+        const subcategories = await this.prismaClient.subcategory.update({
             where: {
                 subcategory_id,
             },
@@ -307,6 +338,15 @@ export class ProductService {
                 subcategory_image,
             },
         });
+
+        const payload = {
+            title: 'Subcategory',
+            description: `${subcategory_name} has updated`,
+        };
+
+        notification.createNotificationService(payload);
+
+        return subcategories;
     }
 
     // Service to get all subcategory by their categories
@@ -354,12 +394,21 @@ export class ProductService {
 
         if (exisitingCategory) throw new Error('This category already exists');
 
-        return await this.prismaClient.category.create({
+        const category = await this.prismaClient.category.create({
             data: {
                 category_name,
                 category_image,
             },
         });
+
+        const payload = {
+            title: 'Category',
+            description: `New ${category_name} has been added`,
+        };
+
+        notification.createNotificationService(payload);
+
+        return category;
     }
 
     // Service to fetch all categories for product
@@ -400,7 +449,7 @@ export class ProductService {
 
         if (!category) throw new Error('Invalid Category');
 
-        return await this.prismaClient.category.update({
+        const categories = await this.prismaClient.category.update({
             where: {
                 category_id,
             },
@@ -409,6 +458,15 @@ export class ProductService {
                 category_image,
             },
         });
+
+        const payload = {
+            title: 'Category',
+            description: `${category_name} has updated`,
+        };
+
+        notification.createNotificationService(payload);
+
+        return categories;
     }
 
     // Service to delete a category for product

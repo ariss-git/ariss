@@ -93,3 +93,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+.cl-identity-footer {
+  display: none !important;
+}

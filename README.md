@@ -1,2 +1,0 @@
-# ariss
-for project ariss

@@ -3,11 +3,9 @@ import Dashboard from './pages/Dashboard';
 import Category from './pages/Category/Index';
 import AdminLayout from './layouts/MainLayout';
 import { ThemeProvider } from './components/theme-provider';
-import AddCategory from './pages/Category/AddCategory';
 import { Toaster } from './components/ui/toaster';
 import CategoryDetails from './pages/Category/CategoryDetails';
 import Subcategory from './pages/SubCategory/Index';
-import AddSubcategory from './pages/SubCategory/AddSubCategory';
 import SubcategoryDetails from './pages/SubCategory/SubcategoryDetails';
 import Customer from './pages/Customer/Index';
 import ApprovedDealers from './pages/Customer/ApprovedDealers/Index';
@@ -28,17 +26,17 @@ import Courses from './pages/Courses/Index';
 import AddCourse from './pages/Courses/AddCouse';
 import FetchSingleCourse from './pages/Courses/FetchSingleCourse';
 import Login from './pages/Admin/Login';
-import Wishlists from './pages/Wishlist/Index';
 import AddBackOffice from './pages/Back-Office/AddBackOffice';
-import AddTechnician from './pages/Technician/AddTechnician';
+
 import AddDealer from './pages/Customer/ApprovedDealers/AddDealer';
 import Orders from './pages/Order/Index';
 import Invoices from './pages/Invoice/Index';
 import AddQuestionsToCourse from './pages/Courses/AddQuestions';
+import Profile from './_components/Profile';
 
 function App() {
     return (
-        <ThemeProvider>
+        <ThemeProvider defaultTheme="light">
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<AdminLayout />}>
@@ -49,11 +47,9 @@ function App() {
                         <Route path="products/:product_id" element={<FetchSingleProduct />} />
 
                         <Route path="categories" element={<Category />} />
-                        <Route path="categories/add" element={<AddCategory />} />
                         <Route path="categories/:category_id" element={<CategoryDetails />} />
 
                         <Route path="subcategories" element={<Subcategory />} />
-                        <Route path="subcategories/add" element={<AddSubcategory />} />
                         <Route path="subcategories/:subcategory_id" element={<SubcategoryDetails />} />
 
                         <Route path="customers" element={<Customer />} />
@@ -65,7 +61,6 @@ function App() {
                         <Route path="customers/dealers/add" element={<AddDealer />} />
 
                         <Route path="customers/technicians" element={<Technicians />} />
-                        <Route path="customers/technicians/add" element={<AddTechnician />} />
 
                         <Route path="customers/backoffices" element={<BackOffices />} />
                         <Route path="customers/backoffices/add" element={<AddBackOffice />} />
@@ -87,7 +82,7 @@ function App() {
 
                         <Route path="invoices" element={<Invoices />} />
 
-                        <Route path="wishlists" element={<Wishlists />} />
+                        <Route path="profile" element={<Profile />} />
                     </Route>
 
                     <Route path="/login" element={<Login />}>

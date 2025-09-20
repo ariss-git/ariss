@@ -9,16 +9,7 @@ import {
     useReactTable,
     VisibilityState,
 } from '@tanstack/react-table';
-import {
-    ArrowUpDown,
-    Clipboard,
-    Eye,
-    MoreHorizontal,
-    Trash,
-    Loader2,
-    ChevronDown,
-    PlusCircle,
-} from 'lucide-react';
+import { ArrowUpDown, Clipboard, Eye, MoreHorizontal, Trash, Loader2, ChevronDown } from 'lucide-react';
 
 import { Button } from '../../components/ui/button';
 import {
@@ -44,8 +35,19 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { toast } from '../../hooks/use-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { apiURL } from '../../api/apiURL';
+import AddSubcategory from './AddSubCategory';
 
-const apiURL = 'https://ariss-app-dev.onrender.com/api';
+const filterContent = [
+    {
+        name: 'Products',
+        link: '/products',
+    },
+    {
+        name: 'Categories',
+        link: '/categories',
+    },
+];
 
 export type Subcategory = {
     subcategory_id: string;
@@ -231,11 +233,11 @@ export default function FetchAllSubcategories() {
             <div className="flex items-center justify-between py-4">
                 <div className="flex justify-start items-center flex-col gap-y-4">
                     <Input
-                        placeholder="Search subcategories..."
+                        placeholder="Search all subcategories..."
                         onChange={(e) => table.getColumn('subcategory_name')?.setFilterValue(e.target.value)}
-                        className="max-w-sm rounded font-work min-w-[300px]"
+                        className="rounded font-work w-[300px]"
                     />
-                    <div className="flex justify-start items-center gap-x-6 w-full">
+                    {/* <div className="flex justify-start items-center gap-x-6 w-full">
                         <Button
                             onClick={() => navigate('/categories')}
                             size="sm"
@@ -252,43 +254,55 @@ export default function FetchAllSubcategories() {
                         >
                             Products
                         </Button>
-                    </div>
+                    </div> */}
                 </div>
 
-                <DropdownMenu>
-                    <div className="flex justify-center items-center gap-x-4">
-                        <Button
-                            variant="default"
-                            className="rounded"
-                            onClick={() => navigate('/subcategories/add')}
+                <div className="lg:flex hidden justify-center items-center lg:gap-x-6">
+                    <AddSubcategory onSuccess={load} />
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="default" className="rounded flex items-center gap-2">
+                                Filter By <ChevronDown size={16} />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                            align="end"
+                            className="w-[200px] rounded font-work flex flex-col justify-start items-start"
                         >
-                            Add Subcategories <PlusCircle className="ml-2 h-4 w-4" />
-                        </Button>
+                            {filterContent.map((content, idx) => (
+                                <Button variant="link" onClick={() => navigate(content.link)} key={idx}>
+                                    {content.name}
+                                </Button>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="ml-auto rounded font-work">
-                                Filter
+                                Sort By
                                 <ChevronDown className="mr-2 h-4 w-4" />
                             </Button>
                         </DropdownMenuTrigger>
-                    </div>
-                    <DropdownMenuContent align="end" className="rounded font-work">
-                        {table
-                            .getAllColumns()
-                            .filter((col) => col.getCanHide())
-                            .map((column) => (
-                                <DropdownMenuCheckboxItem
-                                    key={column.id}
-                                    checked={column.getIsVisible()}
-                                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                                    className="capitalize"
-                                >
-                                    {column.id === 'category.category_name'
-                                        ? 'Category'
-                                        : column.id.replace('_', ' ')}
-                                </DropdownMenuCheckboxItem>
-                            ))}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+
+                        <DropdownMenuContent align="end" className="rounded font-work">
+                            {table
+                                .getAllColumns()
+                                .filter((col) => col.getCanHide())
+                                .map((column) => (
+                                    <DropdownMenuCheckboxItem
+                                        key={column.id}
+                                        checked={column.getIsVisible()}
+                                        onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                                        className="capitalize"
+                                    >
+                                        {column.id === 'category.category_name'
+                                            ? 'Category'
+                                            : column.id.replace('_', ' ')}
+                                    </DropdownMenuCheckboxItem>
+                                ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </div>
 
             <div className="rounded border">

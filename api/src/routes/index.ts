@@ -12,6 +12,8 @@ import productRoutes from './product.routes.js';
 import technicianRoutes from './technician.routes.js';
 import userRoutes from './user.routes.js';
 import rmaRoutes from './rma.routes.js';
+import panelRoutes from './panel-user.routes.js';
+import notificationRoutes from './notification.routes.js';
 
 const router = Router();
 
@@ -28,5 +30,7 @@ router.use('/payment', paymentRoutes);
 router.use('/ledger', ledgerRoutes);
 router.use('/users', userRoutes);
 router.use('/rma', rmaRoutes);
+router.use('/panel-users', panelRoutes);
+router.use('/notifications', notificationRoutes);
 
 export default router;

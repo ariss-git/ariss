@@ -25,6 +25,17 @@ import { Dialog, DialogContent } from '../../components/ui/dialog';
 import { toast } from '../../hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 
+const filterContent = [
+    {
+        name: 'Categories',
+        link: '/categories',
+    },
+    {
+        name: 'Subcategories',
+        link: '/subcategories',
+    },
+];
+
 interface Product {
     product_id: string;
     product_title: string;
@@ -205,12 +216,12 @@ const FetchAllProducts = () => {
             <div className="flex items-center justify-between">
                 <div className="flex justify-start items-center flex-col gap-y-4">
                     <Input
-                        placeholder="Search products..."
+                        placeholder="Search all products..."
                         value={globalFilter}
                         onChange={(e) => setGlobalFilter(e.target.value)}
-                        className="w-[250px] rounded"
+                        className="w-[300px] rounded"
                     />
-                    <div className="flex justify-start items-center gap-x-6 w-full">
+                    {/* <div className="flex justify-start items-center gap-x-6 w-full">
                         <Button
                             onClick={() => navigate('/categories')}
                             size="sm"
@@ -227,42 +238,53 @@ const FetchAllProducts = () => {
                         >
                             Subcategories
                         </Button>
-                    </div>
+                    </div> */}
                 </div>
-                <DropdownMenu>
-                    <div className="flex justify-center items-center gap-x-4">
-                        <Button
-                            variant="default"
-                            className="rounded"
-                            onClick={() => navigate('/products/add')}
-                        >
-                            Add Products <PlusCircle className="ml-2 h-4 w-4" />
-                        </Button>
+                <div className="lg:flex hidden justify-center items-center lg:gap-x-6">
+                    <Button variant="default" className="rounded" onClick={() => navigate('/products/add')}>
+                        Add Products <PlusCircle className="ml-2 h-4 w-4" />
+                    </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="default" className="rounded flex items-center gap-2">
+                                Filter By <ChevronDown size={16} />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-[200px] rounded font-work">
+                            {filterContent.map((content, idx) => (
+                                <Button variant="link" onClick={() => navigate(content.link)} key={idx}>
+                                    {content.name}
+                                </Button>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="ml-auto rounded font-work">
-                                Filter
+                                Sort By
                                 <ChevronDown className="mr-2 h-4 w-4" />
                             </Button>
                         </DropdownMenuTrigger>
-                    </div>
-                    <DropdownMenuContent align="end" className="w-[200px] rounded font-work">
-                        {table
-                            .getAllColumns()
-                            .filter((column) => column.getCanHide())
-                            .map((column) => (
-                                <DropdownMenuCheckboxItem
-                                    key={column.id}
-                                    className="capitalize"
-                                    checked={column.getIsVisible()}
-                                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                                >
-                                    {typeof column.columnDef.header === 'string'
-                                        ? column.columnDef.header
-                                        : column.id.replace(/_/g, ' ')}
-                                </DropdownMenuCheckboxItem>
-                            ))}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+
+                        <DropdownMenuContent align="end" className="w-[200px] rounded font-work">
+                            {table
+                                .getAllColumns()
+                                .filter((column) => column.getCanHide())
+                                .map((column) => (
+                                    <DropdownMenuCheckboxItem
+                                        key={column.id}
+                                        className="capitalize"
+                                        checked={column.getIsVisible()}
+                                        onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                                    >
+                                        {typeof column.columnDef.header === 'string'
+                                            ? column.columnDef.header
+                                            : column.id.replace(/_/g, ' ')}
+                                    </DropdownMenuCheckboxItem>
+                                ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </div>
 
             <div className="overflow-auto rounded border">
