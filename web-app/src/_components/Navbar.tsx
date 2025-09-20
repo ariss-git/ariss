@@ -1,7 +1,6 @@
 import { ModeToggle } from '../components/mode-toggle';
 import {
     ArrowLeftRight,
-    Bell,
     BookCheck,
     Landmark,
     LayoutDashboard,
@@ -19,6 +18,7 @@ import { Sheet, SheetContent, SheetTrigger } from '../components/ui/sheet';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../components/ui/accordion';
+import Notification from './Notification';
 
 interface NavbarProps {
     toggleSidebar: () => void;
@@ -52,10 +52,7 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }: NavbarProps) => {
                         )}
                     </button>
                     <ModeToggle />
-                    <Bell
-                        size={16}
-                        className="text-stone-100 dark:text-stone-100 stroke-[1.5] lg:mr-6 mr-3"
-                    />
+                    <Notification />
                     <AdminAccount />
                 </div>
             </div>
