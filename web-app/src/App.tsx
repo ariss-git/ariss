@@ -32,6 +32,7 @@ import AddDealer from './pages/Customer/ApprovedDealers/AddDealer';
 import Orders from './pages/Order/Index';
 import Invoices from './pages/Invoice/Index';
 import AddQuestionsToCourse from './pages/Courses/AddQuestions';
+import Profile from './_components/Profile';
 
 function App() {
     return (
@@ -80,6 +81,8 @@ function App() {
                         <Route path="orders" element={<Orders />} />
 
                         <Route path="invoices" element={<Invoices />} />
+
+                        <Route path="profile" element={<Profile />} />
                     </Route>
 
                     <Route path="/login" element={<Login />}>
