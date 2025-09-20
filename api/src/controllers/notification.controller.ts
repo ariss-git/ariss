@@ -16,11 +16,41 @@ export const createNotificationController = async (req: Request, res: Response) 
     }
 };
 
+// Controller to fetch all unread notifications
+export const fetchAllUnreadNotificationController = async (_req: Request, res: Response) => {
+    try {
+        const notification = await notificationServices.fetchAllUnreadNotificationService();
+        return res.status(200).json({ success: true, total: notification.length, data: notification });
+    } catch (error: any) {
+        return res.status(400).json({ success: false, message: error.message });
+    }
+};
+
 // Controller to fetch all notifications
 export const fetchAllNotificationController = async (_req: Request, res: Response) => {
     try {
         const notification = await notificationServices.fetchAllNotificationService();
+        return res.status(200).json({ success: true, total: notification.length, data: notification });
+    } catch (error: any) {
+        return res.status(400).json({ success: false, message: error.message });
+    }
+};
+
+// Controller to read all notifications
+export const readAllNotificationsController = async (_req: Request, res: Response) => {
+    try {
+        const notification = await notificationServices.readAllNotifications();
         return res.status(200).json({ success: true, data: notification });
+    } catch (error: any) {
+        return res.status(400).json({ success: false, message: error.message });
+    }
+};
+
+// Controller to delete all notifications
+export const deleteAllNotificationsController = async (_req: Request, res: Response) => {
+    try {
+        const notification = await notificationServices.deleteAllNotifications();
+        return res.status(200).json({ success: true, message: 'Notifications deleted', data: notification });
     } catch (error: any) {
         return res.status(400).json({ success: false, message: error.message });
     }
