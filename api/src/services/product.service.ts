@@ -1,6 +1,9 @@
 // src/services/product.service.ts
 
 import { prisma } from '../db/prismaSingleton.js';
+import { NotificationService } from './notification.service.js';
+
+const notification = new NotificationService();
 
 export class ProductService {
     private prismaClient;
@@ -354,12 +357,21 @@ export class ProductService {
 
         if (exisitingCategory) throw new Error('This category already exists');
 
-        return await this.prismaClient.category.create({
+        const category = await this.prismaClient.category.create({
             data: {
                 category_name,
                 category_image,
             },
         });
+
+        const payload = {
+            title: 'Category',
+            description: `New ${category_name} has been added`,
+        };
+
+        notification.createNotificationService(payload);
+
+        return category;
     }
 
     // Service to fetch all categories for product
