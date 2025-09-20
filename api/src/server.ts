@@ -13,8 +13,16 @@ import apiRoutes from './routes/index.js'; // Import centralized routes
 const PORT = config.port || 5000;
 const app = express();
 
+const corsOptions = {
+    origin: ['https://ariss-dashboard.vercel.app', 'http://localhost:5173', 'http://localhost:8081'], // frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(helmet());
 app.use(cookieParser());
 app.use(express.json({ limit: '50mb' }));
