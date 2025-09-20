@@ -46,7 +46,7 @@ export class ProductService {
         if (!category) throw new Error('Provided category is invalid or unavailable');
         if (!subcategory) throw new Error('Provided subcategory is invalid or unavailable');
 
-        return await this.prismaClient.product.create({
+        const product = await this.prismaClient.product.create({
             data: {
                 product_title,
                 product_sku,
@@ -65,6 +65,15 @@ export class ProductService {
                 subcategory_id: subcategory.subcategory_id,
             },
         });
+
+        const payload = {
+            title: 'Product',
+            description: `New ${product_title} has been added`,
+        };
+
+        notification.createNotificationService(payload);
+
+        return product;
     }
 
     // Service to fetch all products
@@ -235,13 +244,22 @@ export class ProductService {
 
         if (!category) throw new Error('Provided category is invalid or unavailable');
 
-        return await this.prismaClient.subcategory.create({
+        const subcategory = await this.prismaClient.subcategory.create({
             data: {
                 subcategory_name,
                 subcategory_image,
                 category_id: category.category_id,
             },
         });
+
+        const payload = {
+            title: 'Subcategory',
+            description: `New ${subcategory_name} has been added`,
+        };
+
+        notification.createNotificationService(payload);
+
+        return subcategory;
     }
 
     // Service to fetch all subcategories
