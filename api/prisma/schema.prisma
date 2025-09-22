@@ -219,6 +219,14 @@ model Notification {
   createdAt DateTime @default(now())
 }
 
+model Course {
+  course_id String   @id @default(uuid())
+  title     String   @unique
+  status    Boolean  @default(false)
+  content   Json?
+  createdAt DateTime @default(now())
+}
+
 enum UserType {
   DEALER
   TECHNICIAN
