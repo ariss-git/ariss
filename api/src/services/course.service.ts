@@ -23,6 +23,7 @@ export class CourseServices {
             data: {
                 title,
                 content,
+                status: true,
             },
         });
 
