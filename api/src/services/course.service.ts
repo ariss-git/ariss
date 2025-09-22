@@ -77,4 +77,33 @@ export class CourseServices {
             },
         });
     }
+
+    async updateCourse(courseId: string, title: string, content: any) {
+        const existingCourse = await this.prismaClient.course.findUnique({
+            where: {
+                course_id: courseId,
+            },
+        });
+
+        if (!existingCourse) throw new Error('Course with this ID do not exist');
+
+        const course = await this.prismaClient.course.update({
+            where: {
+                course_id: courseId,
+            },
+            data: {
+                title,
+                content,
+            },
+        });
+
+        const payload = {
+            title: 'Course',
+            description: `Course with title ${title} has been updated`,
+        };
+
+        notification.createNotificationService(payload);
+
+        return course;
+    }
 }
