@@ -55,4 +55,26 @@ export class CourseServices {
             },
         });
     }
+
+    async updateToActiveCourse(courseId: string) {
+        return await this.prismaClient.course.update({
+            where: {
+                course_id: courseId,
+            },
+            data: {
+                status: true,
+            },
+        });
+    }
+
+    async updateToInactiveCourse(courseId: string) {
+        return await this.prismaClient.course.update({
+            where: {
+                course_id: courseId,
+            },
+            data: {
+                status: false,
+            },
+        });
+    }
 }
