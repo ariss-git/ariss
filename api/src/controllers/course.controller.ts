@@ -80,3 +80,23 @@ export const updateToInactiveCourseController = async (req: Request, res: Respon
         return res.status(500).json({ success: false, message: error.message });
     }
 };
+
+export const updateCourseController = async (req: Request, res: Response) => {
+    const { courseId } = req.params;
+    const { title, content } = req.body;
+
+    if (!courseId) {
+        return res.status(404).json({ success: false, message: 'Course ID not found in params' });
+    }
+
+    if (!title || !content) {
+        return res.status(404).json({ success: false, message: 'Required fields are missing' });
+    }
+
+    try {
+        const course = await courseServices.updateCourse(courseId, title, content);
+        return res.status(200).json({ success: true, data: course });
+    } catch (error: any) {
+        return res.status(400).json({ success: false, message: error.message });
+    }
+};
