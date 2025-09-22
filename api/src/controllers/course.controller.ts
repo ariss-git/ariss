@@ -50,3 +50,33 @@ export const fetchAllActiveCoursesController = async (_req: Request, res: Respon
         return res.status(400).json({ success: false, message: error.message });
     }
 };
+
+export const updateToActiveCourseController = async (req: Request, res: Response) => {
+    const { courseId } = req.params;
+
+    if (!courseId) {
+        return res.status(404).json({ success: false, message: 'Course ID not found in params' });
+    }
+
+    try {
+        const course = await courseServices.updateToActiveCourse(courseId);
+        return res.status(200).json({ success: true, data: course });
+    } catch (error: any) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export const updateToInactiveCourseController = async (req: Request, res: Response) => {
+    const { courseId } = req.params;
+
+    if (!courseId) {
+        return res.status(404).json({ success: false, message: 'Course ID not found in params' });
+    }
+
+    try {
+        const course = await courseServices.updateToInactiveCourse(courseId);
+        return res.status(200).json({ success: true, data: course });
+    } catch (error: any) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
