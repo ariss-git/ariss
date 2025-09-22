@@ -35,4 +35,24 @@ export class CourseServices {
 
         return course;
     }
+
+    async fetchAllCourses() {
+        return await this.prismaClient.course.findMany();
+    }
+
+    async fetchSingleCourse(courseId: string) {
+        return await this.prismaClient.course.findUnique({
+            where: {
+                course_id: courseId,
+            },
+        });
+    }
+
+    async fetchActiveCourses() {
+        return await this.prismaClient.course.findMany({
+            where: {
+                status: true,
+            },
+        });
+    }
 }
