@@ -1,0 +1,38 @@
+import { prisma } from '@/db/prismaSingleton.js';
+import { NotificationService } from './notification.service.js';
+
+const notification = new NotificationService();
+
+export class CourseServices {
+    private prismaClient;
+
+    constructor(prismaClient = prisma) {
+        this.prismaClient = prismaClient;
+    }
+
+    async createCourse(title: string, content: any) {
+        const existingCourse = await this.prismaClient.course.findUnique({
+            where: {
+                title,
+            },
+        });
+
+        if (existingCourse) throw new Error('Course with this title already exists');
+
+        const course = await this.prismaClient.course.create({
+            data: {
+                title,
+                content,
+            },
+        });
+
+        const payload = {
+            title: 'Course',
+            description: `New course with title ${title} has been added`,
+        };
+
+        notification.createNotificationService(payload);
+
+        return course;
+    }
+}
