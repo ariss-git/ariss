@@ -19,9 +19,10 @@ import {
     DropdownMenuTrigger,
 } from '../../components/ui/dropdown-menu';
 import { Button } from '../../components/ui/button';
-import { ChevronDown, Loader2, MoreHorizontal, PlusCircle, Trash } from 'lucide-react';
+import { ChevronDown, Loader2, MoreHorizontal, Trash } from 'lucide-react';
 import { Input } from '../../components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
+import AddTest from './AddTest';
 
 type Tests = {
     test_id: string;
@@ -178,12 +179,10 @@ const FetchAllTests = () => {
                 />
                 <DropdownMenu>
                     <div className="lg:flex hidden justify-center items-center lg:gap-x-6">
-                        <Button variant="default" className="rounded">
-                            Add Question <PlusCircle className="ml-2 h-4 w-4" />
-                        </Button>
+                        <AddTest />
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="rounded">
-                                Filter <ChevronDown className="ml-2 h-4 w-4" />
+                                Filter By <ChevronDown className="ml-2 h-4 w-4" />
                             </Button>
                         </DropdownMenuTrigger>
                     </div>

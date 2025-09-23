@@ -258,7 +258,7 @@ export default function FetchAllCourses() {
                             </Button>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="outline" className="rounded">
-                                    Filter <ChevronDown className="ml-2 h-4 w-4" />
+                                    Filter By <ChevronDown className="ml-2 h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>
                         </div>

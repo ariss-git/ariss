@@ -29,12 +29,12 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }: NavbarProps) => {
     return (
         <nav className="w-full h-16 dark:bg-black bg-black text-stone-100 dark:text-stone-100 flex items-center px-4 justify-between fixed top-0 left-0 z-50 border-b dark:border-stone-500 border-black">
             <div className="flex justify-between items-center w-full lg:px-4">
-                <div className="flex justify-center items-center lg:gap-x-4">
+                <div className="flex justify-center items-center lg:gap-x-4 gap-x-2">
                     {/* <h1 className="text-4xl font-light text-stone-100 dark:text-stone-100 font-posterama uppercase tracking-tight">
                         Ariss
                     </h1> */}
-                    {/* <img className="lg:max-w-32" src="/Ariss_Logo.png" alt="Logo" /> */}
                     <MobileSheet />
+                    <img className="lg:max-w-32 max-w-24" src="/Ariss_Logo.png" alt="Logo" />
                 </div>
 
                 <div className="flex justify-center items-center lg:gap-x-2">
