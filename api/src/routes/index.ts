@@ -15,6 +15,7 @@ import rmaRoutes from './rma.routes.js';
 import panelRoutes from './panel-user.routes.js';
 import notificationRoutes from './notification.routes.js';
 import courseRoutes from './course.routes.js';
+import testRoutes from './test.routes.js';
 
 const router = Router();
 
@@ -34,5 +35,6 @@ router.use('/rma', rmaRoutes);
 router.use('/panel-users', panelRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/courses', courseRoutes);
+router.use('/questions', testRoutes);
 
 export default router;
