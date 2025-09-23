@@ -179,7 +179,7 @@ const FetchAllTests = () => {
                 />
                 <DropdownMenu>
                     <div className="lg:flex hidden justify-center items-center lg:gap-x-6">
-                        <AddTest />
+                        <AddTest onSuccess={loadAllQuestions} />
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="rounded">
                                 Filter By <ChevronDown className="ml-2 h-4 w-4" />

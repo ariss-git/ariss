@@ -1,118 +1,90 @@
-import { Clipboard, Loader2, PlusCircle } from 'lucide-react';
+import { Loader2, PlusCircle } from 'lucide-react';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Button } from '../../components/ui/button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useToast } from '../../hooks/use-toast';
-import { addCategoryAPI } from '../../api/categoryAPI';
 import { Dialog, DialogContent, DialogTrigger } from '../../components/ui/dialog';
+import { Textarea } from '../../components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
+import { getAllCourses } from '../../api/courseAPI';
+import { addQuestion } from '../../api/questionAPI';
 
-type AddCategoryProps = {
+type AddTestProps = {
     onSuccess?: () => void;
 };
 
-const AddTest = ({ onSuccess }: AddCategoryProps) => {
-    const [name, setName] = useState<string>('');
-    const [image, setImage] = useState<File | null>(null);
-    const [pasteImage, setPasteImage] = useState<string>('');
-    const [loading, setLoading] = useState<boolean>(false);
+interface Course {
+    course_id: string;
+    title: string;
+}
 
+const AddTest = ({ onSuccess }: AddTestProps) => {
+    const [question, setQuestion] = useState('');
+    const [optionA, setOptionA] = useState('');
+    const [optionB, setOptionB] = useState('');
+    const [optionC, setOptionC] = useState('');
+    const [optionD, setOptionD] = useState('');
+    const [correctOption, setCorrectOption] = useState('');
+
+    const [loading, setLoading] = useState<boolean>(false);
     const { toast } = useToast();
 
-    const handleClipboardPaste = async () => {
+    const [courseData, setCourseData] = useState<Course[]>([]);
+    const [courseId, setCourseId] = useState('');
+    const [selectedCourseTitle, setSelectedCourseTitle] = useState('');
+
+    const loadCourses = async () => {
         try {
-            const text = await navigator.clipboard.readText();
-            setPasteImage(text);
-            toast({
-                description: 'Pasted URL from clipboard.',
-                className: 'rounded font-work shadow-xl',
-            });
+            const response = await getAllCourses();
+            setCourseData(response.data.data);
         } catch (error) {
-            console.error(error);
-            toast({
-                variant: 'destructive',
-                description: 'Failed to read clipboard.',
-                className: 'rounded font-work shadow-xl',
-            });
+            console.error('Unable to fetch courses', error);
         }
     };
 
-    const uploadToCloudinary = async (file: File): Promise<string> => {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
-
-        const res = await fetch(
-            `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
-            {
-                method: 'POST',
-                body: formData,
-            }
-        );
-
-        if (!res.ok) throw new Error('Cloudinary upload failed');
-
-        const data = await res.json();
-        return data.secure_url;
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!name.trim()) {
-            toast({
-                variant: 'destructive',
-                className: 'rounded font-work shadow-xl',
-                description: 'Category Name is required.',
-            });
-            return;
-        }
-
-        if (!image && !pasteImage) {
-            toast({
-                variant: 'destructive',
-                className: 'rounded font-work shadow-xl',
-                description: 'Provide either an image file or a pasted image URL.',
-            });
-            return;
-        }
-
-        if (image && pasteImage) {
-            toast({
-                variant: 'destructive',
-                className: 'rounded font-work shadow-xl',
-                description: 'Cannot use both file and pasted image URL.',
-            });
-            return;
-        }
-
+    const handleSubmit = async () => {
         setLoading(true);
-
+        if (!selectedCourseTitle) return;
         try {
-            let categoryImage = pasteImage;
+            const payload = {
+                question,
+                optionA,
+                optionB,
+                optionC,
+                optionD,
+                correctOption,
+                courseId,
+            };
 
-            if (image) {
-                categoryImage = await uploadToCloudinary(image);
-            }
-
-            await addCategoryAPI(name, categoryImage);
-            toast({
-                className: 'rounded font-work shadow bg-green-500 text-white',
-                title: 'Category added successfully',
-                description: 'Make sure to add subcategories as well...',
-            });
+            const response = await addQuestion(payload);
+            console.log(response.data);
             onSuccess?.();
+            setQuestion('');
+            setOptionA('');
+            setOptionB('');
+            setOptionC('');
+            setOptionD('');
+            setCorrectOption('');
+            setCourseId('');
+            toast({
+                description: 'Question has been added',
+                className: 'rounded bg-green-500 text-black font-work',
+            });
         } catch (error) {
             console.error(error);
             toast({
-                variant: 'destructive',
-                className: 'rounded font-work shadow-xl',
-                description: 'There was an error adding category...',
+                description: 'There was an error adding question',
+                className: 'rounded bg-red-500 text-black font-work',
             });
         } finally {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        loadCourses();
+    }, []);
 
     return (
         <div className="flex flex-col lg:gap-y-6 justify-start w-full h-full bg-transparent">
@@ -129,48 +101,107 @@ const AddTest = ({ onSuccess }: AddCategoryProps) => {
                     >
                         <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
                             <Label>
-                                Category name<sup className="opacity-50">*</sup>
+                                Question<sup className="opacity-50">*</sup>
                             </Label>
-                            <Input
-                                type="text"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                placeholder="Enter Category"
-                                className="rounded lg:w-[250px]"
+                            <Textarea
+                                value={question}
+                                onChange={(e) => setQuestion(e.target.value)}
+                                placeholder="Enter Question"
+                                className="rounded lg:w-[450px]"
                             />
                         </div>
-
-                        <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
-                            <Label>
-                                Category Image<sup className="opacity-50">*</sup>
-                            </Label>
-                            <Input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => setImage(e.target.files?.[0] || null)}
-                                className="cursor-pointer rounded lg:w-[250px]"
-                            />
-
-                            <div className="flex justify-start items-center lg:gap-x-2 font-work capitalize dark:text-stone-100 text-stone-800 mt-2">
+                        <div className="flex justify-start items-center lg:gap-x-6">
+                            <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                                <Label>
+                                    Option A<sup className="opacity-50">*</sup>
+                                </Label>
                                 <Input
                                     type="text"
-                                    value={pasteImage}
-                                    onChange={(e) => setPasteImage(e.target.value)}
-                                    placeholder="Paste image URL here (Optional)"
-                                    className="placeholder:capitalize rounded lg:w-[250px]"
+                                    value={optionA}
+                                    onChange={(e) => setOptionA(e.target.value)}
+                                    placeholder="Enter Option A"
+                                    className="rounded lg:w-[210px]"
                                 />
-                                <Button
-                                    type="button"
-                                    onClick={handleClipboardPaste}
-                                    variant="outline"
-                                    className="rounded p-2"
-                                >
-                                    <Clipboard
-                                        size={18}
-                                        className="text-stone-500 dark:text-stone-100 stroke-[1]"
-                                    />
-                                </Button>
                             </div>
+                            <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                                <Label>
+                                    Option B<sup className="opacity-50">*</sup>
+                                </Label>
+                                <Input
+                                    type="text"
+                                    value={optionB}
+                                    onChange={(e) => setOptionB(e.target.value)}
+                                    placeholder="Enter Option B"
+                                    className="rounded lg:w-[210px]"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex justify-start items-center lg:gap-x-6">
+                            <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                                <Label>
+                                    Option C<sup className="opacity-50">*</sup>
+                                </Label>
+                                <Input
+                                    type="text"
+                                    value={optionC}
+                                    onChange={(e) => setOptionC(e.target.value)}
+                                    placeholder="Enter Option C"
+                                    className="rounded lg:w-[210px]"
+                                />
+                            </div>
+                            <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                                <Label>
+                                    Option D<sup className="opacity-50">*</sup>
+                                </Label>
+                                <Input
+                                    type="text"
+                                    value={optionD}
+                                    onChange={(e) => setOptionD(e.target.value)}
+                                    placeholder="Enter Option D"
+                                    className="rounded lg:w-[210px]"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                            <Label>
+                                Correct Option<sup className="opacity-50">*</sup>
+                            </Label>
+                            <Select value={correctOption} onValueChange={(value) => setCorrectOption(value)}>
+                                <SelectTrigger className="lg:w-[450px] rounded">
+                                    <SelectValue placeholder="Choose correct option" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="OPTION_A">Option A</SelectItem>
+                                    <SelectItem value="OPTION_B">Option B</SelectItem>
+                                    <SelectItem value="OPTION_C">Option C</SelectItem>
+                                    <SelectItem value="OPTION_D">Option D</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="flex flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                            <Label>
+                                Select Course<sup className="opacity-50">*</sup>
+                            </Label>
+                            <Select
+                                value={courseId}
+                                onValueChange={(value) => {
+                                    setCourseId(value);
+                                    const selected = courseData.find((cat) => cat.course_id === value);
+                                    setSelectedCourseTitle(selected?.title || '');
+                                }}
+                            >
+                                <SelectTrigger className="lg:w-[450px] rounded">
+                                    <SelectValue placeholder="Select category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {courseData.map((cat) => (
+                                        <SelectItem key={cat.course_id} value={cat.course_id}>
+                                            {cat.title}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
 
                         <Button type="submit" className="lg:px-6 lg:py-2 rounded font-work">
