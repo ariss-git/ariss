@@ -48,4 +48,28 @@ export class TestServices {
 
         return test;
     }
+
+    async getAllQuestions() {
+        return await this.prismaClient.test.findMany({
+            include: {
+                course: true,
+            },
+        });
+    }
+
+    async deleteQuestion(testId: string) {
+        const question = await this.prismaClient.test.delete({
+            where: {
+                test_id: testId,
+            },
+        });
+
+        const payload = {
+            title: 'Question',
+            description: `Question ${question.question} deleted`,
+        };
+        notification.createNotificationService(payload);
+
+        return question;
+    }
 }
