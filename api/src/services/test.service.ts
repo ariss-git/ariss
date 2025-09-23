@@ -54,6 +54,9 @@ export class TestServices {
             include: {
                 course: true,
             },
+            orderBy: {
+                createdAt: 'asc',
+            },
         });
     }
 

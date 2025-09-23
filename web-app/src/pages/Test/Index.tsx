@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import FetchAllCourses from '../Courses/FetchAllCourses';
+import FetchAllTests from './FetchAllTests';
 
 const Test = () => {
     return (
@@ -11,7 +11,7 @@ const Test = () => {
                 </Link>
                 All Tests:
             </h1>
-            <FetchAllCourses />
+            <FetchAllTests />
         </div>
     );
 };
