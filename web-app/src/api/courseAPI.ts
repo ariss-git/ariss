@@ -2,39 +2,36 @@ import axios from 'axios';
 import { apiURL } from './apiURL';
 
 type Course = {
-    course_id: string;
     title: string;
-    content: string;
-    isPublished: boolean;
-    createdAt: string;
+    content: {
+        body: string;
+    };
 };
 
-// Get all courses API endpoint
+export const addCourse = async (payload: Course) => {
+    return await axios.post(`${apiURL}/courses`, payload);
+};
+
 export const getAllCourses = async () => {
-    return axios.get(`${apiURL}/course`);
+    return await axios.get(`${apiURL}/courses`);
 };
 
-// Get single course API endpoint
-export const getACourse = async (course_id: string) => {
-    return axios.get(`${apiURL}/course/${course_id}`);
+export const getSingleCourse = async (courseId: string) => {
+    return await axios.get(`${apiURL}/courses/${courseId}`);
 };
 
-// Publish course API endpoint
-export const publishCourse = async (course_id: string) => {
-    return axios.put(`${apiURL}/course/${course_id}/publish`);
+export const updateCourse = async (courseId: string, payload: Course) => {
+    return await axios.put(`${apiURL}/courses/${courseId}`, payload);
 };
 
-// Publish course API endpoint
-export const unpublishCourse = async (course_id: string) => {
-    return axios.put(`${apiURL}/course/${course_id}/unpublish`);
+export const deleteCourse = async (courseId: string) => {
+    return await axios.delete(`${apiURL}/courses/${courseId}`);
 };
 
-// Delete course API endpoint
-export const deleteCourse = async (course_id: string) => {
-    return axios.delete(`${apiURL}/course/${course_id}`);
+export const updateToActiveCourse = async (courseId: string) => {
+    return await axios.put(`${apiURL}/courses/active/${courseId}`);
 };
 
-// Update course API endpoint
-export const updateCourse = async (course_id: string, data: Course) => {
-    return axios.put(`${apiURL}/course/${course_id}`, data);
+export const updateToInactiveCourse = async (courseId: string) => {
+    return await axios.put(`${apiURL}/courses/inactive/${courseId}`);
 };

@@ -23,17 +23,20 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { toast } from '../../hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { Badge } from '../../components/ui/badge';
-import { deleteCourse, getAllCourses, publishCourse, unpublishCourse } from '../../api/courseAPI';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { Label } from '../../components/ui/label';
+import {
+    deleteCourse,
+    getAllCourses,
+    updateToActiveCourse,
+    updateToInactiveCourse,
+} from '../../api/courseAPI';
 
 type Course = {
-    id: string;
+    course_id: string;
     title: string;
-    description: string;
-    isActive: boolean;
+    status: boolean;
     createdAt: string;
-    updatedAt: string;
 };
 
 export default function FetchAllCourses() {
@@ -49,24 +52,8 @@ export default function FetchAllCourses() {
         setLoading(true);
         try {
             const res = await getAllCourses();
-            console.log('API Response:', res);
-
-            const courses = res?.data;
-
-            if (!Array.isArray(courses)) {
-                throw new Error('Invalid course data format');
-            }
-
-            const transformedData: Course[] = courses.map((course: Course) => ({
-                id: course.id,
-                title: course.title,
-                description: course.description,
-                isActive: course.isActive,
-                createdAt: course.createdAt,
-                updatedAt: course.updatedAt,
-            }));
-
-            setData(transformedData);
+            console.log('API Response:', res.data.data);
+            setData(res.data.data);
         } catch (error) {
             console.error(error);
             toast({
@@ -87,9 +74,9 @@ export default function FetchAllCourses() {
         if (!course_id) return;
         setLoading(true);
         try {
-            await publishCourse(course_id);
+            await updateToActiveCourse(course_id);
             toast({
-                description: 'Course has been published',
+                description: 'Course Activated',
                 className: 'rounded font-work bg-green-500 border',
             });
             load();
@@ -97,7 +84,7 @@ export default function FetchAllCourses() {
             console.error(error);
             toast({
                 variant: 'destructive',
-                description: 'Failed to publish Course',
+                description: 'Failed to activate Course',
                 className: 'rounded font-work',
             });
         } finally {
@@ -109,9 +96,9 @@ export default function FetchAllCourses() {
         if (!course_id) return;
         setLoading(true);
         try {
-            await unpublishCourse(course_id);
+            await updateToInactiveCourse(course_id);
             toast({
-                description: 'Course has been unpublished',
+                description: 'Course Deactivated',
                 className: 'rounded font-work bg-green-500 border',
             });
             load();
@@ -119,7 +106,7 @@ export default function FetchAllCourses() {
             console.error(error);
             toast({
                 variant: 'destructive',
-                description: 'Failed to unpublish Course',
+                description: 'Failed to deactivate Course',
                 className: 'rounded font-work',
             });
         } finally {
@@ -153,37 +140,31 @@ export default function FetchAllCourses() {
     };
 
     const columns: ColumnDef<Course>[] = [
-        {
-            accessorKey: 'id',
-            header: 'Course ID',
-            cell: ({ row }) => <div className="truncate max-w-[180px]">{row.getValue('id')}</div>,
-        },
+        // {
+        //     accessorKey: 'course_id',
+        //     header: 'Course ID',
+        //     cell: ({ row }) => <div className="truncate max-w-[180px]">{row.getValue('course_id')}</div>,
+        // },
         {
             accessorKey: 'title',
             header: 'Course Title',
         },
         {
-            accessorKey: 'description',
-            header: 'Description',
-            cell: ({ row }) => <div className="truncate max-w-[300px]">{row.getValue('description')}</div>,
-        },
-        {
-            accessorKey: 'isActive',
-            header: 'Published',
+            accessorKey: 'status',
+            header: 'Status',
             cell: ({ row }) => {
-                const value = row.getValue('isActive');
-                return <Badge className="rounded">{value ? 'Yes' : 'No'}</Badge>;
+                const value = row.getValue('status');
+                return value === true ? (
+                    <Badge className="rounded bg-green-500">Active</Badge>
+                ) : (
+                    <Badge className="rounded bg-red-500">Inactive</Badge>
+                );
             },
         },
         {
             accessorKey: 'createdAt',
             header: 'Created At',
             cell: ({ row }) => <div>{new Date(row.getValue('createdAt')).toLocaleDateString()}</div>,
-        },
-        {
-            accessorKey: 'updatedAt',
-            header: 'Updated At',
-            cell: ({ row }) => <div>{new Date(row.getValue('updatedAt')).toLocaleDateString()}</div>,
         },
         {
             header: 'Actions',
@@ -199,23 +180,23 @@ export default function FetchAllCourses() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="rounded font-work">
                             <DropdownMenuItem
-                                onClick={() => navigate(`/courses/${course.id}`)}
+                                onClick={() => navigate(`/courses/${course.course_id}`)}
                                 className="flex justify-between cursor-pointer"
                             >
                                 View and Edit <Eye className="ml-2 h-4 w-4" />
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                                onClick={() => navigate(`/courses/questions/${course.id}`)}
+                                onClick={() => navigate(`/tests/add`)}
                                 className="flex justify-between cursor-pointer"
                             >
                                 Add Questions <PlusCircle className="ml-2 h-4 w-4" />
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                                onClick={() => handlePublishCourse(course.id)}
+                                onClick={() => handlePublishCourse(course.course_id)}
                                 disabled={loading}
                                 className="flex justify-between cursor-pointer"
                             >
-                                Publish Course{' '}
+                                Activate Course{' '}
                                 {loading ? (
                                     <Loader2 className="ml-2 h-4 w-4 animate-spin" />
                                 ) : (
@@ -223,15 +204,15 @@ export default function FetchAllCourses() {
                                 )}
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                                onClick={() => handleUnpublishCourse(course.id)}
+                                onClick={() => handleUnpublishCourse(course.course_id)}
                                 className="flex justify-between cursor-pointer"
                             >
-                                Unpublish Course <X className="ml-2 h-4 w-4" />
+                                Deactivate Course <X className="ml-2 h-4 w-4" />
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={() => {
                                     setIsDialogOpen(true);
-                                    setSelectedCourseId(course.id);
+                                    setSelectedCourseId(course.course_id);
                                 }}
                                 className="flex justify-between cursor-pointer text-red-500"
                             >
@@ -264,10 +245,10 @@ export default function FetchAllCourses() {
                     <Input
                         placeholder="Search Course..."
                         onChange={(e) => table.getColumn('title')?.setFilterValue(e.target.value)}
-                        className="max-w-sm rounded"
+                        className="max-w-sm rounded lg:mt-0 mt-10 lg:mb-0 mb-6"
                     />
                     <DropdownMenu>
-                        <div className="flex justify-center items-center lg:gap-x-6">
+                        <div className="lg:flex hidden justify-center items-center lg:gap-x-6">
                             <Button
                                 variant="default"
                                 className="rounded"

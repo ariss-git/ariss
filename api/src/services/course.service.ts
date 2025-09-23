@@ -38,7 +38,11 @@ export class CourseServices {
     }
 
     async fetchAllCourses() {
-        return await this.prismaClient.course.findMany();
+        return await this.prismaClient.course.findMany({
+            orderBy: {
+                createdAt: 'asc',
+            },
+        });
     }
 
     async fetchSingleCourse(courseId: string) {
