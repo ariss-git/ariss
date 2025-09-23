@@ -120,7 +120,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
                 <Link to="/tests">
                     <span className="flex items-center gap-x-2 text-[15px] text-[#ABB9E8] hover:text-stone-50 transition duration-300 font-work">
                         <NotebookPen size={20} className="min-w-[20px] min-h-[20px] stroke-[1.5] mr-2" />
-                        Tests
+                        Questions
                     </span>
                     <span />
                 </Link>

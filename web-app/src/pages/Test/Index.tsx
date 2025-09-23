@@ -9,7 +9,7 @@ const Test = () => {
                 <Link to="/">
                     <ArrowLeft className="w-4 h-4 mr-2 " />
                 </Link>
-                All Tests:
+                All Questions:
             </h1>
             <FetchAllTests />
         </div>
