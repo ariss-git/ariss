@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAllQuestions } from '../../api/questionAPI';
+import { deleteQuestion, getAllQuestions } from '../../api/questionAPI';
 import { useToast } from '../../hooks/use-toast';
 import {
     ColumnDef,
@@ -62,6 +62,28 @@ const FetchAllTests = () => {
         }
     };
 
+    const handleDelete = async (testId: string) => {
+        setLoading(true);
+        try {
+            await deleteQuestion(testId);
+            toast({
+                variant: 'default',
+                description: 'Question deleted successfully',
+                className: 'rounded font-work bg-green-500 text-black',
+            });
+            loadAllQuestions();
+        } catch (error) {
+            console.error('Failed deleting question', error);
+            toast({
+                variant: 'destructive',
+                description: 'Failed to delete Question',
+                className: 'rounded font-work',
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         loadAllQuestions();
     }, []);
@@ -116,10 +138,15 @@ const FetchAllTests = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="rounded font-work">
                             <DropdownMenuItem
-                                onClick={() => console.log(test.test_id)}
+                                onClick={() => handleDelete(test.test_id)}
                                 className="flex justify-between cursor-pointer text-red-500"
                             >
-                                Delete <Trash className="ml-2 h-4 w-4" />
+                                Delete{' '}
+                                {loading ? (
+                                    <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                                ) : (
+                                    <Trash className="ml-2 h-4 w-4" />
+                                )}
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -214,7 +241,7 @@ const FetchAllTests = () => {
                                         {loading ? (
                                             <Loader2 className="w-4 h-4 animate-spin" />
                                         ) : (
-                                            <span className="text-center">No Courses Found</span>
+                                            <span className="text-center">No Questions Found</span>
                                         )}
                                     </div>
                                 </TableCell>
