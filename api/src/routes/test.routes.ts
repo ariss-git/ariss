@@ -7,6 +7,6 @@ testRoutes.post('/', testControllers.addQuestionController);
 
 testRoutes.get('/', testControllers.getAllQuestionsController);
 
-testRoutes.delete('/', testControllers.deleteQuestionController);
+testRoutes.delete('/:testId', testControllers.deleteQuestionController);
 
 export default testRoutes;
