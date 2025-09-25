@@ -5,6 +5,9 @@ import { Prisma, UserType } from '@prisma/client';
 import { validateGST } from '../lib/validateGST.js';
 import { verifyOTP } from './otp.service.js';
 import { waitforApprovalNotification } from '../lib/waitForApprovalNotification.js';
+import { NotificationService } from './notification.service.js';
+
+const notifications = new NotificationService();
 
 /**
  * DealerService Class
@@ -127,6 +130,11 @@ export class DealerService {
                 dealer.last_name,
                 dealer.email
             );
+
+            notifications.createNotificationService({
+                title: 'Dealer Registration',
+                description: `${dealer.business_name} is waiting to be approved`,
+            });
 
             return dealer;
         } catch (error) {
