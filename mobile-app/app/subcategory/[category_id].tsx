@@ -6,7 +6,7 @@ import { View, ActivityIndicator } from 'react-native';
 import ProductGrid from '~/components/ProductList';
 import SubcategoryList from '~/components/SubcategoryList';
 
-const API_URL = 'http://localhost:5000/api/products/category/sub/filter';
+const API_URL = 'https://ariss-app-dev.onrender.com/api/products/category/sub/filter';
 
 // ✅ Define the expected subcategory type
 interface Subcategory {
