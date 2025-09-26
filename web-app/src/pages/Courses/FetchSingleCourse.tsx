@@ -1,124 +1,139 @@
-import { Label } from '../../components/ui/label';
-import { Input } from '../../components/ui/input';
-import { Button } from '../../components/ui/button'; // Make sure you have this
-import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getACourse } from '../../api/courseAPI';
-import { Loader2 } from 'lucide-react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.bubble.css';
+import { useParams } from 'react-router-dom';
+import { getSingleCourse, updateCourse } from '../../api/courseAPI';
+import {
+    MDXEditor,
+    headingsPlugin,
+    listsPlugin,
+    linkPlugin,
+    linkDialogPlugin,
+    imagePlugin,
+    tablePlugin,
+    codeBlockPlugin,
+    markdownShortcutPlugin,
+    toolbarPlugin,
+    BlockTypeSelect,
+    BoldItalicUnderlineToggles,
+    CreateLink,
+    InsertImage,
+    InsertTable,
+    Separator,
+    ListsToggle,
+    HighlightToggle,
+} from '@mdxeditor/editor';
+import '@mdxeditor/editor/style.css';
+import { Input } from '../../components/ui/input';
+import { Button } from '../../components/ui/button';
+import { Loader } from 'lucide-react';
+import { useToast } from '../../hooks/use-toast';
 
-type Course = {
-    id: string;
+interface Course {
+    course_id: string;
     title: string;
-    description: string;
-    content: string;
-    isActive: boolean;
+    content: {
+        body: string;
+    };
     createdAt: string;
-};
+}
 
-const FetchSingleCourse = () => {
-    const [data, setData] = useState<Course | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [showContent, setShowContent] = useState(false);
+const EditCourse = () => {
     const { course_id } = useParams();
+    const [course, setCourse] = useState<Course | null>(null);
+    const [title, setTitle] = useState('');
+    const [body, setBody] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const loadCourse = async (course_id: string) => {
-        if (!course_id) return;
+    const { toast } = useToast();
+
+    useEffect(() => {
+        const fetchCourse = async () => {
+            try {
+                const res = await getSingleCourse(course_id!);
+                setCourse(res.data.data);
+                setTitle(res.data.data.title);
+                setBody(res.data.data.content.body);
+            } catch (err) {
+                console.error('Error fetching course', err);
+            }
+        };
+        fetchCourse();
+    }, [course_id]);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!title.trim() || !body.trim()) return;
         setLoading(true);
         try {
-            const response = await getACourse(course_id);
-            console.log(response.data);
-            setData(response.data);
-        } catch (error) {
-            console.error(error);
+            const payload = { title, content: { body } };
+            await updateCourse(course_id!, payload);
+            console.log('Course updated successfully');
+            toast({
+                title: 'Course updated successfully.',
+                className: 'bg-green-500 text-black font-work rounded',
+            });
+        } catch (err) {
+            console.error('Error updating course', err);
+            toast({
+                title: 'Course updated failed.',
+                className: 'bg-red-500 text-black font-work rounded',
+            });
         } finally {
             setLoading(false);
         }
     };
 
-    useEffect(() => {
-        loadCourse(course_id!);
-    }, [course_id]);
-
-    if (loading) {
+    if (!course)
         return (
             <div className="flex justify-center items-center w-full min-h-screen">
-                <Loader2 className="h-16 w-16 stroke-[1] text-gray-800 dark:text-gray-400 animate-spin" />
+                <Loader className="w-8 h-8 animate-spin" />
             </div>
         );
-    }
-
-    if (!data) {
-        return (
-            <div className="flex justify-center items-center w-full min-h-screen font-work">
-                <p className="text-lg text-gray-600">No course data found.</p>
-            </div>
-        );
-    }
 
     return (
-        <div className="flex justify-center items-center w-full font-work lg:p-10">
-            <form className="flex justify-start items-start w-full flex-col gap-y-6">
-                <div className="flex justify-start items-start flex-col gap-y-2">
-                    <Label>Course ID</Label>
-                    <Input
-                        value={data.id}
-                        disabled
-                        className="lg:min-w-[320px] lg:max-w-[350px] rounded shadow"
-                    />
-                </div>
-                <div className="flex justify-start items-start flex-col gap-y-2">
-                    <Label>Course Title</Label>
-                    <Input
-                        value={data.title}
-                        disabled
-                        className="lg:min-w-[320px] lg:max-w-[350px] rounded shadow"
-                    />
-                </div>
-                <div className="flex justify-start items-start flex-col gap-y-2">
-                    <Label>Course Description</Label>
-                    <Input
-                        value={data.description}
-                        disabled
-                        className="lg:min-w-[500px] lg:max-w-[580px] rounded shadow truncate"
-                    />
-                </div>
-                <div className="flex justify-start items-start flex-col gap-y-2">
-                    <Label>Publish Status</Label>
-                    <Input
-                        value={data.isActive ? 'Published' : 'Unpublished'}
-                        disabled
-                        className="lg:min-w-[320px] lg:max-w-[350px] rounded shadow"
-                    />
-                </div>
-                <div className="flex justify-start items-start flex-col gap-y-2">
-                    <Label>Created Date</Label>
-                    <Input
-                        value={data.createdAt.split('T')[0]}
-                        disabled
-                        className="lg:min-w-[320px] lg:max-w-[350px] rounded shadow"
-                    />
-                </div>
+        <form onSubmit={handleSubmit} className="p-6 max-w-full mx-auto flex flex-col gap-y-4">
+            <Input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Course Title"
+                className="rounded px-2 py-4 placeholder:text-muted-foreground/60"
+            />
 
-                {/* Toggle Button */}
-                <div className="flex flex-col gap-y-2 w-full max-w-4xl">
-                    <Button
-                        type="button"
-                        onClick={() => setShowContent((prev) => !prev)}
-                        className="w-fit rounded shadow"
-                        variant="outline"
-                    >
-                        {showContent ? 'Hide Course Content' : 'Show Course Content'}
-                    </Button>
+            <MDXEditor
+                markdown={body}
+                onChange={setBody}
+                contentEditableClassName="prose max-w-none overflow-auto relative"
+                className="border-b border-l border-r rounded h-[70vh] w-full overflow-auto"
+                plugins={[
+                    headingsPlugin(),
+                    listsPlugin(),
+                    linkPlugin(),
+                    linkDialogPlugin(),
+                    imagePlugin(),
+                    tablePlugin(),
+                    codeBlockPlugin({ defaultCodeBlockLanguage: 'js' }),
+                    markdownShortcutPlugin(),
+                    toolbarPlugin({
+                        toolbarContents: () => (
+                            <>
+                                <BlockTypeSelect />
+                                <BoldItalicUnderlineToggles />
+                                <Separator />
+                                <CreateLink />
+                                <InsertImage />
+                                <InsertTable />
+                                <ListsToggle />
+                                <HighlightToggle />
+                            </>
+                        ),
+                    }),
+                ]}
+            />
 
-                    {showContent && (
-                        <ReactQuill className="lg:mt-6" value={data.content} readOnly={true} theme="bubble" />
-                    )}
-                </div>
-            </form>
-        </div>
+            <Button type="submit" className="rounded my-4 w-min">
+                {loading ? <Loader className="w-4 h-4 animate-spin" /> : 'Update Course'}
+            </Button>
+        </form>
     );
 };
 
-export default FetchSingleCourse;
+export default EditCourse;

@@ -4,6 +4,9 @@ import { UserType } from '@prisma/client';
 import { prisma } from '../db/prismaSingleton.js';
 import { verifyOTP } from './otp.service.js';
 import { confirmRegisterTechnician } from '../lib/confirmRegister.js';
+import { NotificationService } from './notification.service.js';
+
+const notification = new NotificationService();
 
 /**
  * @class TechinianService
@@ -56,7 +59,7 @@ export class TechinianService {
 
         confirmRegisterTechnician(phone, first_name, last_name, email);
 
-        return await this.prismaClient.technicians.create({
+        const tech = await this.prismaClient.technicians.create({
             data: {
                 phone,
                 email,
@@ -66,6 +69,13 @@ export class TechinianService {
                 dealerid: dealerId,
             },
         });
+
+        notification.createNotificationService({
+            title: 'Technician Registration',
+            description: `New technician ${tech.first_name} ${tech.last_name} is waiting for approval`,
+        });
+
+        return tech;
     }
 
     /**
@@ -105,10 +115,17 @@ export class TechinianService {
 
         if (!existingTechnician) throw new Error('Technician do not exist');
 
-        return await this.prismaClient.technicians.update({
+        const tech = await this.prismaClient.technicians.update({
             where: { tech_id },
             data: { isApproved: true },
         });
+
+        notification.createNotificationService({
+            title: 'Technician',
+            description: `Technician ${tech.first_name} ${tech.last_name} has been approved`,
+        });
+
+        return tech;
     }
 
     /**
@@ -159,10 +176,17 @@ export class TechinianService {
 
         if (!existingTechnician) throw new Error('Technician do not exist');
 
-        return await this.prismaClient.technicians.update({
+        const tech = await this.prismaClient.technicians.update({
             where: { tech_id },
             data: { isApproved: false },
         });
+
+        notification.createNotificationService({
+            title: 'Technician',
+            description: `Technician ${tech.first_name} ${tech.last_name} has been disapproved`,
+        });
+
+        return tech;
     }
 
     /**

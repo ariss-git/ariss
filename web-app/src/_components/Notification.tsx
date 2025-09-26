@@ -22,7 +22,6 @@ const Notification = () => {
             setLoading(true);
             try {
                 const res = await getAllUnreadNotifications();
-                console.log(res.data);
                 setData(res.data.data);
             } catch (error) {
                 console.log(error);

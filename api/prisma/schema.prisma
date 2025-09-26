@@ -219,6 +219,37 @@ model Notification {
   createdAt DateTime @default(now())
 }
 
+model Course {
+  course_id String   @id @default(uuid())
+  title     String   @unique
+  status    Boolean  @default(false)
+  content   Json?
+  createdAt DateTime @default(now())
+
+  test Test[]
+}
+
+model Test {
+  test_id        String     @id @default(uuid())
+  question       String     @unique
+  option_a       String
+  option_b       String
+  option_c       String
+  option_d       String
+  correct_option OptionType
+  createdAt      DateTime   @default(now())
+
+  course_id String?
+  course    Course? @relation(fields: [course_id], references: [course_id])
+}
+
+enum OptionType {
+  OPTION_A
+  OPTION_B
+  OPTION_C
+  OPTION_D
+}
+
 enum UserType {
   DEALER
   TECHNICIAN

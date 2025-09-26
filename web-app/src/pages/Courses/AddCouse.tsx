@@ -1,53 +1,71 @@
-import axios from 'axios';
-import { toast } from '../../hooks/use-toast';
 import { useState } from 'react';
-import { apiURL } from '../../api/apiURL';
-import { Input } from '../../components/ui/input';
-import QuillEditor from '../../_components/QuillEditor';
+import {
+    MDXEditor,
+    headingsPlugin,
+    listsPlugin,
+    linkPlugin,
+    linkDialogPlugin,
+    imagePlugin,
+    tablePlugin,
+    codeBlockPlugin,
+    markdownShortcutPlugin,
+    toolbarPlugin,
+    BlockTypeSelect,
+    BoldItalicUnderlineToggles,
+    CreateLink,
+    InsertImage,
+    InsertTable,
+    Separator,
+    ListsToggle,
+    HighlightToggle,
+} from '@mdxeditor/editor';
+import '@mdxeditor/editor/style.css';
 import { Button } from '../../components/ui/button';
-import { Label } from '../../components/ui/label';
-import { Loader2 } from 'lucide-react';
+import { Input } from '../../components/ui/input';
+import { addCourse } from '../../api/courseAPI';
+import { Loader } from 'lucide-react';
+import { useToast } from '../../hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 
-const AddCourse = () => {
+export interface RichCourseEditorProps {
+    initialMarkdown?: string;
+    onSave?: (markdown: string) => void;
+}
+
+export default function AddCourse({ initialMarkdown = '', onSave }: RichCourseEditorProps) {
     const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [content, setContent] = useState('');
+    const [body, setBody] = useState<string>(initialMarkdown);
     const [loading, setLoading] = useState(false);
+
+    const { toast } = useToast();
     const navigate = useNavigate();
 
-    const handleSubmit = async () => {
-        if (!title || !description || !content) {
-            toast({
-                variant: 'destructive',
-                title: 'All fields are required',
-                description: 'Title, description, and content must be filled in.',
-                className: 'rounded font-work border',
-            });
-            return;
-        }
-
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!title.trim() || !body.trim()) return;
         setLoading(true);
         try {
-            await axios.post(`${apiURL}/course`, {
+            const payload = {
                 title,
-                description,
-                content,
-            });
-
+                content: {
+                    body,
+                },
+            };
+            const res = await addCourse(payload);
+            console.log('Course added:', res.data);
+            onSave?.(body);
+            setTitle('');
+            setBody('');
             toast({
-                title: 'Course Created Successfully',
-                description: `${title} has been created. Remember to activate it when ready.`,
-                className: 'rounded font-work border bg-green-500',
+                title: 'Course added successfully.',
+                className: 'bg-green-500 text-black font-work rounded',
             });
-
-            navigate('/courses'); // Adjust if needed
+            navigate('/courses');
         } catch (error) {
-            console.error(error);
+            console.error('Error adding course', error);
             toast({
-                variant: 'destructive',
-                title: 'Failed to create course',
-                className: 'rounded font-work border',
+                title: 'Error adding course.',
+                className: 'bg-red-500 text-black font-work rounded',
             });
         } finally {
             setLoading(false);
@@ -55,43 +73,52 @@ const AddCourse = () => {
     };
 
     return (
-        <div className="p-6 max-w-4xl mx-auto font-work">
-            <h1 className="font-bold text-3xl lg:text-2xl mb-6">Create a New Course</h1>
+        <form
+            onSubmit={handleSubmit}
+            className="p-6 max-w-full mx-auto h-screen flex justify-start items-start flex-col gap-y-4"
+        >
+            <Input
+                onChange={(e) => setTitle(e.target.value)}
+                value={title}
+                placeholder="Course Title"
+                className="rounded px-2 py-4 placeholder:text-muted-foreground/60"
+            />
+            <MDXEditor
+                markdown={body}
+                onChange={setBody}
+                contentEditableClassName="prose max-w-none overflow-auto relative"
+                className="border-b border-l border-r rounded h-[70vh] w-full overflow-auto"
+                plugins={[
+                    // register heading support first
+                    headingsPlugin(),
+                    listsPlugin(),
+                    linkPlugin(),
+                    linkDialogPlugin(),
+                    imagePlugin(),
+                    tablePlugin(),
+                    codeBlockPlugin({ defaultCodeBlockLanguage: 'js' }),
+                    markdownShortcutPlugin(),
 
-            <div className="space-y-6">
-                <div>
-                    <Label className="text-sm font-medium">Course Title</Label>
-                    <Input
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        placeholder="Enter course title..."
-                    />
-                </div>
+                    toolbarPlugin({
+                        toolbarContents: () => (
+                            <>
+                                <BlockTypeSelect />
+                                <BoldItalicUnderlineToggles />
+                                <Separator />
+                                <CreateLink />
+                                <InsertImage />
+                                <InsertTable />
+                                <ListsToggle />
+                                <HighlightToggle />
+                            </>
+                        ),
+                    }),
+                ]}
+            />
 
-                <div>
-                    <Label className="text-sm font-medium">Course Description</Label>
-                    <Input
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        placeholder="Enter a short course description..."
-                    />
-                </div>
-
-                <div>
-                    <Label className="text-sm font-medium">Course Content</Label>
-                    <QuillEditor value={content} onChange={setContent} />
-                </div>
-
-                <Button
-                    className="text-center rounded shadow min-w-32"
-                    onClick={handleSubmit}
-                    disabled={loading}
-                >
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Course'}
-                </Button>
-            </div>
-        </div>
+            <Button type="submit" className="rounded my-4">
+                {loading ? <Loader className="w-4 h-4 animate-spin" /> : 'Submit'}
+            </Button>
+        </form>
     );
-};
-
-export default AddCourse;
+}

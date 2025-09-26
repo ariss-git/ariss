@@ -31,8 +31,8 @@ import AddBackOffice from './pages/Back-Office/AddBackOffice';
 import AddDealer from './pages/Customer/ApprovedDealers/AddDealer';
 import Orders from './pages/Order/Index';
 import Invoices from './pages/Invoice/Index';
-import AddQuestionsToCourse from './pages/Courses/AddQuestions';
 import Profile from './_components/Profile';
+import Test from './pages/Test/Index';
 
 function App() {
     return (
@@ -76,7 +76,8 @@ function App() {
                         <Route path="courses" element={<Courses />} />
                         <Route path="courses/add" element={<AddCourse />} />
                         <Route path="courses/:course_id" element={<FetchSingleCourse />} />
-                        <Route path="courses/questions/:courseID" element={<AddQuestionsToCourse />} />
+
+                        <Route path="tests" element={<Test />} />
 
                         <Route path="orders" element={<Orders />} />
 
