@@ -10,4 +10,6 @@ testRoutes.get('/:testId', testControllers.getSingleQuestionController);
 
 testRoutes.delete('/:testId', testControllers.deleteQuestionController);
 
+testRoutes.put('/edit/:testId', testControllers.getSingleQuestionController);
+
 export default testRoutes;

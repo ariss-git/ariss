@@ -68,6 +68,40 @@ export class TestServices {
         });
     }
 
+    async updateQuestion(
+        testId: string,
+        question: string,
+        optionA: string,
+        optionB: string,
+        optionC: string,
+        optionD: string,
+        correctOption: OptionType,
+        courseId: string
+    ) {
+        const existingQuestion = await this.prismaClient.test.findUnique({
+            where: {
+                test_id: testId,
+            },
+        });
+
+        if (!existingQuestion) throw new Error('Question not found');
+
+        return await this.prismaClient.test.update({
+            where: {
+                test_id: testId,
+            },
+            data: {
+                question,
+                option_a: optionA,
+                option_b: optionB,
+                option_c: optionC,
+                option_d: optionD,
+                correct_option: correctOption,
+                course_id: courseId,
+            },
+        });
+    }
+
     async deleteQuestion(testId: string) {
         const question = await this.prismaClient.test.delete({
             where: {

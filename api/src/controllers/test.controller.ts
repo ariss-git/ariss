@@ -63,3 +63,32 @@ export const deleteQuestionController = async (req: Request, res: Response) => {
         return res.status(400).json({ success: false, message: error.message });
     }
 };
+
+export const updateQuestionController = async (req: Request, res: Response) => {
+    const { testId } = req.params;
+    const { question, optionA, optionB, optionC, optionD, correctOption, courseId } = req.body;
+
+    if (!testId) {
+        return res.status(404).json({ success: false, message: 'Test ID not found in params' });
+    }
+
+    if (!question || !optionA || !optionB || !optionC || !optionD || !correctOption || !courseId) {
+        return res.status(404).json({ success: false, message: 'Required fields are missing' });
+    }
+
+    try {
+        const test = await testServices.updateQuestion(
+            testId,
+            question,
+            optionA,
+            optionB,
+            optionC,
+            optionD,
+            correctOption,
+            courseId
+        );
+        return res.status(200).json({ success: true, data: test });
+    } catch (error: any) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
