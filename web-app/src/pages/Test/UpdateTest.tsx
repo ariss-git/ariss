@@ -100,8 +100,8 @@ const UpdateTest = () => {
                 </Link>
                 Update Question:
             </h1>
-            <form onSubmit={handleSubmit} className="flex justify-start items-start flex-col lg:gap-y-6 mt-4">
-                <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+            <form onSubmit={handleSubmit} className="flex justify-start items-start flex-col gap-y-6 mt-4">
+                <div className="flex justify-start items-start flex-col gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
                     <Label>Course</Label>
                     <Input
                         type="text"
@@ -111,7 +111,7 @@ const UpdateTest = () => {
                     />
                 </div>
 
-                <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                <div className="flex justify-start items-start flex-col gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
                     <Label>
                         Question<sup className="opacity-50">*</sup>
                     </Label>
@@ -122,8 +122,8 @@ const UpdateTest = () => {
                         className="rounded lg:w-[450px] w-[300px]"
                     />
                 </div>
-                <div className="flex justify-start items-center lg:gap-x-6">
-                    <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                <div className="flex justify-start items-center gap-x-6">
+                    <div className="flex justify-start items-start flex-col gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
                         <Label>
                             Option A<sup className="opacity-50">*</sup>
                         </Label>
@@ -135,7 +135,7 @@ const UpdateTest = () => {
                             className="rounded lg:w-[210px] w-[130px]"
                         />
                     </div>
-                    <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                    <div className="flex justify-start items-start flex-col gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
                         <Label>
                             Option B<sup className="opacity-50">*</sup>
                         </Label>
@@ -148,8 +148,8 @@ const UpdateTest = () => {
                         />
                     </div>
                 </div>
-                <div className="flex justify-start items-center lg:gap-x-6">
-                    <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                <div className="flex justify-start items-center gap-x-6">
+                    <div className="flex justify-start items-start flex-col gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
                         <Label>
                             Option C<sup className="opacity-50">*</sup>
                         </Label>
@@ -161,7 +161,7 @@ const UpdateTest = () => {
                             className="rounded lg:w-[210px] w-[130px]"
                         />
                     </div>
-                    <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                    <div className="flex justify-start items-start flex-col gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
                         <Label>
                             Option D<sup className="opacity-50">*</sup>
                         </Label>
@@ -174,7 +174,7 @@ const UpdateTest = () => {
                         />
                     </div>
                 </div>
-                <div className="flex flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
+                <div className="flex flex-col gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
                     <Label>
                         Correct Option<sup className="opacity-50">*</sup>
                     </Label>
