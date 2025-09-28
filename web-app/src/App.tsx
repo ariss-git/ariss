@@ -35,6 +35,7 @@ import Profile from './_components/Profile';
 import Test from './pages/Test/Index';
 import { useUser } from '@clerk/clerk-react';
 import { Loader2 } from 'lucide-react';
+import UpdateTest from './pages/Test/UpdateTest';
 
 function App() {
     const { isSignedIn, isLoaded } = useUser();
@@ -91,6 +92,7 @@ function App() {
                             <Route path="courses/:course_id" element={<FetchSingleCourse />} />
 
                             <Route path="tests" element={<Test />} />
+                            <Route path="tests/view-edit/:test_id" element={<UpdateTest />} />
 
                             <Route path="orders" element={<Orders />} />
 
