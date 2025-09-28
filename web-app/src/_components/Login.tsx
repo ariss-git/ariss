@@ -43,13 +43,16 @@ const Login = () => {
     };
 
     return (
-        <div className="flex justify-center items-center w-full min-h-screen bg-white font-work">
-            <div className="h-[360px] w-[50%] p-10 flex justify-start items-start flex-col bg-white lg:ml-16">
+        <div className="flex justify-center lg:flex-row flex-col items-center w-full min-h-screen bg-white font-work">
+            <div className="lg:hidden absolute top-0 flex justify-center items-center w-full bg-black">
+                <img src="Ariss_Logo.png" alt="Logo" className="w-[150px]" />
+            </div>
+            <div className="lg:h-[360px] lg:w-[50%] lg:p-10 flex justify-start items-start flex-col bg-white lg:ml-16 lg:mb-0 mb-10">
                 <motion.h4
                     initial={{ opacity: '0', y: -20 }}
                     animate={{ opacity: '1', y: 0 }}
                     transition={{ duration: 0.4, ease: 'easeOut' }}
-                    className="lg:text-lg text-black uppercase"
+                    className="text-lg text-black uppercase"
                 >
                     Verified Account only
                 </motion.h4>
@@ -57,7 +60,7 @@ const Login = () => {
                     initial={{ opacity: '0', y: -20 }}
                     animate={{ opacity: '1', y: 0 }}
                     transition={{ duration: 0.4, ease: 'easeOut' }}
-                    className="lg:text-3xl font-semibold lg:mt-2 text-black capitalize"
+                    className="text-3xl font-semibold mt-2 text-black capitalize"
                 >
                     Sign in to your account
                 </motion.h2>
@@ -65,15 +68,15 @@ const Login = () => {
                     initial={{ opacity: '0', y: 20 }}
                     animate={{ opacity: '1', y: 0 }}
                     transition={{ duration: 0.6, ease: 'easeOut' }}
-                    className="lg:mt-10 text-black flex justify-start items-start flex-col gap-y-2"
+                    className="lg:mt-10 mt-6 text-black flex justify-start items-start flex-col gap-y-2"
                 >
-                    <Label className="lg:text-xs">Email Address</Label>
-                    <form onSubmit={handleSubmit} className="flex items-center lg:gap-x-2">
+                    <Label className="lg:text-xs text-sm">Email Address</Label>
+                    <form onSubmit={handleSubmit} className="flex items-center gap-x-2">
                         <Input
                             style={{ borderRadius: '0.3rem' }}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="placeholder:text-muted-foreground/70  lg:w-[265px]"
+                            className="placeholder:text-muted-foreground/70  w-[265px]"
                             placeholder="admin@ariss.io"
                         />
                         <Button type="submit" disabled={loading} style={{ borderRadius: '0.3rem' }}>
@@ -90,7 +93,7 @@ const Login = () => {
                     )}
                 </motion.div>
             </div>
-            <div className="h-[560px] mx-4 w-[50%] bg-black rounded-xl flex justify-center items-center">
+            <div className="h-[560px] mx-4 w-[50%] bg-black rounded-xl lg:flex hidden justify-center items-center">
                 <img src="Ariss_Logo.png" alt="Logo" className="w-[70%]" />
             </div>
         </div>
