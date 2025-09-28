@@ -34,9 +34,19 @@ import Invoices from './pages/Invoice/Index';
 import Profile from './_components/Profile';
 import Test from './pages/Test/Index';
 import { useUser } from '@clerk/clerk-react';
+import { Loader2 } from 'lucide-react';
 
 function App() {
-    const { isSignedIn } = useUser();
+    const { isSignedIn, isLoaded } = useUser();
+
+    if (!isLoaded) {
+        return (
+            <div className="flex justify-center items-center w-full min-h-screen">
+                <Loader2 className="w-8 h-8 animate-spin" />
+            </div>
+        );
+    }
+
     return (
         <ThemeProvider defaultTheme="light">
             {isSignedIn ? (
