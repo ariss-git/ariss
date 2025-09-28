@@ -93,20 +93,22 @@ const UpdateTest = () => {
     }
 
     return (
-        <div className="flex justify-start items-start w-full min-h-screen flex-col lg:gap-y-10">
-            <h1 className="font-work text-left text-[16px] font-semibold capitalize dark:text-stone-100 text-[#495057] flex items-center lg:mt-4">
+        <div className="flex justify-start items-start w-full min-h-screen flex-col lg:gap-y-10 gap-y-6">
+            <h1 className="font-work text-left text-[16px] font-semibold capitalize dark:text-stone-100 text-[#495057] flex items-center mt-4">
                 <Link to="/tests">
                     <ArrowLeft className="w-4 h-4 mr-2 " />
                 </Link>
                 Update Question:
             </h1>
-            <form
-                onSubmit={handleSubmit}
-                className="flex justify-start items-start flex-col lg:gap-y-6 lg:mt-4"
-            >
+            <form onSubmit={handleSubmit} className="flex justify-start items-start flex-col lg:gap-y-6 mt-4">
                 <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
                     <Label>Course</Label>
-                    <Input type="text" value={test?.course.title} disabled className="rounded lg:w-[450px]" />
+                    <Input
+                        type="text"
+                        value={test?.course.title}
+                        disabled
+                        className="rounded lg:w-[450px] w-[300px]"
+                    />
                 </div>
 
                 <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
@@ -117,7 +119,7 @@ const UpdateTest = () => {
                         value={question}
                         onChange={(e) => setQuestion(e.target.value)}
                         placeholder="Enter Question"
-                        className="rounded lg:w-[450px]"
+                        className="rounded lg:w-[450px] w-[300px]"
                     />
                 </div>
                 <div className="flex justify-start items-center lg:gap-x-6">
@@ -130,7 +132,7 @@ const UpdateTest = () => {
                             value={optionA}
                             onChange={(e) => setOptionA(e.target.value)}
                             placeholder="Enter Option A"
-                            className="rounded lg:w-[210px]"
+                            className="rounded lg:w-[210px] w-[130px]"
                         />
                     </div>
                     <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
@@ -142,7 +144,7 @@ const UpdateTest = () => {
                             value={optionB}
                             onChange={(e) => setOptionB(e.target.value)}
                             placeholder="Enter Option B"
-                            className="rounded lg:w-[210px]"
+                            className="rounded lg:w-[210px] w-[130px]"
                         />
                     </div>
                 </div>
@@ -156,7 +158,7 @@ const UpdateTest = () => {
                             value={optionC}
                             onChange={(e) => setOptionC(e.target.value)}
                             placeholder="Enter Option C"
-                            className="rounded lg:w-[210px]"
+                            className="rounded lg:w-[210px] w-[130px]"
                         />
                     </div>
                     <div className="flex justify-start items-start flex-col lg:gap-y-3 font-work capitalize dark:text-stone-100 text-stone-800">
@@ -168,7 +170,7 @@ const UpdateTest = () => {
                             value={optionD}
                             onChange={(e) => setOptionD(e.target.value)}
                             placeholder="Enter Option D"
-                            className="rounded lg:w-[210px]"
+                            className="rounded lg:w-[210px] w-[130px]"
                         />
                     </div>
                 </div>
@@ -177,7 +179,7 @@ const UpdateTest = () => {
                         Correct Option<sup className="opacity-50">*</sup>
                     </Label>
                     <Select value={correctOption} onValueChange={(value) => setCorrectOption(value)}>
-                        <SelectTrigger className="lg:w-[450px] rounded">
+                        <SelectTrigger className="lg:w-[450px] w-[300px] rounded">
                             <SelectValue placeholder="Choose correct option" />
                         </SelectTrigger>
                         <SelectContent>
