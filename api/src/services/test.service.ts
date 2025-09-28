@@ -60,6 +60,14 @@ export class TestServices {
         });
     }
 
+    async getSingleQuestion(testId: string) {
+        return await this.prismaClient.test.findUnique({
+            where: {
+                test_id: testId,
+            },
+        });
+    }
+
     async deleteQuestion(testId: string) {
         const question = await this.prismaClient.test.delete({
             where: {
