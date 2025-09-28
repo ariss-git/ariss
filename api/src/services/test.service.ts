@@ -65,6 +65,9 @@ export class TestServices {
             where: {
                 test_id: testId,
             },
+            include: {
+                course: true,
+            },
         });
     }
 
