@@ -25,7 +25,7 @@ import FetchSingleProduct from './pages/Product/FetchSingleProduct';
 import Courses from './pages/Courses/Index';
 import AddCourse from './pages/Courses/AddCouse';
 import FetchSingleCourse from './pages/Courses/FetchSingleCourse';
-import Login from './pages/Admin/Login';
+import Login from './_components/Login';
 import AddBackOffice from './pages/Back-Office/AddBackOffice';
 
 import AddDealer from './pages/Customer/ApprovedDealers/AddDealer';
@@ -33,66 +33,84 @@ import Orders from './pages/Order/Index';
 import Invoices from './pages/Invoice/Index';
 import Profile from './_components/Profile';
 import Test from './pages/Test/Index';
+import { useUser } from '@clerk/clerk-react';
+import { Loader2 } from 'lucide-react';
+import UpdateTest from './pages/Test/UpdateTest';
 
 function App() {
+    const { isSignedIn, isLoaded } = useUser();
+
+    if (!isLoaded) {
+        return (
+            <div className="flex justify-center items-center w-full min-h-screen">
+                <Loader2 className="w-8 h-8 animate-spin" />
+            </div>
+        );
+    }
+
     return (
         <ThemeProvider defaultTheme="light">
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<AdminLayout />}>
-                        <Route index element={<Dashboard />} />
+            {isSignedIn ? (
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<AdminLayout />}>
+                            <Route index element={<Dashboard />} />
 
-                        <Route path="products" element={<Product />} />
-                        <Route path="products/add" element={<AddProduct />} />
-                        <Route path="products/:product_id" element={<FetchSingleProduct />} />
+                            <Route path="products" element={<Product />} />
+                            <Route path="products/add" element={<AddProduct />} />
+                            <Route path="products/:product_id" element={<FetchSingleProduct />} />
 
-                        <Route path="categories" element={<Category />} />
-                        <Route path="categories/:category_id" element={<CategoryDetails />} />
+                            <Route path="categories" element={<Category />} />
+                            <Route path="categories/:category_id" element={<CategoryDetails />} />
 
-                        <Route path="subcategories" element={<Subcategory />} />
-                        <Route path="subcategories/:subcategory_id" element={<SubcategoryDetails />} />
+                            <Route path="subcategories" element={<Subcategory />} />
+                            <Route path="subcategories/:subcategory_id" element={<SubcategoryDetails />} />
 
-                        <Route path="customers" element={<Customer />} />
+                            <Route path="customers" element={<Customer />} />
 
-                        <Route path="customers/dealers/approved" element={<ApprovedDealers />} />
-                        <Route path="customers/dealers/not-approved" element={<NotApprovedDealers />} />
-                        <Route path="customers/dealers/view-edit/:dealer_id" element={<SingleDealer />} />
-                        <Route path="customers/dealer/pfp/:dealer_id" element={<ProfilePic />} />
-                        <Route path="customers/dealers/add" element={<AddDealer />} />
+                            <Route path="customers/dealers/approved" element={<ApprovedDealers />} />
+                            <Route path="customers/dealers/not-approved" element={<NotApprovedDealers />} />
+                            <Route path="customers/dealers/view-edit/:dealer_id" element={<SingleDealer />} />
+                            <Route path="customers/dealer/pfp/:dealer_id" element={<ProfilePic />} />
+                            <Route path="customers/dealers/add" element={<AddDealer />} />
 
-                        <Route path="customers/technicians" element={<Technicians />} />
+                            <Route path="customers/technicians" element={<Technicians />} />
 
-                        <Route path="customers/backoffices" element={<BackOffices />} />
-                        <Route path="customers/backoffices/add" element={<AddBackOffice />} />
+                            <Route path="customers/backoffices" element={<BackOffices />} />
+                            <Route path="customers/backoffices/add" element={<AddBackOffice />} />
 
-                        <Route path="customers/distributors" element={<Distributors />} />
+                            <Route path="customers/distributors" element={<Distributors />} />
 
-                        <Route path="discounts" element={<Discounts />} />
-                        <Route path="discounts/add" element={<AddDiscount />} />
+                            <Route path="discounts" element={<Discounts />} />
+                            <Route path="discounts/add" element={<AddDiscount />} />
 
-                        <Route path="rma" element={<RMA />} />
-                        <Route path="rma/:rma_id" element={<FetchSingleRMA />} />
+                            <Route path="rma" element={<RMA />} />
+                            <Route path="rma/:rma_id" element={<FetchSingleRMA />} />
 
-                        <Route path="courses" element={<Courses />} />
-                        <Route path="courses/add" element={<AddCourse />} />
-                        <Route path="courses/:course_id" element={<FetchSingleCourse />} />
+                            <Route path="courses" element={<Courses />} />
+                            <Route path="courses/add" element={<AddCourse />} />
+                            <Route path="courses/:course_id" element={<FetchSingleCourse />} />
 
-                        <Route path="tests" element={<Test />} />
+                            <Route path="tests" element={<Test />} />
+                            <Route path="tests/view-edit/:test_id" element={<UpdateTest />} />
 
-                        <Route path="orders" element={<Orders />} />
+                            <Route path="orders" element={<Orders />} />
 
-                        <Route path="invoices" element={<Invoices />} />
+                            <Route path="invoices" element={<Invoices />} />
 
-                        <Route path="profile" element={<Profile />} />
-                    </Route>
+                            <Route path="profile" element={<Profile />} />
+                        </Route>
 
-                    <Route path="/login" element={<Login />}>
-                        <Route path="login/employee" />
-                        <Route path="register/employee" />
-                    </Route>
-                </Routes>
-                <Toaster />
-            </BrowserRouter>
+                        <Route path="/login" element={<Login />}>
+                            <Route path="login/employee" />
+                            <Route path="register/employee" />
+                        </Route>
+                    </Routes>
+                    <Toaster />
+                </BrowserRouter>
+            ) : (
+                <Login />
+            )}
         </ThemeProvider>
     );
 }

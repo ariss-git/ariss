@@ -19,10 +19,11 @@ import {
     DropdownMenuTrigger,
 } from '../../components/ui/dropdown-menu';
 import { Button } from '../../components/ui/button';
-import { ChevronDown, Loader2, MoreHorizontal, Trash } from 'lucide-react';
+import { ChevronDown, Loader2, MoreHorizontal, Pen, Trash } from 'lucide-react';
 import { Input } from '../../components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
 import AddTest from './AddTest';
+import { useNavigate } from 'react-router-dom';
 
 type Tests = {
     test_id: string;
@@ -45,6 +46,8 @@ const FetchAllTests = () => {
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
     const { toast } = useToast();
+
+    const navigate = useNavigate();
 
     const loadAllQuestions = async () => {
         setLoading(true);
@@ -148,6 +151,12 @@ const FetchAllTests = () => {
                                 ) : (
                                     <Trash className="ml-2 h-4 w-4" />
                                 )}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => navigate(`/tests/view-edit/${test.test_id}`)}
+                                className="flex justify-between cursor-pointer"
+                            >
+                                View and Edit <Pen className="ml-2 h-4 w-4" />
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
