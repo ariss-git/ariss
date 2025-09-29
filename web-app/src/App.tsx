@@ -36,6 +36,7 @@ import Test from './pages/Test/Index';
 import { useUser } from '@clerk/clerk-react';
 import { Loader2 } from 'lucide-react';
 import UpdateTest from './pages/Test/UpdateTest';
+import Chatbot from './_components/Chatbot';
 
 function App() {
     const { isSignedIn, isLoaded } = useUser();
@@ -99,6 +100,8 @@ function App() {
                             <Route path="invoices" element={<Invoices />} />
 
                             <Route path="profile" element={<Profile />} />
+
+                            <Route path="chatbot" element={<Chatbot />} />
                         </Route>
 
                         <Route path="/login" element={<Login />}>
