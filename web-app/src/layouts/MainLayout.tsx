@@ -3,8 +3,11 @@ import { Outlet } from 'react-router-dom';
 import Navbar from '../_components/Navbar';
 import Sidebar from '../_components/Sidebar';
 import { SignedIn, SignedOut, SignIn } from '@clerk/clerk-react';
+import { Dialog, DialogContent, DialogTrigger } from '../components/ui/dialog';
+import { Button } from '../components/ui/button';
+import { Bot } from 'lucide-react';
 
-const AdminLayout = () => {
+const MainLayout = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const toggleSidebar = () => setSidebarOpen((prev) => !prev);
 
@@ -30,6 +33,25 @@ const AdminLayout = () => {
                     {/* Scrollable Main Content */}
                     <main className="flex-1 overflow-y-auto p-4">
                         <Outlet />
+                        <div className="absolute right-8 bottom-4">
+                            <Dialog>
+                                <DialogTrigger>
+                                    <Button style={{ borderRadius: '100%' }} className="p-2 w-12 h-12">
+                                        <Bot className="w-10 h-10" />
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent
+                                    style={{ borderRadius: '1rem' }}
+                                    className="min-w-[300px] min-h-[400px]"
+                                >
+                                    <iframe
+                                        src="https://www.chatbase.co/chatbot-iframe/PTRlFYjs_q3zqoB5axyGP"
+                                        width="100%"
+                                        height="400px"
+                                    ></iframe>
+                                </DialogContent>
+                            </Dialog>
+                        </div>
                     </main>
                 </div>
             </SignedIn>
@@ -44,4 +66,4 @@ const AdminLayout = () => {
     );
 };
 
-export default AdminLayout;
+export default MainLayout;

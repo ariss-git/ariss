@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Category from './pages/Category/Index';
-import AdminLayout from './layouts/MainLayout';
+import MainLayout from './layouts/MainLayout';
 import { ThemeProvider } from './components/theme-provider';
 import { Toaster } from './components/ui/toaster';
 import CategoryDetails from './pages/Category/CategoryDetails';
@@ -54,7 +54,7 @@ function App() {
             {isSignedIn ? (
                 <BrowserRouter>
                     <Routes>
-                        <Route path="/" element={<AdminLayout />}>
+                        <Route path="/" element={<MainLayout />}>
                             <Route index element={<Dashboard />} />
 
                             <Route path="products" element={<Product />} />
@@ -101,12 +101,7 @@ function App() {
 
                             <Route path="profile" element={<Profile />} />
 
-                            <Route path="chatbot" element={<Chatbot />} />
-                        </Route>
-
-                        <Route path="/login" element={<Login />}>
-                            <Route path="login/employee" />
-                            <Route path="register/employee" />
+                            <Route path="support" element={<Chatbot />} />
                         </Route>
                     </Routes>
                     <Toaster />
