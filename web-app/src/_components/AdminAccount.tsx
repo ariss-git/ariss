@@ -53,9 +53,7 @@ export default function AdminAccount() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="cursor-pointer">GitHub</DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer">
-                    <Link target="_blank" to="ARISS Support Document.pdf">
-                        Help
-                    </Link>
+                    <Link to="/support">Help</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem disabled>API</DropdownMenuItem>
                 <DropdownMenuSeparator />

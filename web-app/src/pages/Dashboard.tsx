@@ -86,7 +86,7 @@ export default function Dashboard() {
                     <BarChartComponent />
                 </div>
             </div>
-            <div className="flex justify-start items-start lg:gap-x-10">
+            <div className="flex justify-start items-start lg:gap-x-6">
                 <div className="max-w-[450px] max-h-[450px] min-w-[300px] min-h-[300px]">
                     <CurvyLinear />
                 </div>

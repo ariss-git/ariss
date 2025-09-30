@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Category from './pages/Category/Index';
-import AdminLayout from './layouts/MainLayout';
+import MainLayout from './layouts/MainLayout';
 import { ThemeProvider } from './components/theme-provider';
 import { Toaster } from './components/ui/toaster';
 import CategoryDetails from './pages/Category/CategoryDetails';
@@ -36,6 +36,7 @@ import Test from './pages/Test/Index';
 import { useUser } from '@clerk/clerk-react';
 import { Loader2 } from 'lucide-react';
 import UpdateTest from './pages/Test/UpdateTest';
+import Chatbot from './_components/Chatbot';
 
 function App() {
     const { isSignedIn, isLoaded } = useUser();
@@ -53,7 +54,7 @@ function App() {
             {isSignedIn ? (
                 <BrowserRouter>
                     <Routes>
-                        <Route path="/" element={<AdminLayout />}>
+                        <Route path="/" element={<MainLayout />}>
                             <Route index element={<Dashboard />} />
 
                             <Route path="products" element={<Product />} />
@@ -99,11 +100,8 @@ function App() {
                             <Route path="invoices" element={<Invoices />} />
 
                             <Route path="profile" element={<Profile />} />
-                        </Route>
 
-                        <Route path="/login" element={<Login />}>
-                            <Route path="login/employee" />
-                            <Route path="register/employee" />
+                            <Route path="support" element={<Chatbot />} />
                         </Route>
                     </Routes>
                     <Toaster />
