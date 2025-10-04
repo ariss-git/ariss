@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import {
     DropdownMenu,
@@ -18,6 +18,7 @@ import { SignOutButton, useUser } from '@clerk/clerk-react';
 
 export default function AdminAccount() {
     const { user } = useUser();
+    const navigate = useNavigate();
 
     return (
         <DropdownMenu>
@@ -31,7 +32,7 @@ export default function AdminAccount() {
                 <DropdownMenuLabel>{user?.fullName}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem className="cursor-pointer">
+                    <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">
                         Profile
                         <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                     </DropdownMenuItem>

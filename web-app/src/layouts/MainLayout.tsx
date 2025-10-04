@@ -33,7 +33,7 @@ const MainLayout = () => {
                     {/* Scrollable Main Content */}
                     <main className="flex-1 overflow-y-auto p-4">
                         <Outlet />
-                        <div className="absolute right-8 bottom-4">
+                        <div className="absolute lg:right-8 right-6 bottom-10 lg:bottom-4">
                             <Dialog>
                                 <DialogTrigger>
                                     <Button style={{ borderRadius: '100%' }} className="p-2 w-12 h-12">
@@ -41,7 +41,7 @@ const MainLayout = () => {
                                     </Button>
                                 </DialogTrigger>
                                 <DialogContent
-                                    style={{ borderRadius: '1rem' }}
+                                    style={{ borderRadius: '0.5rem' }}
                                     className="min-w-[300px] min-h-[400px]"
                                 >
                                     <iframe

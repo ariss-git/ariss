@@ -151,6 +151,7 @@ export default function FetchAllSubcategories() {
         },
         {
             id: 'actions',
+            header: () => <div className="text-left font-work">Actions</div>,
             cell: ({ row }) => {
                 const sub = row.original;
                 const isLoading = loadingId === sub.subcategory_id;

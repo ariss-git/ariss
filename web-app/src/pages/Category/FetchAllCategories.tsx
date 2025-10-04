@@ -154,10 +154,10 @@ export default function FetchAllCategories() {
         },
         {
             accessorKey: 'createdAt',
-            header: () => <div className="text-right font-work">Date</div>,
+            header: () => <div className="text-left font-work">Date</div>,
             cell: ({ row }) => {
                 const created = new Date(row.getValue('createdAt')).toLocaleDateString();
-                return <div className="text-right font-medium font-work">{created}</div>;
+                return <div className="text-left font-medium font-work">{created}</div>;
             },
         },
         {
