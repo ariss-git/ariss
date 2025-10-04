@@ -1,5 +1,6 @@
 // src/services/panel-user.service.ts
 import { prisma } from '@/db/prismaSingleton.js';
+import { PanelUserType } from '@prisma/client';
 /**
  * @class PanelUserService
  * @desc Service class to handle panel-user-related operations
@@ -30,8 +31,20 @@ export class PanelUserService {
             },
         });
     }
-    // Service to fetch all users
-    async getAllPanelUsersService() {
-        return await this.prismaClient.panelUsers.findMany();
+    // Service to fetch all admin users
+    async getAllPanelAdminsService() {
+        return await this.prismaClient.panelUsers.findMany({
+            where: {
+                panel_type: PanelUserType.ADMIN,
+            },
+        });
+    }
+    // Service to fetch all employee users
+    async getAllPanelEmployeesService() {
+        return await this.prismaClient.panelUsers.findMany({
+            where: {
+                panel_type: PanelUserType.EMPLOYEE,
+            },
+        });
     }
 }

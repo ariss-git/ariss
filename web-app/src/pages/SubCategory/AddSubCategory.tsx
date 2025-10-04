@@ -131,6 +131,10 @@ const AddSubcategory = ({ onSuccess }: FetchSubcategories) => {
             await addSubcategory(selectedCategoryName, subcategoryName, subcategoryImage);
             onSuccess?.();
 
+            setSubcategoryName('');
+            setImage(null);
+            setPasteImage('');
+
             toast({
                 className: 'rounded font-work shadow-xl bg-green-500 text-white',
                 description: 'Subcategory added successfully.',
@@ -155,7 +159,10 @@ const AddSubcategory = ({ onSuccess }: FetchSubcategories) => {
                         Add Subcategories <PlusCircle className="ml-2 h-4 w-4" />
                     </Button>
                 </DialogTrigger>
-                <DialogContent className="rounded-md shadow max-h-[80%] overflow-y-auto">
+                <DialogContent
+                    style={{ borderRadius: '0.5rem' }}
+                    className="shadow max-h-[80%] overflow-y-auto"
+                >
                     <form
                         onSubmit={handleSubmit}
                         className="flex justify-start items-start flex-col lg:gap-y-6 lg:mt-4"
@@ -181,6 +188,9 @@ const AddSubcategory = ({ onSuccess }: FetchSubcategories) => {
                                             {cat.category_name}
                                         </SelectItem>
                                     ))}
+                                    {categories.length === 0 && (
+                                        <SelectItem value="null">Categories not available</SelectItem>
+                                    )}
                                 </SelectContent>
                             </Select>
                         </div>

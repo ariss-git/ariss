@@ -1,3 +1,5 @@
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
 import { useOrganization, useUser } from '@clerk/clerk-react';
 
 const Profile = () => {
@@ -13,12 +15,44 @@ const Profile = () => {
     const userRole = userMembership?.role;
 
     return (
-        <div className="flex justify-start items-start flex-col gap-y-4">
-            <h1>ID: {user?.id}</h1>
-            <h1>Email: {user?.emailAddresses[0].emailAddress}</h1>
-            <h1>Name: {user?.fullName}</h1>
-            <h1 className="overflow-x-auto w-[300px]">Profile Pic: {user?.imageUrl}</h1>
-            {userRole === 'org:admin' ? <h1>Role: ADMIN</h1> : <h1>Role: Employee</h1>}
+        <div className="flex justify-start items-start flex-col lg:gap-y-6 gap-y-8 font-work lg:p-10 p-6">
+            <div className="flex justify-start items-start w-full lg:mb-6 mb-2">
+                <img
+                    src={user?.imageUrl}
+                    alt="Profile Picture"
+                    width={100}
+                    height={100}
+                    style={{ borderRadius: '100%' }}
+                />
+            </div>
+
+            <div className="flex justify-start items-start flex-col gap-y-2">
+                <Label className="font-semibold">User ID</Label>
+                <Input value={user?.id} disabled className="lg:w-[300px] w-[335px] rounded" />
+            </div>
+
+            <div className="flex justify-start items-start flex-col gap-y-2">
+                <Label className="font-semibold">Fullname</Label>
+                <Input value={user?.fullName!} disabled className="lg:w-[300px] w-[335px] rounded" />
+            </div>
+
+            <div className="flex justify-start items-start flex-col gap-y-2">
+                <Label className="font-semibold">Email</Label>
+                <Input
+                    value={user?.emailAddresses[0].emailAddress}
+                    disabled
+                    className="lg:w-[300px] w-[335px] rounded"
+                />
+            </div>
+
+            <div className="flex justify-start items-start flex-col gap-y-2">
+                <Label className="font-semibold">Role</Label>
+                <Input
+                    value={userRole === 'org:admin' ? 'Admin' : 'Employee'}
+                    disabled
+                    className="lg:w-[300px] w-[335px] rounded"
+                />
+            </div>
         </div>
     );
 };

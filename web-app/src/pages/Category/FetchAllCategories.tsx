@@ -13,7 +13,6 @@ import {
 } from '@tanstack/react-table';
 import { ArrowUpDown, ChevronDown, Clipboard, Eye, MoreHorizontal, Trash, Loader2 } from 'lucide-react';
 import { Button } from '../../components/ui/button';
-import { Checkbox } from '../../components/ui/checkbox';
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -129,28 +128,6 @@ export default function FetchAllCategories() {
 
     const columns: ColumnDef<Category>[] = [
         {
-            id: 'select',
-            header: ({ table }) => (
-                <Checkbox
-                    checked={
-                        table.getIsAllPageRowsSelected() ||
-                        (table.getIsSomePageRowsSelected() && 'indeterminate')
-                    }
-                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                    aria-label="Select all"
-                />
-            ),
-            cell: ({ row }) => (
-                <Checkbox
-                    checked={row.getIsSelected()}
-                    onCheckedChange={(value) => row.toggleSelected(!!value)}
-                    aria-label="Select row"
-                />
-            ),
-            enableSorting: false,
-            enableHiding: false,
-        },
-        {
             accessorKey: 'category_name',
             header: ({ column }) => (
                 <Button
@@ -177,10 +154,10 @@ export default function FetchAllCategories() {
         },
         {
             accessorKey: 'createdAt',
-            header: () => <div className="text-right font-work">Date</div>,
+            header: () => <div className="text-left font-work">Date</div>,
             cell: ({ row }) => {
                 const created = new Date(row.getValue('createdAt')).toLocaleDateString();
-                return <div className="text-right font-medium font-work">{created}</div>;
+                return <div className="text-left font-medium font-work">{created}</div>;
             },
         },
         {
@@ -367,10 +344,10 @@ export default function FetchAllCategories() {
             </div>
 
             <div className="flex items-center justify-end space-x-2 py-4">
-                <div className="flex-1 text-sm text-muted-foreground font-work">
+                {/* <div className="flex-1 text-sm text-muted-foreground font-work">
                     {table.getFilteredSelectedRowModel().rows.length} of{' '}
                     {table.getFilteredRowModel().rows.length} row(s) selected.
-                </div>
+                </div> */}
                 <div className="space-x-2">
                     <Button
                         variant="outline"

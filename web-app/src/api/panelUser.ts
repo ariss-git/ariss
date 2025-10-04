@@ -12,3 +12,11 @@ type PanelUserType = {
 export const addPanelUser = async (data: PanelUserType) => {
     return await axios.post(`${apiURL}/panel-users`, data);
 };
+
+export const getAllAdmins = async () => {
+    return await axios.get(`${apiURL}/panel-users/admin`);
+};
+
+export const getAllEmployees = async () => {
+    return await axios.get(`${apiURL}/panel-users/employee`);
+};

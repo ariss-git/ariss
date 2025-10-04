@@ -178,7 +178,10 @@ const AddDiscount = ({ onSuccess }: FetchDiscounts) => {
                     </Button>
                 </DialogTrigger>
 
-                <DialogContent className="max-h-[80%] overflow-y-auto min-w-max">
+                <DialogContent
+                    style={{ borderRadius: '0.5rem' }}
+                    className="max-h-[80%] overflow-y-auto min-w-max"
+                >
                     <form onSubmit={handleSubmit} className="flex flex-col lg:gap-y-6 lg:mt-4">
                         {/* Dealer Select */}
                         <div className="flex justify-start items-center w-full lg:gap-x-52">

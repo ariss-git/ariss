@@ -121,25 +121,6 @@ export default function FetchAllSubcategories() {
 
     const columns: ColumnDef<Subcategory>[] = [
         {
-            id: 'select',
-            header: ({ table }) => (
-                <input
-                    type="checkbox"
-                    checked={table.getIsAllPageRowsSelected()}
-                    onChange={table.getToggleAllPageRowsSelectedHandler()}
-                />
-            ),
-            cell: ({ row }) => (
-                <input
-                    type="checkbox"
-                    checked={row.getIsSelected()}
-                    onChange={row.getToggleSelectedHandler()}
-                />
-            ),
-            enableSorting: false,
-            enableHiding: false,
-        },
-        {
             accessorKey: 'subcategory_name',
             header: ({ column }) => (
                 <Button
@@ -170,6 +151,7 @@ export default function FetchAllSubcategories() {
         },
         {
             id: 'actions',
+            header: () => <div className="text-left font-work">Actions</div>,
             cell: ({ row }) => {
                 const sub = row.original;
                 const isLoading = loadingId === sub.subcategory_id;

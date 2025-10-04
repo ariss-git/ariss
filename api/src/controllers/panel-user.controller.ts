@@ -27,9 +27,19 @@ export const createPanelUserController = async (req: Request, res: Response) => 
     }
 };
 
-export const getAllPanelUserController = async (_req: Request, res: Response) => {
+export const getAllPanelAdminsController = async (_req: Request, res: Response) => {
     try {
-        const panelUser = await panelUserServices.getAllPanelUsersService();
+        const panelUser = await panelUserServices.getAllPanelAdminsService();
+
+        return res.status(200).json({ success: true, total: panelUser.length, data: panelUser });
+    } catch (error: any) {
+        return res.status(400).json({ success: false, message: error.message });
+    }
+};
+
+export const getAllPanelEmployeesController = async (_req: Request, res: Response) => {
+    try {
+        const panelUser = await panelUserServices.getAllPanelEmployeesService();
 
         return res.status(200).json({ success: true, total: panelUser.length, data: panelUser });
     } catch (error: any) {
