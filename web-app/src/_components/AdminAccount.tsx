@@ -39,8 +39,15 @@ export default function AdminAccount() {
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem className="cursor-pointer">Employee Members</DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer">Admin Members</DropdownMenuItem>
+                    {/* <DropdownMenuItem onClick={() => navigate('/members/admins')} className="cursor-pointer">
+                        Admin Members
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => navigate('/members/employees')}
+                        className="cursor-pointer"
+                    >
+                        Employee Members
+                    </DropdownMenuItem> */}
                     <DropdownMenuSub>
                         <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
                         <DropdownMenuPortal>

@@ -188,6 +188,9 @@ const AddSubcategory = ({ onSuccess }: FetchSubcategories) => {
                                             {cat.category_name}
                                         </SelectItem>
                                     ))}
+                                    {categories.length === 0 && (
+                                        <SelectItem value="null">Categories not available</SelectItem>
+                                    )}
                                 </SelectContent>
                             </Select>
                         </div>

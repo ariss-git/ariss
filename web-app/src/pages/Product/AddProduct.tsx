@@ -456,6 +456,7 @@ const DropdownField = ({
                         {opt.label}
                     </SelectItem>
                 ))}
+                {options.length === 0 && <SelectItem value="null">Not available</SelectItem>}
             </SelectContent>
         </Select>
     </div>

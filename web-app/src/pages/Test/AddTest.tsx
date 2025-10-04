@@ -94,7 +94,10 @@ const AddTest = ({ onSuccess }: AddTestProps) => {
                         Add Question <PlusCircle className="ml-2 h-4 w-4" />
                     </Button>
                 </DialogTrigger>
-                <DialogContent className="rounded-md shadow max-h-[80%] overflow-y-auto">
+                <DialogContent
+                    style={{ borderRadius: '0.5rem' }}
+                    className="shadow max-h-[80%] overflow-y-auto"
+                >
                     <form
                         onSubmit={handleSubmit}
                         className="flex justify-start items-start flex-col lg:gap-y-6 lg:mt-4"
@@ -200,6 +203,9 @@ const AddTest = ({ onSuccess }: AddTestProps) => {
                                             {cat.title}
                                         </SelectItem>
                                     ))}
+                                    {courseData.length === 0 && (
+                                        <SelectItem value="null">No available courses</SelectItem>
+                                    )}
                                 </SelectContent>
                             </Select>
                         </div>
