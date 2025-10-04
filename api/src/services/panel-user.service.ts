@@ -44,8 +44,21 @@ export class PanelUserService {
         });
     }
 
-    // Service to fetch all users
-    async getAllPanelUsersService() {
-        return await this.prismaClient.panelUsers.findMany();
+    // Service to fetch all admin users
+    async getAllPanelAdminsService() {
+        return await this.prismaClient.panelUsers.findMany({
+            where: {
+                panel_type: PanelUserType.ADMIN,
+            },
+        });
+    }
+
+    // Service to fetch all employee users
+    async getAllPanelEmployeesService() {
+        return await this.prismaClient.panelUsers.findMany({
+            where: {
+                panel_type: PanelUserType.EMPLOYEE,
+            },
+        });
     }
 }
