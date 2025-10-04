@@ -1,8 +1,5 @@
 -- CreateEnum
-CREATE TYPE "CourseStatus" AS ENUM ('PASSED', 'FAILED');
-
--- CreateEnum
-CREATE TYPE "EmployeeType" AS ENUM ('ADMIN', 'EMPLOYEE');
+CREATE TYPE "OptionType" AS ENUM ('OPTION_A', 'OPTION_B', 'OPTION_C', 'OPTION_D');
 
 -- CreateEnum
 CREATE TYPE "UserType" AS ENUM ('DEALER', 'TECHNICIAN', 'BACKOFFICE');
@@ -21,6 +18,21 @@ CREATE TYPE "PaymentStatus" AS ENUM ('PENDING', 'COMPLETED', 'FAILED');
 
 -- CreateEnum
 CREATE TYPE "RMAStatus" AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED', 'RESOLVED');
+
+-- CreateEnum
+CREATE TYPE "PanelUserType" AS ENUM ('ADMIN', 'EMPLOYEE');
+
+-- CreateTable
+CREATE TABLE "PanelUsers" (
+    "panel_id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "profile_pic" TEXT,
+    "panel_type" "PanelUserType" NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "PanelUsers_pkey" PRIMARY KEY ("panel_id")
+);
 
 -- CreateTable
 CREATE TABLE "Dealers" (
@@ -188,16 +200,6 @@ CREATE TABLE "Payment" (
 );
 
 -- CreateTable
-CREATE TABLE "Wishlist" (
-    "wishlist_id" TEXT NOT NULL,
-    "isMarked" BOOLEAN NOT NULL DEFAULT false,
-    "product_id" TEXT NOT NULL,
-    "dealer_id" TEXT NOT NULL,
-
-    CONSTRAINT "Wishlist_pkey" PRIMARY KEY ("wishlist_id")
-);
-
--- CreateTable
 CREATE TABLE "RMA" (
     "rma_id" TEXT NOT NULL,
     "first_name" TEXT NOT NULL,
@@ -218,89 +220,48 @@ CREATE TABLE "RMA" (
 );
 
 -- CreateTable
-CREATE TABLE "Admin" (
-    "admin_id" TEXT NOT NULL,
-    "fullname" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "phone" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
-    "profile_pic" TEXT NOT NULL DEFAULT 'https://static.thenounproject.com/png/5034901-200.png',
-    "usertype" "EmployeeType" NOT NULL DEFAULT 'ADMIN',
+CREATE TABLE "Notification" (
+    "notification_id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "is_read" BOOLEAN NOT NULL DEFAULT false,
+    "panel_user_id" TEXT,
+    "dealer_user_id" TEXT,
+    "technician_user_id" TEXT,
+    "backoffice_user_id" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Admin_pkey" PRIMARY KEY ("admin_id")
-);
-
--- CreateTable
-CREATE TABLE "Employee" (
-    "emp_id" TEXT NOT NULL,
-    "fullname" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "phone" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
-    "profile_pic" TEXT NOT NULL DEFAULT 'https://static.thenounproject.com/png/5034901-200.png',
-    "isApproved" BOOLEAN NOT NULL DEFAULT false,
-    "usertype" "EmployeeType" NOT NULL DEFAULT 'EMPLOYEE',
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "Employee_pkey" PRIMARY KEY ("emp_id")
+    CONSTRAINT "Notification_pkey" PRIMARY KEY ("notification_id")
 );
 
 -- CreateTable
 CREATE TABLE "Course" (
-    "id" TEXT NOT NULL,
+    "course_id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
-    "content" TEXT NOT NULL,
-    "isActive" BOOLEAN NOT NULL DEFAULT false,
+    "status" BOOLEAN NOT NULL DEFAULT false,
+    "content" JSONB,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Course_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Course_pkey" PRIMARY KEY ("course_id")
 );
 
 -- CreateTable
-CREATE TABLE "Question" (
-    "id" TEXT NOT NULL,
-    "courseId" TEXT NOT NULL,
-    "text" TEXT NOT NULL,
-    "optionA" TEXT NOT NULL,
-    "optionB" TEXT NOT NULL,
-    "optionC" TEXT NOT NULL,
-    "optionD" TEXT NOT NULL,
-    "correct" TEXT NOT NULL,
-
-    CONSTRAINT "Question_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Enrollment" (
-    "id" TEXT NOT NULL,
-    "courseId" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "userName" TEXT NOT NULL,
-    "businessName" TEXT NOT NULL,
-    "enrolledAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "Enrollment_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Result" (
-    "id" TEXT NOT NULL,
-    "courseId" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "userName" TEXT NOT NULL,
-    "businessName" TEXT NOT NULL,
-    "score" INTEGER NOT NULL,
-    "percentage" DOUBLE PRECISION NOT NULL,
-    "status" "CourseStatus" NOT NULL,
-    "attempts" INTEGER NOT NULL DEFAULT 1,
+CREATE TABLE "Test" (
+    "test_id" TEXT NOT NULL,
+    "question" TEXT NOT NULL,
+    "option_a" TEXT NOT NULL,
+    "option_b" TEXT NOT NULL,
+    "option_c" TEXT NOT NULL,
+    "option_d" TEXT NOT NULL,
+    "correct_option" "OptionType" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "course_id" TEXT,
 
-    CONSTRAINT "Result_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Test_pkey" PRIMARY KEY ("test_id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "PanelUsers_email_key" ON "PanelUsers"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Dealers_phone_key" ON "Dealers"("phone");
@@ -330,12 +291,6 @@ CREATE UNIQUE INDEX "Ledger_product_id_key" ON "Ledger"("product_id");
 CREATE UNIQUE INDEX "Payment_order_id_key" ON "Payment"("order_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Wishlist_product_id_key" ON "Wishlist"("product_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Wishlist_dealer_id_key" ON "Wishlist"("dealer_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "RMA_email_key" ON "RMA"("email");
 
 -- CreateIndex
@@ -345,16 +300,10 @@ CREATE UNIQUE INDEX "RMA_phone_key" ON "RMA"("phone");
 CREATE UNIQUE INDEX "RMA_product_serial_key" ON "RMA"("product_serial");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Admin_email_key" ON "Admin"("email");
+CREATE UNIQUE INDEX "Course_title_key" ON "Course"("title");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Admin_phone_key" ON "Admin"("phone");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Employee_email_key" ON "Employee"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Result_userId_courseId_key" ON "Result"("userId", "courseId");
+CREATE UNIQUE INDEX "Test_question_key" ON "Test"("question");
 
 -- AddForeignKey
 ALTER TABLE "Technicians" ADD CONSTRAINT "Technicians_dealerid_fkey" FOREIGN KEY ("dealerid") REFERENCES "Dealers"("dealer_id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -387,16 +336,16 @@ ALTER TABLE "Ledger" ADD CONSTRAINT "Ledger_product_id_fkey" FOREIGN KEY ("produ
 ALTER TABLE "Payment" ADD CONSTRAINT "Payment_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "Order"("order_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Wishlist" ADD CONSTRAINT "Wishlist_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "Product"("product_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_panel_user_id_fkey" FOREIGN KEY ("panel_user_id") REFERENCES "PanelUsers"("panel_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Wishlist" ADD CONSTRAINT "Wishlist_dealer_id_fkey" FOREIGN KEY ("dealer_id") REFERENCES "Dealers"("dealer_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_dealer_user_id_fkey" FOREIGN KEY ("dealer_user_id") REFERENCES "Dealers"("dealer_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Question" ADD CONSTRAINT "Question_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_technician_user_id_fkey" FOREIGN KEY ("technician_user_id") REFERENCES "Technicians"("tech_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Enrollment" ADD CONSTRAINT "Enrollment_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_backoffice_user_id_fkey" FOREIGN KEY ("backoffice_user_id") REFERENCES "BackOffice"("backoffice_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Result" ADD CONSTRAINT "Result_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Test" ADD CONSTRAINT "Test_course_id_fkey" FOREIGN KEY ("course_id") REFERENCES "Course"("course_id") ON DELETE SET NULL ON UPDATE CASCADE;
