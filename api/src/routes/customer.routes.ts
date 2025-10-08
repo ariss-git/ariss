@@ -12,6 +12,12 @@ const customerRoutes = Router();
  */
 
 /**
+ * @route POST /dealers/register
+ * @desc Register a dealer
+ */
+customerRoutes.post('/dealers/register', customerControllers.registerDealerCustomerController);
+
+/**
  * @route GET /dealers/approved
  * @desc Get all approved dealers
  */

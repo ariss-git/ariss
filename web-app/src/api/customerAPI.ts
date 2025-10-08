@@ -12,6 +12,28 @@ type Dealer = {
     profile_pic: string;
 };
 
+export type AddDealerCustomer = {
+    email: string;
+    phone: string;
+    fullname: string;
+    gstin: string;
+    business: string;
+    shippingAddress: { pncd: string; loc: string; dst: string; stcd: string; adr: string };
+    billingAddress: { pncd: string; loc: string; dst: string; stcd: string; adr: string };
+    otp: string;
+};
+
+// Register a dealer
+export const registerDealerCustomer = async (payload: AddDealerCustomer) => {
+    console.log('URL =>', `${apiURL}/customer/dealers/register`);
+    return await axios.post(`${apiURL}/customer/dealers/register`, payload);
+};
+
+// Get all non-approved dealers
+export const getAllNonApprovedDealerCustomer = async () => {
+    return await axios.get(`${apiURL}/customer/dealers/not-approved/all`);
+};
+
 // Fetch all sorts of customers API endpoint
 export const getAllCustomers = async () => {
     return await axios.get(`${apiURL}/customer/all`);

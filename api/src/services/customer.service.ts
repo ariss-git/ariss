@@ -228,7 +228,7 @@ export class CustomerService {
 
         const dealer = await prisma.customer.create({
             data: {
-                id: `dealer-${uuid}`,
+                id: `dealer-${uuid()}`,
                 email,
                 phone,
                 fullname,
@@ -254,7 +254,12 @@ export class CustomerService {
      * @returns Every dealer records
      */
     async getAllDealerCustomer() {
-        return await prisma.customer.findMany();
+        return await prisma.customer.findMany({
+            where: {
+                user_type: UserType.DEALER,
+                is_approved: false,
+            },
+        });
     }
 
     /* =============================

@@ -216,11 +216,11 @@ export const registerDealerCustomerController = async (req: Request, res: Respon
     const { email, phone, fullname, gstin, business, shippingAddress, billingAddress, otp } = req.body;
 
     if (!email || !phone || !fullname || !gstin || !business || !shippingAddress || !billingAddress) {
-        return res.status(404).json({ message: 'Required fields are missing or mispelled' });
+        return res.status(500).json({ message: 'Required fields are missing or mispelled' });
     }
 
     if (!otp) {
-        return res.status(404).json({ message: 'Enter OTP' });
+        return res.status(500).json({ message: 'Enter OTP' });
     }
 
     try {

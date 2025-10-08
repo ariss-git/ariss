@@ -26,7 +26,16 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Input } from '../../../components/ui/input';
 import { Checkbox } from '../../../components/ui/checkbox';
 import { Badge } from '../../../components/ui/badge';
-import { ChevronDown, Eye, Trash, MoreHorizontal, ShieldPlus, Loader2, UserRoundCheck } from 'lucide-react';
+import {
+    ChevronDown,
+    Eye,
+    Trash,
+    MoreHorizontal,
+    ShieldPlus,
+    Loader2,
+    UserRoundCheck,
+    PlusCircle,
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '../../../hooks/use-toast';
 import {
@@ -460,6 +469,13 @@ const FetchAllNotApprovedDealers = () => {
                     </div> */}
                 </div>
                 <div className="lg:flex hidden justify-center items-center lg:gap-x-6">
+                    <Button
+                        onClick={() => navigate('/customers/dealers/add')}
+                        variant="default"
+                        className="rounded"
+                    >
+                        Add Customer <PlusCircle className="ml-2 h-4 w-4" />
+                    </Button>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="default" className="rounded flex items-center gap-2">
