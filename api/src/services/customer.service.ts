@@ -1,7 +1,14 @@
 // src/services/customer.service.ts
 
+import { UserType } from '@prisma/client';
 import { prisma } from '../db/prismaSingleton.js';
 import { approveDealerOnWhatsapp } from '../lib/approveDealerOnWhatsapp.js';
+import { v4 as uuid } from 'uuid';
+import { verifyOTP } from './otp.service.js';
+import { dealerWaitforApprovalEmail } from '@/lib/waitForApprovalNotification.js';
+import { NotificationService } from './notification.service.js';
+
+const notification = new NotificationService();
 
 /**
  * Customer Service Layer
@@ -186,6 +193,64 @@ export class CustomerService {
 
         if (!dealer.dealer_id) throw new Error('Dealer with this ID does not exist');
         return dealer;
+    }
+
+    /**
+     * Register dealer user.
+     * @returns Created dealer record
+     */
+    static async registerDealerCustomer(
+        email: string,
+        phone: string,
+        fullname: string,
+        gstin: string,
+        business: string,
+        shippingAddress: { pncd: string; loc: string; dst: string; stcd: string; adr: string },
+        billingAddress: { pncd: string; loc: string; dst: string; stcd: string; adr: string },
+        otp: string
+    ) {
+        const existingDealer = await prisma.customer.findUnique({
+            where: {
+                email,
+            },
+        });
+
+        if (existingDealer) {
+            throw new Error(`${existingDealer.business} dealer already exist`);
+        }
+
+        console.log('OTP Verification for:', email);
+        // Verify OTP before proceeding
+        if (!(await verifyOTP(email, otp))) {
+            console.error('Invalid OTP');
+            throw new Error('Invalid or expired OTP');
+        }
+
+        const dealer = await prisma.customer.create({
+            data: {
+                id: `dealer-${uuid}`,
+                email,
+                phone,
+                fullname,
+                user_type: UserType.DEALER,
+                gstin,
+                business,
+                shipping_address: shippingAddress,
+                billing_address: billingAddress,
+            },
+        });
+
+        await dealerWaitforApprovalEmail(dealer.fullname, dealer.email);
+        notification.createNotificationService({
+            title: 'Dealer Registration',
+            description: `${dealer.business} is waiting to be approved`,
+        });
+
+        return dealer;
+    }
+
+    static async getAllDealerCustomer() {
+        return await prisma.customer.findMany();
     }
 
     /* =============================

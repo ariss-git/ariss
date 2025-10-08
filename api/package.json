@@ -25,7 +25,8 @@
         "nodemailer": "^6.10.0",
         "razorpay": "^2.9.6",
         "redis": "^4.7.0",
-        "twilio": "^5.4.4"
+        "twilio": "^5.4.4",
+        "uuid": "^13.0.0"
     },
     "devDependencies": {
         "@types/bcryptjs": "^2.4.6",

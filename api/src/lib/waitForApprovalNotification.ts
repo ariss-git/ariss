@@ -3,6 +3,7 @@
 import twilio from 'twilio';
 import nodemailer from 'nodemailer';
 import { config } from '../config/index.js';
+import emailTransporter from './email-transporter.js';
 
 export const waitforApprovalNotification = async (
     phone: string,
@@ -43,6 +44,21 @@ export const waitforApprovalNotification = async (
             to: email,
             subject: 'ARISS account approval status',
             text: `Hello ${first_name} ${last_name}, your dealer account has been succesfully registered but is not approved yet. You can access our app once your account is approved.`,
+        });
+
+        console.log('Approval email sent to:', email);
+    } catch (error: any) {
+        console.error('Failed to send notification:', error.message);
+    }
+};
+
+export const dealerWaitforApprovalEmail = async (fullname: string, email: string) => {
+    try {
+        await emailTransporter.sendMail({
+            from: config.emailUser,
+            to: email,
+            subject: 'ARISS account approval status',
+            text: `Hello ${fullname}, your dealer account has been succesfully registered but is not approved yet. You can access our app once your account is approved.`,
         });
 
         console.log('Approval email sent to:', email);
