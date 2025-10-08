@@ -209,6 +209,60 @@ export const deleteDealerController = async (req: Request, res: Response) => {
 };
 
 /**
+ * Create dealer user
+ * @route POST /dealers/create
+ */
+export const registerDealerCustomerController = async (req: Request, res: Response) => {
+    const { email, phone, fullname, gstin, business, shippingAddress, billingAddress, otp } = req.body;
+
+    if (!email || !phone || !fullname || !gstin || !business || !shippingAddress || !billingAddress) {
+        return res.status(404).json({ message: 'Required fields are missing or mispelled' });
+    }
+
+    if (!otp) {
+        return res.status(404).json({ message: 'Enter OTP' });
+    }
+
+    try {
+        const dealer = await customerServices.registerDealerCustomer(
+            email,
+            phone,
+            fullname,
+            gstin,
+            business,
+            shippingAddress,
+            billingAddress,
+            otp
+        );
+        return res
+            .status(201)
+            .json({ message: 'Dealer is registered and waiting for approval', data: dealer });
+    } catch (error: any) {
+        return res.status(404).json({ message: error.message });
+    }
+};
+
+/**
+ * Fetch all registered dealers
+ * @route GET /dealers/not-approved/all
+ */
+export const getAllDealerCustomerController = async (_req: Request, res: Response) => {
+    try {
+        const dealers = await customerServices.getAllDealerCustomer();
+
+        if (!dealers) {
+            return res
+                .status(500)
+                .json({ success: false, error: 'Failed fetching all the not approved dealers' });
+        }
+
+        return res.status(200).json({ success: true, total: dealers.length, data: dealers });
+    } catch (error: any) {
+        return res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+/**
  * =========================
  *       TECHNICIANS
  * =========================

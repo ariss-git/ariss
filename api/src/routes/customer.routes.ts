@@ -24,6 +24,12 @@ customerRoutes.get('/dealers/approved', customerControllers.getAllApprovedCustom
 customerRoutes.get('/dealers/not-approved', customerControllers.getAllNotApprovedCustomerController);
 
 /**
+ * @route GET /dealers/not-approved/all
+ * @desc Get all dealers who are not approved
+ */
+customerRoutes.get('/dealers/not-approved/all', customerControllers.getAllDealerCustomerController);
+
+/**
  * @route PUT /dealers/approved/:dealer_id
  * @desc Approve a dealer (promote to active user)
  */

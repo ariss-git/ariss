@@ -199,7 +199,7 @@ export class CustomerService {
      * Register dealer user.
      * @returns Created dealer record
      */
-    static async registerDealerCustomer(
+    async registerDealerCustomer(
         email: string,
         phone: string,
         fullname: string,
@@ -249,7 +249,11 @@ export class CustomerService {
         return dealer;
     }
 
-    static async getAllDealerCustomer() {
+    /**
+     * Fetch all dealer user.
+     * @returns Every dealer records
+     */
+    async getAllDealerCustomer() {
         return await prisma.customer.findMany();
     }
 
