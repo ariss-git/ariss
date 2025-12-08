@@ -8,7 +8,8 @@
         "build": "tsc",
         "start": "node --loader ./loaders/tsconfig-paths-loader.mjs dist/server.js",
         "dev": "tsx src/server.ts",
-        "server": "nodemon"
+        "server": "nodemon",
+        "post-intall": "npx prisma generate"
     },
     "dependencies": {
         "@prisma/client": "^6.3.1",
